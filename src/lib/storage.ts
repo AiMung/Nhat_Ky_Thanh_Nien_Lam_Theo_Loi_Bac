@@ -1,7 +1,7 @@
 /**
  * Module quản lý Dữ liệu và Trạng thái cho Dự án:
  * "NHẬT KÝ THANH NIÊN LÀM THEO LỜI BÁC" - Thành Đoàn TP. Hồ Chí Minh
- * Lưu trữ đồng bộ LocalStorage đảm bảo 100% chức năng sử dụng được ngay trên trình duyệt.
+ * Lưu trữ đồng bộ LocalStorage đảm bảo 100% chức năng Thêm - Xóa - Sửa - Cập nhật hoạt động tức thì.
  */
 
 export interface Story {
@@ -37,7 +37,7 @@ export interface UserSession {
   avatar: string;
 }
 
-// BỘ DỮ LIỆU GỐC ĐẶC SẮC VỚI HÌNH ẢNH CHÂN THỰC VÀ CHẤT LƯỢNG CAO
+// BỘ DỮ LIỆU GỐC VỚI HÌNH ẢNH LỊCH SỬ THỜI HOA LỬA CHÂN THỰC 100%
 export const SEED_STORIES: Story[] = [
   {
     id: 'story-1',
@@ -55,7 +55,7 @@ export const SEED_STORIES: Story[] = [
     event_year: 1968,
     period: '1955-1975',
     status: 'approved',
-    cover_url: 'https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80',
+    cover_url: '/images/thoi-hoa-lua-hero.jpg',
     read_minutes: 4,
     published_at: '2026-05-19T07:00:00Z',
     created_at: '2026-05-15T08:30:00Z',
@@ -77,7 +77,7 @@ export const SEED_STORIES: Story[] = [
     event_year: 1978,
     period: '1975-1988',
     status: 'approved',
-    cover_url: 'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=1200&q=80',
+    cover_url: '/images/thoi-hoa-lua/cat-khang-chien.jpg',
     read_minutes: 5,
     published_at: '2026-04-30T09:00:00Z',
     created_at: '2026-04-20T10:00:00Z',
@@ -85,21 +85,21 @@ export const SEED_STORIES: Story[] = [
   },
   {
     id: 'story-3',
-    slug: 'chien-dich-mua-he-xanh-30-nam-trao-yeu-thuong',
-    title: '30 năm Mùa Hè Xanh: Những nhịp cầu nối nghĩa tình từ TP.HCM đến muôn nẻo đường Tổ quốc',
-    narrator_name: 'Chị Đặng Thị Mai Anh (Chỉ huy phó Chiến dịch Mùa Hè Xanh TP.HCM)',
-    contributor_name: 'Đoàn Trường Đại học Bách Khoa - ĐHQG-HCM',
-    contributor_unit: 'Thành Đoàn TP. Hồ Chí Minh',
-    summary: 'Từ chiến dịch Ánh sáng văn hóa hè 1994 đến phong trào tình nguyện quy mô toàn quốc, tinh thần "Ở dân thương, làm dân tin, đi dân nhớ" của tuổi trẻ TP.HCM.',
-    body: `### Những bàn chân không mỏi trên mọi nẻo đường quê hương\n\nTừ phong trào "Ánh sáng văn hóa hè" xóa mù chữ cho đồng bào ngoại thành năm 1994, ngọn lửa tình nguyện của tuổi trẻ Sài Gòn - TP.HCM đã lan tỏa thành Chiến dịch Mùa Hè Xanh huyền thoại.\n\nCác bạn sinh viên Bách Khoa mang kiến thức về xây cầu bê tông nông thôn thay thế cầu khỉ; sinh viên Y Dược khám bệnh, phát thuốc miễn phí; sinh viên Sư phạm mở lớp học tình thương cho trẻ em nghèo từ vùng cao Tây Bắc, Tây Nguyên cho đến đồng bằng sông Cửu Long và nước bạn Lào.\n\n> "Đi để chia sẻ, đi để cống hiến, đi để rèn luyện và trưởng thành. Mỗi công trình thanh niên là một bông hoa đẹp kính dâng lên Bác Hồ muôn vàn kính yêu."`,
-    category_id: 'tinh-nguyen',
-    category_name: 'Tình nguyện vì cộng đồng',
+    slug: 'chuyen-nhung-la-thu-thoi-hoa-lua',
+    title: 'Những lá thư thời hoa lửa: Lời thề non sông và tình yêu sắt son gửi người nơi hậu phương',
+    narrator_name: 'Mẹ Nguyễn Thị Tuyết (Mẹ Việt Nam Anh hùng)',
+    contributor_name: 'Ban Liên lạc Cựu cán bộ Đoàn TP.HCM',
+    contributor_unit: 'Hội Cựu TNXP Thành phố',
+    summary: 'Những dòng thư ố vàng đẫm tình yêu đất nước viết vội bên chiến hào, gửi gắm niềm tin tất thắng và lời hẹn ước sum vầy ngày đất nước trọn niềm vui.',
+    body: `### Những dòng chữ viết dưới ánh hỏa châu\n\n"Mẹ kính yêu! Con viết cho mẹ khi đơn vị vừa hoàn thành trận đánh ở cửa ngõ Sài Gòn. Ở đây đạn bom ác liệt lắm, nhưng chúng con không sợ. Ai cũng mong ngày chiến thắng để về phụng dưỡng mẹ..."\n\nBức thư cuối cùng của liệt sĩ Hoàng Văn Nam gửi về cho mẹ năm 1972, được kẹp cẩn thận trong cuốn sổ tay bạc màu. Cùng với bức thư là một bông hoa rừng ép khô đã đổi màu thời gian.\n\n> "Nếu con có hy sinh, mẹ đừng buồn nhé. Con đi là vì độc lập của dân tộc, vì nụ cười của các em thơ. Tổ quốc cần, chúng con sẵn sàng hiến dâng tuổi thanh xuân!"\n\nNhững lá thư ấy nay trở thành báu vật thiêng liêng, nhắc nhở tuổi trẻ hôm nay về sự hy sinh vô bờ bến của thế hệ cha anh đi trước.`,
+    category_id: 'phong-trao-doan',
+    category_name: 'Ký ức Thành Đoàn & Kháng chiến',
     province_code: 'HCM',
     province_name: 'TP. Hồ Chí Minh',
-    event_year: 1994,
-    period: '1989-nay',
+    event_year: 1972,
+    period: '1955-1975',
     status: 'approved',
-    cover_url: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80',
+    cover_url: '/images/thoi-hoa-lua/story-me-va-nhung-la-thu.jpg',
     read_minutes: 4,
     published_at: '2026-07-27T08:00:00Z',
     created_at: '2026-07-20T14:00:00Z',
@@ -121,7 +121,7 @@ export const SEED_STORIES: Story[] = [
     event_year: 2024,
     period: '1989-nay',
     status: 'approved',
-    cover_url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80',
+    cover_url: '/images/truong-sa-chu-quyen.jpg',
     read_minutes: 4,
     published_at: '2026-06-01T08:00:00Z',
     created_at: '2026-05-28T09:00:00Z',
@@ -129,53 +129,97 @@ export const SEED_STORIES: Story[] = [
   },
   {
     id: 'story-5',
-    slug: 'bac-si-tre-xung-phong-tam-dich-covid-tp-hcm',
-    title: 'Mệnh lệnh từ trái tim: Ký ức blouse trắng tuổi trẻ kiên cường bảo vệ sinh mệnh đồng bào',
-    narrator_name: 'Bác sĩ Trương Thị Thu Thảo (Bệnh viện Nhi Đồng 2)',
-    contributor_name: 'Đoàn Khối Dân - Chính - Đảng TP.HCM',
-    contributor_unit: 'Hội Thầy thuốc Trẻ TP.HCM',
-    summary: 'Hơn 500 ngày đêm không ngủ của hàng ngàn y bác sĩ, sinh viên tình nguyện tuổi trẻ TP.HCM dốc cạn sức mình cứu người giữa đỉnh dịch.',
-    body: `### Những ngày chiến đấu không tiếng súng\n\nMùa hè năm 2021, TP. Hồ Chí Minh đứng trước thử thách cam go nhất trong lịch sử y tế. Hàng vạn y bác sĩ trẻ, sinh viên ngành y đã viết đơn tình nguyện bằng máu để vào các bệnh viện dã chiến tầng 3.\n\nÁo bảo hộ ướt sũng mồ hôi 12 tiếng mỗi ca, da mặt hằn sâu vết khẩu trang N95, có những bạn trẻ hoãn cả đám cưới, có bạn chịu tang cha mẹ từ xa qua màn hình điện thoại để tiếp tục ép tim, bóp bóng hồi sức cho bệnh nhân.\n\n> "Học Bác lòng nhân ái, cứu người như cứu hỏa. Khi đồng bào cần, thanh niên y tế không cho phép mình lùi bước dù chỉ một giây!"`,
-    category_id: 'hoc-tap-bac',
-    category_name: 'Học tập & Làm theo lời Bác',
+    slug: 'me-tien-con-ra-tran-huyen-thoai-me-viet-nam-anh-hung',
+    title: 'Huyền thoại Mẹ Việt Nam Anh hùng: Nước mắt tiễn con và tượng đài bất tử trong lòng dân tộc',
+    narrator_name: 'Mẹ Trần Thị Mười (Huyện Củ Chi Đất Thép)',
+    contributor_name: 'Huyện Đoàn Củ Chi - TP. Hồ Chí Minh',
+    contributor_unit: 'Ban Chỉ đạo phong trào Đền ơn đáp nghĩa',
+    summary: 'Ký ức của người Mẹ Củ Chi đất thép tiễn 4 người con lên đường đánh giặc, trở thành biểu tượng cao đẹp cho lòng kiên trung bất khuất của phụ nữ Việt Nam.',
+    body: `### Đất thép nở hoa từ lòng mẹ\n\nTrong những năm tháng kháng chiến gian lao, Củ Chi là vành đai thép diệt Mỹ. Dưới làn bom đạn cày xới ngày đêm, các mẹ vừa nuôi giấu cán bộ dưới địa đạo bí mật, vừa lần lượt động viên các con cầm súng lên đường chiến đấu.\n\n"Má dặn các con: Đã là trai tráng thời loạn lạc thì phải biết vì nước, vì dân. Chừng nào sạch bóng quân thù mới được trở về!".\n\nBốn lần tiễn con đi là bốn lần mẹ nén đau thương vào lòng. Ngày thống nhất, hòa bình lập lại, các con của mẹ đã hóa thân thành sông núi quê hương.\n\n> "Mẹ Việt Nam Anh hùng là tượng đài vĩ đại nhất, là nguồn cảm hứng vô tận để thế hệ trẻ hôm nay biết trân quý nền độc lập, tự do mà cha ông đã đánh đổi bằng xương máu."`,
+    category_id: 'phong-trao-doan',
+    category_name: 'Mẹ Việt Nam Anh Hùng & Hậu phương',
     province_code: 'HCM',
     province_name: 'TP. Hồ Chí Minh',
-    event_year: 2021,
-    period: '1989-nay',
+    event_year: 1968,
+    period: '1955-1975',
     status: 'approved',
-    cover_url: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=1200&q=80',
+    cover_url: '/images/thoi-hoa-lua/story-me-tien-con-ra-tran.jpg',
     read_minutes: 5,
-    published_at: '2026-02-27T08:00:00Z',
-    created_at: '2026-02-20T10:00:00Z',
+    published_at: '2026-07-27T08:00:00Z',
+    created_at: '2026-07-20T10:00:00Z',
     likes_count: 940
   },
   {
     id: 'story-6',
-    slug: 'ban-do-so-dia-chi-do-tuoi-tre-sai-gon',
-    title: 'Số hóa 100 Địa chỉ Đỏ: Công trình thanh niên chào mừng Đại hội Đoàn TP.HCM',
-    narrator_name: 'Bạn Nguyễn Hoàng Nam (Kỹ sư trẻ, Bí thư Đoàn cơ sở)',
-    contributor_name: 'Quận Đoàn 1 - TP. Hồ Chí Minh',
-    contributor_unit: 'Ban Mặt trận - ANQP - ĐBDC Thành Đoàn',
-    summary: 'Ứng dụng công nghệ VR 360 và QR Code đưa lịch sử đến gần hơn với thế hệ Gen Z tại các di tích lịch sử trọng điểm như Dinh Độc Lập, Hầm Vũ khí Biệt động Sài Gòn.',
-    body: `### Đưa lịch sử cách mạng lên không gian số\n\nLịch sử không chỉ nằm trong sách giáo khoa mà phải hiện hữu sinh động trong đời sống giới trẻ. Nhóm bạn trẻ thuộc Chi đoàn Công nghệ đã tự tay lập trình và quay quét 3D toàn bộ hệ thống hầm bí mật Biệt động Sài Gòn, Khu tưởng niệm liệt sĩ Ngã Ba Giồng, và Căn cứ Núi Dinh.\n\nDu khách và đoàn viên chỉ cần quét mã QR tại hiện trường là có thể nghe audio thuyết minh tự động, tương tác 3D và tìm hiểu tiểu sử từng nhân chứng lịch sử.\n\n> "Làm theo lời Bác trong thời đại 4.0 chính là dùng tri thức, công nghệ để phụng sự Tổ quốc và gìn giữ cội nguồn dân tộc."`,
-    category_id: 'cong-trinh-thanh-nien',
-    category_name: 'Công trình Thanh niên thời đại số',
-    province_code: 'HCM',
-    province_name: 'TP. Hồ Chí Minh',
-    event_year: 2023,
-    period: '1989-nay',
+    slug: 'chien-dich-dien-bien-phu-lung-lay-nam-chau',
+    title: 'Chiến dịch Điện Biên Phủ: "Lừng lẫy năm châu, chấn động địa cầu" và sức mạnh tuổi trẻ kéo pháo',
+    narrator_name: 'Cựu chiến binh Điện Biên Phủ Hoàng Văn Thái',
+    contributor_name: 'Đoàn Khối Doanh nghiệp TP.HCM',
+    contributor_unit: 'Hội Cựu Chiến binh',
+    summary: 'Ký ức 56 ngày đêm khoét núi, ngủ hầm, mưa dầm, cơm vắt, máu trộn bùn non của những chiến sĩ tuổi mười chín, đôi mươi lập nên kỳ tích Điện Biên.',
+    body: `### Dốc Pha Đin và những bước chân bạt núi\n\n56 ngày đêm chiến dịch Điện Biên Phủ là thiên anh hùng ca bất hủ của dân tộc. Hàng vạn dân công hỏa tuyến và bộ đội trẻ đã dùng đôi chân trần và xe đạp thồ vượt đèo dốc hiểm trở tiếp tế đạn dược, lương thực.\n\nNhững tấm gương anh dũng như Tô Vĩnh Diện lấy thân chèn pháo, Phan Đình Giót lấy thân mình lấp lỗ châu mai, Bế Văn Đàn lấy vai làm giá súng... đã khắc sâu vào lịch sử chói lọi của dân tộc ta.\n\n> "Chiến thắng Điện Biên Phủ như một mốc son chói lọi bằng vàng của lịch sử. Nó chứng minh chân lý: Một dân tộc dù nhỏ bé, nhưng đoàn kết một lòng theo Đảng và Bác Hồ thì nhất định chiến thắng!"`,
+    category_id: 'phong-trao-doan',
+    category_name: 'Ký ức Kháng chiến cứu quốc',
+    province_code: 'DB',
+    province_name: 'Điện Biên',
+    event_year: 1954,
+    period: '1945-1954',
     status: 'approved',
-    cover_url: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1200&q=80',
-    read_minutes: 3,
-    published_at: '2026-03-26T08:00:00Z',
-    created_at: '2026-03-20T09:00:00Z',
-    likes_count: 450
+    cover_url: '/images/thoi-hoa-lua/story-chien-dich-dien-bien-phu.jpg',
+    read_minutes: 5,
+    published_at: '2026-05-07T08:00:00Z',
+    created_at: '2026-05-01T09:00:00Z',
+    likes_count: 856
+  },
+  {
+    id: 'story-7',
+    slug: 'ha-noi-12-ngay-dem-dien-bien-phu-tren-khong',
+    title: 'Hà Nội 12 ngày đêm 1972: Bản hùng ca Điện Biên Phủ trên không và ý chí quật cường',
+    narrator_name: 'Đại tá phi công Nguyễn Văn Bảy',
+    contributor_name: 'Đoàn Thanh niên Không quân Việt Nam',
+    contributor_unit: 'Thành Đoàn TP.HCM phối hợp',
+    summary: 'Cuộc đối đầu lịch sử với pháo đài bay B-52 trên bầu trời Thủ đô cuối năm 1972, thể hiện đỉnh cao ý chí sắt đá và trí tuệ Việt Nam.',
+    body: `### Rồng lửa Thăng Long vít cổ B-52\n\nTháng 12 năm 1972, đế quốc Mỹ mở chiến dịch tập kích đường không chiến lược Linebacker II vào Hà Nội và Hải Phòng hòng "đưa miền Bắc trở về thời kỳ đồ đá".\n\nNhưng trên mảnh đất ngàn năm văn hiến, quân và dân ta với tinh thần "Quyết tử để Tổ quốc quyết sinh" đã giăng lưới lửa phòng không tầng tầng lớp lớp, bắn rơi 81 máy bay hiện đại các loại, trong đó có 34 siêu pháo đài bay B-52.\n\n> "Bác Hồ từng dự báo trước: 'Mỹ chỉ chịu thua sau khi thua trên bầu trời Hà Nội'. Lời tiên tri thiên tài của Bác đã trở thành hiện thực rực rỡ!"`,
+    category_id: 'phong-trao-doan',
+    category_name: 'Ký ức Kháng chiến cứu quốc',
+    province_code: 'HN',
+    province_name: 'Hà Nội',
+    event_year: 1972,
+    period: '1955-1975',
+    status: 'approved',
+    cover_url: '/images/thoi-hoa-lua/story-ha-noi-12-ngay-dem.jpg',
+    read_minutes: 4,
+    published_at: '2026-12-18T08:00:00Z',
+    created_at: '2026-12-10T09:00:00Z',
+    likes_count: 672
+  },
+  {
+    id: 'story-8',
+    slug: 'vi-dai-tuong-cua-nhan-dan-vo-nguyen-giap',
+    title: 'Vị Đại tướng của Nhân dân: Tấm gương sáng ngời đạo đức cách mạng và lòng thương yêu chiến sĩ',
+    narrator_name: 'Đồng chí Vũ Kỳ (Thư ký Chủ tịch Hồ Chí Minh)',
+    contributor_name: 'Bảo tàng Lịch sử Quân sự Việt Nam',
+    contributor_unit: 'Ban Tuyên giáo Trung ương Đoàn',
+    summary: 'Những hồi ức cảm động về Đại tướng Tổng Tư lệnh Võ Nguyên Giáp - người học trò xuất sắc của Chủ tịch Hồ Chí Minh, người Anh cả của Quân đội nhân dân Việt Nam.',
+    body: `### Tinh thần "Dĩ công vi thượng" của Đại tướng\n\nTrong suốt cuộc đời hoạt động cách mạng vẻ vang, Đại tướng Võ Nguyên Giáp luôn tâm niệm và thực hành sâu sắc lời dạy của Bác Hồ: "Dĩ công vi thượng" - đặt lợi ích của Đảng, của dân tộc và của nhân dân lên trên hết, trước hết.\n\nTrước mỗi chiến dịch lớn, Đại tướng luôn căn dặn các chỉ huy: "Chiến thắng phải đi liền với việc hạn chế thương vong tối đa cho chiến sĩ. Xương máu của bộ đội là vô giá". Tinh thần nhân văn cao cả ấy đã thu phục trọn vẹn trái tim của triệu triệu người lính và đồng bào cả nước.\n\n> "Học tập Đại tướng Võ Nguyên Giáp là học tập phong cách lãnh đạo quyết đoán, trí tuệ kiệt xuất gắn liền với sự khiêm nhường, giản dị và hết lòng vì Tổ quốc."`,
+    category_id: 'hoc-tap-bac',
+    category_name: 'Học tập & Làm theo lời Bác',
+    province_code: 'HN',
+    province_name: 'Hà Nội',
+    event_year: 1954,
+    period: '1945-1954',
+    status: 'approved',
+    cover_url: '/images/thoi-hoa-lua/vna-potal-chan-dung-dai-tuong-vo-nguyen-giap-184218511-16-3-52.jpg',
+    read_minutes: 5,
+    published_at: '2026-08-25T08:00:00Z',
+    created_at: '2026-08-20T09:00:00Z',
+    likes_count: 1250
   }
 ];
 
-const STORAGE_KEY_STORIES = 'dtn_hcm_stories_v2';
-const STORAGE_KEY_USER = 'dtn_hcm_current_user_v2';
-const STORAGE_KEY_FAVS = 'dtn_hcm_favorites_v2';
+const STORAGE_KEY_STORIES = 'dtn_hcm_stories_v3'; // Bump version to refresh with authentic Thời Hoa Lửa assets
+const STORAGE_KEY_USER = 'dtn_hcm_current_user_v3';
+const STORAGE_KEY_FAVS = 'dtn_hcm_favorites_v3';
 
 // 1. LẤY DANH SÁCH BÀI VIẾT (Tự động kết hợp Seed Data và bài do người dùng tạo)
 export function getAllStories(): Story[] {
@@ -200,7 +244,7 @@ export function getStoryBySlug(slug: string): Story | undefined {
   return list.find((s) => s.slug === slug);
 }
 
-// 3. THÊM BÀI VIẾT MỚI (Người dùng đóng góp - lưu ngay vào localStorage)
+// 3. THÊM BÀI VIẾT MỚI (CREATE - Người dùng đóng góp - lưu ngay vào localStorage)
 export function submitNewStory(data: Omit<Story, 'id' | 'slug' | 'created_at' | 'status' | 'read_minutes'>): Story {
   const current = getAllStories();
   
@@ -230,11 +274,67 @@ export function submitNewStory(data: Omit<Story, 'id' | 'slug' | 'created_at' | 
   const updated = [newStory, ...current];
   if (typeof window !== 'undefined') {
     localStorage.setItem(STORAGE_KEY_STORIES, JSON.stringify(updated));
+    window.dispatchEvent(new Event('stories-changed'));
   }
   return newStory;
 }
 
-// 4. DUYỆT HOẶC TỪ CHỐI BÀI VIẾT (Admin chức năng thực tế 100%)
+// 4. CẬP NHẬT / SỬA BÀI VIẾT (UPDATE - Chỉnh sửa thông tin bài viết)
+export function updateStory(id: string, updates: Partial<Omit<Story, 'id' | 'created_at'>>): boolean {
+  const list = getAllStories();
+  const index = list.findIndex((s) => s.id === id);
+  if (index === -1) return false;
+
+  const current = list[index];
+  
+  // Tính lại số phút đọc nếu có cập nhật body
+  let readMinutes = current.read_minutes;
+  if (updates.body) {
+    const wordCount = updates.body.split(/\s+/).length;
+    readMinutes = Math.max(1, Math.ceil(wordCount / 220));
+  }
+
+  // Cập nhật slug nếu tiêu đề đổi
+  let slug = current.slug;
+  if (updates.title && updates.title !== current.title) {
+    slug = updates.title
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/đ/g, 'd')
+      .replace(/[^a-z0-9\s-]/g, '')
+      .trim()
+      .replace(/\s+/g, '-') + '-' + Date.now().toString().slice(-4);
+  }
+
+  list[index] = {
+    ...current,
+    ...updates,
+    slug,
+    read_minutes: readMinutes,
+  };
+
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(STORAGE_KEY_STORIES, JSON.stringify(list));
+    window.dispatchEvent(new Event('stories-changed'));
+  }
+  return true;
+}
+
+// 5. XOÁ BÀI VIẾT (DELETE - Xoá hoàn toàn khỏi hệ thống)
+export function deleteStory(id: string): boolean {
+  const list = getAllStories();
+  const filtered = list.filter((s) => s.id !== id);
+  if (filtered.length === list.length) return false;
+
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(STORAGE_KEY_STORIES, JSON.stringify(filtered));
+    window.dispatchEvent(new Event('stories-changed'));
+  }
+  return true;
+}
+
+// 6. DUYỆT HOẶC TỪ CHỐI BÀI VIẾT (Admin chức năng thực tế 100%)
 export function updateStoryStatus(id: string, status: 'approved' | 'rejected', rejectReason?: string): boolean {
   const list = getAllStories();
   const index = list.findIndex((s) => s.id === id);
@@ -250,11 +350,30 @@ export function updateStoryStatus(id: string, status: 'approved' | 'rejected', r
 
   if (typeof window !== 'undefined') {
     localStorage.setItem(STORAGE_KEY_STORIES, JSON.stringify(list));
+    window.dispatchEvent(new Event('stories-changed'));
   }
   return true;
 }
 
-// 5. QUẢN LÝ PHIÊN ĐĂNG NHẬP (Khách, Đoàn viên, Admin Ban Biên tập)
+// 7. LẤY DANH SÁCH BÀI VIẾT DO NGƯỜI DÙNG ĐÃ ĐÓNG GÓP (Truyện của tôi)
+export function getMyStories(): Story[] {
+  const currentUser = getCurrentUser();
+  const all = getAllStories();
+  
+  // Nếu là admin, hiển thị các bài viết admin đã tạo hoặc toàn bộ
+  if (currentUser.role === 'admin') {
+    return all;
+  }
+  
+  // Lọc theo tên người đóng góp hoặc id bài viết do user tạo
+  return all.filter((s) => 
+    s.id.startsWith('user-story-') || 
+    s.contributor_name.toLowerCase().includes(currentUser.name.toLowerCase()) ||
+    s.contributor_unit?.toLowerCase().includes(currentUser.unit.toLowerCase())
+  );
+}
+
+// 8. QUẢN LÝ PHIÊN ĐĂNG NHẬP (Khách, Đoàn viên, Admin Ban Biên tập)
 export function getCurrentUser(): UserSession {
   if (typeof window === 'undefined') {
     return {
@@ -263,7 +382,7 @@ export function getCurrentUser(): UserSession {
       email: 'khach@thanhdoan.tphcm.gov.vn',
       unit: 'Thành phố Hồ Chí Minh',
       role: 'guest',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'
+      avatar: '/images/thoi-hoa-lua/logo-doan.webp'
     };
   }
 
@@ -279,7 +398,7 @@ export function getCurrentUser(): UserSession {
     email: 'vanan.doan@tphcm.gov.vn',
     unit: 'Chi đoàn Ban Phong trào Thành Đoàn',
     role: 'member',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'
+    avatar: '/images/thoi-hoa-lua/logo-doan.webp'
   };
   localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(defaultUser));
   return defaultUser;
@@ -292,21 +411,21 @@ export function switchUserRole(role: 'guest' | 'member' | 'admin'): UserSession 
     email: 'bientap@thanhdoan.tphcm.gov.vn',
     unit: 'Ban Tuyên giáo Thành Đoàn TP.HCM',
     role: 'admin',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80'
+    avatar: '/images/thoi-hoa-lua/logo-doan.webp'
   } : role === 'member' ? {
     id: 'user-1',
     name: 'Nguyễn Văn An',
     email: 'vanan.doan@tphcm.gov.vn',
     unit: 'Chi đoàn Ban Phong trào Thành Đoàn',
     role: 'member',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'
+    avatar: '/images/thoi-hoa-lua/logo-doan.webp'
   } : {
     id: 'guest',
     name: 'Đoàn viên Khách',
     email: 'khach@thanhdoan.tphcm.gov.vn',
     unit: 'Thành phố Hồ Chí Minh',
     role: 'guest',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80'
+    avatar: '/images/thoi-hoa-lua/logo-doan.webp'
   };
 
   if (typeof window !== 'undefined') {
@@ -316,7 +435,7 @@ export function switchUserRole(role: 'guest' | 'member' | 'admin'): UserSession 
   return user;
 }
 
-// 6. YÊU THÍCH (FAVORITES)
+// 9. YÊU THÍCH (FAVORITES)
 export function getFavoriteIds(): string[] {
   if (typeof window === 'undefined') return [];
   try {

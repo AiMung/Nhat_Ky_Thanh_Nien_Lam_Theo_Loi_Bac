@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --bg-page: #F8FAFC;
+    --bg-page: #FAF8F5;
     --text-primary: #1E293B;
   }
 
@@ -13,6 +13,8 @@
     color: var(--text-primary);
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
+    background-image: radial-gradient(#E2D9CC 0.75px, transparent 0.75px);
+    background-size: 20px 20px;
   }
 
   h1, h2, h3, h4, .font-serif-historical {
@@ -20,29 +22,60 @@
   }
 }
 
-/* Thẻ bài viết hiện đại với hiệu ứng nổi bật */
+/* Thẻ bài viết hiện đại Thời Hoa Lửa */
 .youth-card {
   background-color: #FFFFFF;
-  border: 1px solid #E2E8F0;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid #E5DFD5;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
 }
 
 .youth-card:hover {
-  transform: translateY(-4px);
-  border-color: #CBD5E1;
-  box-shadow: 0 16px 32px -8px rgba(0, 82, 163, 0.12);
+  transform: translateY(-5px);
+  border-color: #D97706;
+  box-shadow: 0 16px 36px -10px rgba(185, 28, 28, 0.18), 0 0 20px -5px rgba(245, 158, 11, 0.25);
 }
 
-/* Gradient đặc trưng Đoàn Thanh Niên */
-.bg-gradient-youth {
-  background: linear-gradient(135deg, #0052A3 0%, #1D4ED8 50%, #991B1B 100%);
+/* Gradient Thời Hoa Lửa (Ánh lửa chiến khu & Màu cờ đỏ sao vàng) */
+.bg-gradient-hoa-lua {
+  background: radial-gradient(circle at top right, #B91C1C 0%, #7F1D1D 40%, #003A75 100%);
+  position: relative;
 }
 
-.bg-gradient-hero {
-  background: radial-gradient(circle at top center, #991B1B 0%, #7F1D1D 45%, #003A75 100%);
+/* Hiệu ứng Đốm lửa bập bùng (Ember sparks) */
+@keyframes emberFloat {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(-80px) translateX(20px) scale(0.8);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateY(-160px) translateX(-15px) scale(0.2);
+    opacity: 0;
+  }
 }
 
-/* Hiệu ứng viền phát sáng nhẹ */
-.glow-gold {
-  box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+.ember-particle {
+  position: absolute;
+  border-radius: 50%;
+  background: #F59E0B;
+  box-shadow: 0 0 8px #F59E0B, 0 0 16px #DC2626;
+  animation: emberFloat 4s infinite linear;
+  pointer-events: none;
+}
+
+/* Con dấu kỷ vật thời chiến (Vintage Stamp) */
+.vintage-stamp {
+  border: 2px dashed #B91C1C;
+  padding: 4px 8px;
+  text-transform: uppercase;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  color: #B91C1C;
+  display: inline-block;
+  transform: rotate(-3deg);
+  border-radius: 4px;
 }

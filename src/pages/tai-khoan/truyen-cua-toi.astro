@@ -1,0 +1,43 @@
+---
+import RootLayout from '@/layouts/RootLayout.astro';
+import MyStoriesView from '@/components/story/MyStoriesView';
+import { withBase } from '@/lib/utils';
+---
+
+<RootLayout title="Quản lý câu chuyện của tôi - Thành Đoàn TP. Hồ Chí Minh">
+  
+  <!-- Banner tiêu đề trang -->
+  <section class="relative bg-gradient-hero text-white py-12 px-4 border-b-4 border-gold-500 overflow-hidden">
+    <div class="absolute inset-0 z-0">
+      <img
+        src="/images/thoi-hoa-lua/hero-thu-vien.jpg"
+        alt="Quản lý câu chuyện"
+        class="w-full h-full object-cover opacity-20 filter contrast-125"
+      />
+      <div class="absolute inset-0 bg-gradient-to-r from-doan-950/90 via-redflag-950/80 to-doan-950/90"></div>
+    </div>
+
+    <div class="max-w-6xl mx-auto relative z-10">
+      <div class="flex items-center gap-2 text-xs text-gold-300 font-bold mb-3 uppercase tracking-wider">
+        <a href={withBase('/')} class="hover:underline">Trang chủ</a>
+        <span>/</span>
+        <span>Tài khoản cá nhân</span>
+        <span>/</span>
+        <span class="text-white">Câu chuyện của tôi</span>
+      </div>
+
+      <h1 class="font-serif font-black text-2xl sm:text-4xl text-white tracking-tight leading-tight">
+        QUẢN LÝ CÂU CHUYỆN & TRANG NHẬT KÝ
+      </h1>
+      <p class="text-xs sm:text-sm text-gold-100 mt-2 max-w-2xl leading-relaxed">
+        Theo dõi trạng thái kiểm duyệt, chỉnh sửa nội dung hoặc bổ sung tư liệu cho những trang ký ức bạn đã gửi gắm.
+      </p>
+    </div>
+  </section>
+
+  <!-- Danh sách câu chuyện kèm Thao tác Thêm - Sửa - Xoá -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <MyStoriesView client:load />
+  </main>
+
+</RootLayout>

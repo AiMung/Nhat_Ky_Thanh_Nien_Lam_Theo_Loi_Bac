@@ -1,6 +1,7 @@
 ---
 import RootLayout from '@/layouts/RootLayout.astro';
 import StoryReaderToolbar from '@/components/story/StoryReaderToolbar';
+import StoryActionToolbar from '@/components/story/StoryActionToolbar';
 import { getAllStories, type Story } from '@/lib/storage';
 import { formatDate, withBase } from '@/lib/utils';
 
@@ -82,9 +83,14 @@ const formattedBody = story.body
           <div class="font-serif font-bold text-base text-doan-900 mt-0.5">{story.narrator_name}</div>
         </div>
 
-        <div class="sm:border-l sm:border-slate-200 sm:pl-6">
-          <div class="text-[11px] text-slate-400 uppercase tracking-wider font-bold">Đơn vị / Chi đoàn ghi chép & gửi bài:</div>
-          <div class="font-semibold text-sm text-slate-800 mt-0.5">{story.contributor_unit || story.contributor_name}</div>
+        <div class="sm:border-l sm:border-slate-200 sm:pl-6 flex flex-col justify-between">
+          <div>
+            <div class="text-[11px] text-slate-400 uppercase tracking-wider font-bold">Đơn vị / Chi đoàn ghi chép & gửi bài:</div>
+            <div class="font-semibold text-sm text-slate-800 mt-0.5">{story.contributor_unit || story.contributor_name}</div>
+          </div>
+          <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-end">
+            <StoryActionToolbar client:load story={story} />
+          </div>
         </div>
       </div>
 

@@ -6,18 +6,18 @@ const MILESTONES = [
   {
     year: '1931',
     title: 'Thành lập Đoàn TNCS Đông Dương (nay là Đoàn TNCS Hồ Chí Minh)',
-    desc: 'Ngày 26/3/1931, Hội nghị BCH Trung ương Đảng lần thứ 2 đã quyết định thành lập tổ chức Đoàn, đánh dấu bước ngoặt lịch sử của phong trào thanh niên Việt Nam.',
+    desc: 'Ngày 26/3/1931, Hội nghị BCH Trung ương Đảng lần thứ 2 đã quyết định thành lập tổ chức Đoàn, đánh dấu bước ngoặt lịch sử của phong trào thanh niên cách mạng Việt Nam.',
     period: '1945-truoc',
     badge: 'Mốc son ra đời',
-    img: 'https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=600&q=80'
+    img: '/images/thoi-hoa-lua/story-1.jpg'
   },
   {
-    year: '1950',
-    title: 'Phong trào HSSV Sài Gòn & Tấm gương anh Trần Văn Ơn',
-    desc: 'Ngày 9/1/1950, hơn 3.000 học sinh, sinh viên Sài Gòn - Chợ Lớn biểu tình yêu nước. Sự hy sinh oanh liệt của anh Trần Văn Ơn đã thổi bùng ngọn lửa tranh đấu trên toàn quốc.',
+    year: '1954',
+    title: 'Chiến thắng Điện Biên Phủ "Lừng lẫy năm châu, chấn động địa cầu"',
+    desc: 'Thiên anh hùng ca vĩ đại của dân tộc ghi dấu ấn tuổi mười chín đôi mươi của các chiến sĩ Điện Biên bạt núi, kéo pháo, đập tan tập đoàn cứ điểm thực dân.',
     period: '1945-1954',
-    badge: 'Ngọn đuốc Trần Văn Ơn',
-    img: 'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=600&q=80'
+    badge: 'Kỳ tích Điện Biên',
+    img: '/images/thoi-hoa-lua/story-chien-dich-dien-bien-phu.jpg'
   },
   {
     year: '1968',
@@ -25,58 +25,81 @@ const MILESTONES = [
     desc: 'Thanh niên, học sinh, sinh viên và các chiến sĩ Biệt động Sài Gòn đã lập nên những kỳ tích chấn động, tấn công các mục tiêu đầu não của đối phương giữa đô thành.',
     period: '1955-1975',
     badge: 'Bão lửa Mậu Thân',
-    img: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=600&q=80'
+    img: '/images/thoi-hoa-lua/cat-khang-chien.jpg'
+  },
+  {
+    year: '1972',
+    title: 'Hà Nội 12 ngày đêm Điện Biên Phủ trên không kiên cường',
+    desc: 'Quân và dân Thủ đô bắn rơi hàng chục pháo đài bay B-52, đập tan cuộc tập kích đường không chiến lược của đế quốc, mở đường cho ngày toàn thắng.',
+    period: '1955-1975',
+    badge: 'Hà Nội 12 ngày đêm',
+    img: '/images/thoi-hoa-lua/story-ha-noi-12-ngay-dem.jpg'
   },
   {
     year: '1975',
     title: 'Đại thắng Mùa Xuân 1975 - Sài Gòn hoàn toàn giải phóng',
-    desc: 'Tuổi trẻ Sài Gòn hân hoan đón đoàn quân chiến thắng, nhanh chóng thành lập các đội thanh niên xung kích giữ gìn an ninh trật tự và tiếp quản thành phố mang tên Bác.',
+    desc: 'Chiến dịch Hồ Chí Minh lịch sử toàn thắng. Tuổi trẻ Sài Gòn hân hoan đón đoàn quân giải phóng, tiếp quản và chung tay xây dựng lại thành phố thân yêu.',
     period: '1955-1975',
-    badge: 'Giải phóng & Tiếp quản',
-    img: 'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=600&q=80'
+    badge: 'Non sông liền một dải',
+    img: '/images/thoi-hoa-lua/timeline-1975.jpg'
   },
   {
     year: '1976',
     title: 'Lực lượng TNXP TP.HCM xuất quân hồi sinh Rừng Sác Cần Giờ',
-    desc: 'Hàng vạn thanh niên thành phố lên đường khai hoang, phục hồi màu xanh cho Rừng Sác và xây dựng các nông trường kinh tế mới.',
+    desc: 'Hàng vạn thanh niên xung phong thành phố lên đường khai hoang, phục hồi màu xanh cho Rừng Sác Cần Giờ - biến vùng đất chết thành Khu Dự trữ Sinh quyển Thế giới.',
     period: '1975-1988',
     badge: 'Hồi sinh màu xanh',
-    img: 'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=600&q=80'
+    img: '/images/thoi-hoa-lua/cat-bien-gioi.jpg'
   },
   {
-    year: '1994',
-    title: 'Khởi nguồn Chiến dịch Tình nguyện Mùa Hè Xanh',
-    desc: 'Từ phong trào "Ánh sáng văn hóa hè" của sinh viên Đại học Sư phạm TP.HCM đã nhân rộng thành chiến dịch tình nguyện Mùa Hè Xanh huyền thoại mang thương hiệu tuổi trẻ TP.HCM.',
-    period: '1989-nay',
-    badge: 'Mùa Hè Xanh huyền thoại',
-    img: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=600&q=80'
+    year: '1988',
+    title: 'Vòng tròn bất tử Gạc Ma - Quyết tử bảo vệ chủ quyền Biển đảo',
+    desc: '64 chiến sĩ Hải quân nhân dân Việt Nam anh dũng kết thành vòng tròn bất tử trên rạn đá Gạc Ma, khẳng định chủ quyền thiêng liêng bất khả xâm phạm của Tổ quốc.',
+    period: '1975-1988',
+    badge: 'Vòng tròn bất tử',
+    img: '/images/truong-sa-chu-quyen.jpg'
   },
   {
-    year: '2021',
-    title: 'Tuổi trẻ TP.HCM kiên cường trên tuyến đầu chống dịch COVID-19',
-    desc: 'Hàng vạn y bác sĩ trẻ, sinh viên và tình nguyện viên áo xanh không quản ngại hiểm nguy, xông pha vào tâm dịch để bảo vệ sinh mệnh đồng bào.',
+    year: '1994 - Nay',
+    title: 'Chiến dịch Tình nguyện Mùa Hè Xanh & Chuyển đổi số',
+    desc: 'Từ phong trào "Ánh sáng văn hóa hè" đã nhân rộng thành chiến dịch Mùa Hè Xanh huyền thoại mang thương hiệu tuổi trẻ TP.HCM, nay tiên phong số hóa 100 Địa chỉ Đỏ.',
     period: '1989-nay',
-    badge: 'Mệnh lệnh từ trái tim',
-    img: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=600&q=80'
+    badge: 'Khát vọng tương lai',
+    img: '/images/thoi-hoa-lua/story-me-va-nhung-la-thu.jpg'
   }
 ];
 ---
 
 <RootLayout title="Những mốc son lịch sử Tuổi trẻ TP.HCM - Nhật Ký Làm Theo Lời Bác">
-  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    
-    <div class="text-center max-w-3xl mx-auto mb-14">
-      <span class="text-xs font-bold text-doan-800 uppercase tracking-widest bg-doan-50 px-3 py-1 rounded-full border border-doan-200">
-        Biên niên sử vàng
-      </span>
-      <h1 class="font-serif font-black text-3xl sm:text-4xl text-slate-900 mt-2.5 mb-3">
-        Những Mốc Son Lịch Sử Tuổi Trẻ TP.HCM
-      </h1>
-      <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
-        Hành trình hơn 90 năm rèn luyện, cống hiến và trưởng thành của các thế hệ thanh niên thành phố dưới ngọn cờ của Đảng và Bác Hồ kính yêu.
-      </p>
+  
+  <!-- Banner tiêu đề Dòng thời gian Thời Hoa Lửa -->
+  <section class="relative bg-gradient-hero text-white py-14 px-4 border-b-4 border-gold-500 overflow-hidden">
+    <div class="absolute inset-0 z-0">
+      <img
+        src="/images/thoi-hoa-lua/hero-sukien.jpg"
+        alt="Dòng thời gian lịch sử"
+        class="w-full h-full object-cover opacity-35 filter contrast-125"
+      />
+      <div class="absolute inset-0 bg-gradient-to-r from-doan-950/95 via-redflag-950/85 to-doan-950/90"></div>
     </div>
 
+    <div class="max-w-5xl mx-auto relative z-10 text-center">
+      <div class="inline-flex items-center gap-2 text-xs text-gold-300 font-bold mb-3 uppercase tracking-wider bg-slate-950/70 px-3.5 py-1 rounded-full border border-gold-500/40">
+        <a href={withBase('/')} class="hover:underline">Trang chủ</a>
+        <span>/</span>
+        <span class="text-white">Dòng thời gian</span>
+      </div>
+
+      <h1 class="font-serif font-black text-2xl sm:text-4xl text-white tracking-tight leading-tight mb-2">
+        NHỮNG MỐC SON LỊCH SỬ HÀO HÙNG CỦA DÂN TỘC
+      </h1>
+      <p class="text-xs sm:text-sm text-gold-100 max-w-2xl mx-auto leading-relaxed">
+        Hành trình hơn 90 năm rèn luyện, cống hiến và chiến đấu vẻ vang của các thế hệ thanh niên dưới ngọn cờ của Đảng và Bác Hồ muôn vàn kính yêu.
+      </p>
+    </div>
+  </section>
+
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <!-- Dòng thời gian trực quan có ảnh -->
     <div class="relative border-l-2 border-doan-700 ml-4 sm:ml-36 space-y-12 pb-10">
       {MILESTONES.map((m) => (
@@ -88,7 +111,7 @@ const MILESTONES = [
           </div>
 
           <!-- Năm mốc son bên lề -->
-          <div class="sm:absolute sm:-left-36 sm:top-0 sm:w-28 sm:text-right font-serif font-black text-2xl text-doan-900">
+          <div class="sm:absolute sm:-left-36 sm:top-0 sm:w-28 sm:text-right font-serif font-black text-xl sm:text-2xl text-doan-900">
             {m.year}
           </div>
 
@@ -96,31 +119,40 @@ const MILESTONES = [
             <img
               src={m.img}
               alt={m.title}
-              class="w-full sm:w-44 h-32 object-cover rounded-xl shrink-0"
+              class="w-full sm:w-44 h-32 object-cover rounded-xl shrink-0 border border-slate-100"
             />
-            <div class="flex-1">
-              <span class="inline-block text-[11px] font-bold text-doan-800 bg-doan-50 px-2.5 py-0.5 rounded-full border border-doan-200 mb-2">
-                {m.badge}
-              </span>
-              <h3 class="font-serif font-bold text-lg text-slate-900 mb-2 leading-snug">
-                {m.title}
-              </h3>
-              <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-4">
-                {m.desc}
-              </p>
-              <a
-                href={withBase(`/thu-vien?thoi_ky=${m.period}`)}
-                class="inline-flex items-center gap-1 text-xs font-bold text-doan-800 hover:text-redflag-700"
-              >
-                <span>Xem tư liệu thời kỳ này</span>
-                <span>→</span>
-              </a>
+
+            <div class="flex-1 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="text-[10px] font-bold text-redflag-800 bg-redflag-50 px-2 py-0.5 rounded border border-redflag-200 uppercase tracking-wider">
+                    {m.badge}
+                  </span>
+                </div>
+
+                <h3 class="font-serif font-bold text-lg sm:text-xl text-slate-900 group-hover:text-doan-800 transition-colors mb-2">
+                  {m.title}
+                </h3>
+
+                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                  {m.desc}
+                </p>
+              </div>
+
+              <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                <a
+                  href={withBase(`/thu-vien?period=${m.period}`)}
+                  class="text-xs font-bold text-doan-800 hover:text-redflag-700 flex items-center gap-1 transition-colors"
+                >
+                  <span>Xem câu chuyện thời kỳ này</span>
+                  <span>→</span>
+                </a>
+              </div>
             </div>
           </div>
 
         </div>
       ))}
     </div>
-
   </div>
 </RootLayout>

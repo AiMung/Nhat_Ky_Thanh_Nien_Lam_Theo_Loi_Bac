@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react';
-import { getAllStories } from '@/lib/storage';
+import { useState, useMemo, useEffect } from 'react';
+import { getAllStories, type Story } from '@/lib/storage';
 import { withBase, formatDate } from '@/lib/utils';
 import { Search, Filter, BookOpen } from 'lucide-react';
 
@@ -16,15 +16,23 @@ export default function StoryLibraryView() {
   const [keyword, setKeyword] = useState('');
   const [selectedCat, setSelectedCat] = useState('all');
   const [selectedPeriod, setSelectedPeriod] = useState('all');
+  const [stories, setStories] = useState<Story[]>([]);
 
-  const allStories = useMemo(() => {
-    return getAllStories().filter((s) => s.status === 'approved');
+  const loadData = () => {
+    setStories(getAllStories().filter((s) => s.status === 'approved'));
+  };
+
+  useEffect(() => {
+    loadData();
+    const handleChanged = () => loadData();
+    window.addEventListener('stories-changed', handleChanged);
+    return () => window.removeEventListener('stories-changed', handleChanged);
   }, []);
 
   const filteredStories = useMemo(() => {
     const cleanKey = removeTones(keyword.trim());
 
-    return allStories.filter((s) => {
+    return stories.filter((s) => {
       // Lọc theo chuyên mục
       if (selectedCat !== 'all' && s.category_id !== selectedCat) {
         return false;
@@ -43,7 +51,7 @@ export default function StoryLibraryView() {
       }
       return true;
     });
-  }, [allStories, keyword, selectedCat, selectedPeriod]);
+  }, [stories, keyword, selectedCat, selectedPeriod]);
 
   return (
     <div className="space-y-8">

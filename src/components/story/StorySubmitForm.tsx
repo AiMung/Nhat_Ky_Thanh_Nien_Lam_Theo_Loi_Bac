@@ -4,12 +4,16 @@ import { withBase } from '@/lib/utils';
 import { CheckCircle2, Image as ImageIcon, Send, ShieldAlert } from 'lucide-react';
 
 const COVER_PRESETS = [
-  { label: 'Thành Đoàn TP.HCM', url: 'https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=800&q=80' },
-  { label: 'Thanh niên tình nguyện', url: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=800&q=80' },
-  { label: 'Cần Giờ & Môi trường', url: 'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=800&q=80' },
-  { label: 'Biển đảo Trường Sa', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80' },
-  { label: 'Y tế & Bác sĩ trẻ', url: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=800&q=80' },
-  { label: 'Công nghệ & Chuyển đổi số', url: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80' },
+  { label: 'Thời hoa lửa hào hùng', url: '/images/thoi-hoa-lua-hero.jpg' },
+  { label: 'Chiến sĩ Trường Sa', url: '/images/truong-sa-chu-quyen.jpg' },
+  { label: 'Kháng chiến cứu quốc', url: '/images/thoi-hoa-lua/cat-khang-chien.jpg' },
+  { label: 'Mẹ Việt Nam Anh Hùng', url: '/images/thoi-hoa-lua/cat-me-vnah.jpg' },
+  { label: 'Hậu phương tiền tuyến', url: '/images/thoi-hoa-lua/cat-hau-phuong.jpg' },
+  { label: 'Biển đảo quê hương', url: '/images/thoi-hoa-lua/cat-bien-dao.jpg' },
+  { label: 'Biên giới hải đảo', url: '/images/thoi-hoa-lua/cat-bien-gioi.jpg' },
+  { label: 'Đại tướng Võ Nguyên Giáp', url: '/images/thoi-hoa-lua/vna-potal-chan-dung-dai-tuong-vo-nguyen-giap-184218511-16-3-52.jpg' },
+  { label: 'Hà Nội 12 ngày đêm', url: '/images/thoi-hoa-lua/story-ha-noi-12-ngay-dem.jpg' },
+  { label: 'Chiến dịch Điện Biên Phủ', url: '/images/thoi-hoa-lua/story-chien-dich-dien-bien-phu.jpg' },
 ];
 
 export default function StorySubmitForm() {
@@ -343,3 +347,4 @@ export default function StorySubmitForm() {
     </form>
   );
 }
+

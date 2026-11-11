@@ -124,8 +124,15 @@ export default function UserAuthNav() {
               </button>
             </div>
 
-            {user.role === 'admin' && (
-              <div className="p-2 border-t border-slate-100">
+            <div className="p-2 border-t border-slate-100 space-y-1.5">
+              <a
+                href={withBase('/tai-khoan/truyen-cua-toi')}
+                className="flex items-center justify-center gap-1.5 w-full py-2 bg-doan-50 hover:bg-doan-100 text-doan-800 rounded-xl text-xs font-bold border border-doan-200 transition-colors"
+              >
+                <span>📖 Quản lý câu chuyện của tôi</span>
+              </a>
+
+              {user.role === 'admin' && (
                 <a
                   href={withBase('/quan-tri/duyet-bai')}
                   className="flex items-center justify-center gap-1.5 w-full py-2 bg-redflag-800 hover:bg-redflag-900 text-white rounded-xl text-xs font-bold transition-colors"
@@ -133,11 +140,12 @@ export default function UserAuthNav() {
                   <span>Mở Hàng đợi duyệt bài</span>
                   <span>→</span>
                 </a>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         )}
       </div>
     </div>
   );
 }
+

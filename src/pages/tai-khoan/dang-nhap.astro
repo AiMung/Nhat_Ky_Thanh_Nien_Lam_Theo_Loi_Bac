@@ -68,13 +68,13 @@ import { withBase } from '@/lib/utils';
 
   <script is:inline define:vars={{ homeUrl: withBase('/'), adminUrl: withBase('/quan-tri/duyet-bai') }}>
     document.getElementById('btnAdminLogin')?.addEventListener('click', () => {
-      localStorage.setItem('dtn_hcm_current_user_v2', JSON.stringify({
+      localStorage.setItem('dtn_hcm_current_user_v3', JSON.stringify({
         id: 'admin-1',
         name: 'Đ/c Trần Quốc Tuấn',
         email: 'bientap@thanhdoan.tphcm.gov.vn',
         unit: 'Ban Tuyên giáo Thành Đoàn TP.HCM',
         role: 'admin',
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80'
+        avatar: '/images/thoi-hoa-lua/logo-doan.webp'
       }));
       window.dispatchEvent(new Event('auth-changed'));
       alert('Đăng nhập thành công với quyền: Quản trị viên Ban Biên tập!');
@@ -82,13 +82,13 @@ import { withBase } from '@/lib/utils';
     });
 
     document.getElementById('btnMemberLogin')?.addEventListener('click', () => {
-      localStorage.setItem('dtn_hcm_current_user_v2', JSON.stringify({
+      localStorage.setItem('dtn_hcm_current_user_v3', JSON.stringify({
         id: 'user-1',
         name: 'Nguyễn Văn An',
         email: 'vanan.doan@tphcm.gov.vn',
         unit: 'Chi đoàn Ban Phong trào Thành Đoàn',
         role: 'member',
-        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'
+        avatar: '/images/thoi-hoa-lua/logo-doan.webp'
       }));
       window.dispatchEvent(new Event('auth-changed'));
       alert('Đăng nhập thành công với tư cách Đoàn viên TP.HCM!');
@@ -96,18 +96,19 @@ import { withBase } from '@/lib/utils';
     });
 
     document.getElementById('btnMagicLogin')?.addEventListener('click', () => {
-      const email = document.getElementById('emailBox').value;
+      const emailEl = document.getElementById('emailBox');
+      const email = emailEl && 'value' in emailEl ? emailEl.value : '';
       if (!email) {
         alert('Vui lòng nhập email của bạn.');
         return;
       }
-      localStorage.setItem('dtn_hcm_current_user_v2', JSON.stringify({
+      localStorage.setItem('dtn_hcm_current_user_v3', JSON.stringify({
         id: 'user-' + Date.now(),
         name: email.split('@')[0],
         email: email,
         unit: 'Đoàn Thanh niên TP.HCM',
         role: 'member',
-        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'
+        avatar: '/images/thoi-hoa-lua/logo-doan.webp'
       }));
       window.dispatchEvent(new Event('auth-changed'));
       alert('Đã gửi xác thực và đăng nhập thành công!');

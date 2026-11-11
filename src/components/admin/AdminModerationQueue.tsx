@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getAllStories, updateStoryStatus, getCurrentUser, switchUserRole, type Story, type UserSession } from '@/lib/storage';
 import { withBase, formatDate } from '@/lib/utils';
+import StoryActionToolbar from '@/components/story/StoryActionToolbar';
 import { Check, X, Eye, RefreshCw, AlertTriangle } from 'lucide-react';
 
 export default function AdminModerationQueue() {
@@ -237,6 +238,15 @@ export default function AdminModerationQueue() {
                   <Eye className="w-3.5 h-3.5" />
                   <span>Xem chi tiết</span>
                 </a>
+
+                {/* Sửa và Xóa trực tiếp trong Hàng đợi Admin */}
+                <div className="w-full pt-1 flex items-center justify-center">
+                  <StoryActionToolbar
+                    story={item}
+                    onUpdated={loadData}
+                    onDeleted={loadData}
+                  />
+                </div>
               </div>
             </div>
           ))}

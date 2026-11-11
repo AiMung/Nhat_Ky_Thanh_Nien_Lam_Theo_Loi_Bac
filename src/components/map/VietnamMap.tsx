@@ -16,42 +16,42 @@ const PROVINCE_MAP: Record<string, ProvinceInfo> = {
     count: 2450,
     region: 'Đô thị đặc biệt phía Nam',
     highlight: 'Nơi Bác Hồ ra đi tìm đường cứu nước (Bến Nhà Rồng), Căn cứ Núi Dinh, Hầm vũ khí Biệt động Sài Gòn, Lá phổi xanh Rừng Sác Cần Giờ và Chiến dịch Mùa hè xanh huyền thoại.',
-    image: 'https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=800&q=80'
+    image: '/images/thoi-hoa-lua-hero.jpg'
   },
   DN: {
     name: 'Đà Nẵng & Quần đảo Hoàng Sa',
     count: 680,
     region: 'Miền Trung kiên cường',
     highlight: 'Thành phố đầu sóng ngọn gió, nơi thanh niên luôn hướng về huyện đảo Hoàng Sa thiêng liêng và giữ vững an ninh biển đảo.',
-    image: 'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=800&q=80'
+    image: '/images/thoi-hoa-lua/cat-bien-dao.jpg'
   },
   KH: {
     name: 'Khánh Hòa & Quần đảo Trường Sa',
     count: 890,
     region: 'Quân dân Thềm lục địa phía Nam',
     highlight: 'Nơi tuổi đôi mươi người lính Hải quân gìn giữ từng cột mốc chủ quyền tại 21 đảo, điểm đảo thuộc huyện đảo Trường Sa và cụm Nhà giàn DK1.',
-    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80'
+    image: '/images/truong-sa-chu-quyen.jpg'
   },
   HN: {
     name: 'Thủ đô Hà Nội',
     count: 1820,
     region: 'Trái tim cả nước',
     highlight: 'Quảng trường Ba Đình lịch sử, Lăng Chủ tịch Hồ Chí Minh, Khu di tích Phủ Chủ tịch - Nơi Bác sống và làm việc.',
-    image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=800&q=80'
+    image: '/images/thoi-hoa-lua/story-ha-noi-12-ngay-dem.jpg'
   },
   DB: {
     name: 'Điện Biên',
     count: 620,
     region: 'Tây Bắc hùng vĩ',
     highlight: 'Chiến thắng Điện Biên Phủ "Lừng lẫy năm châu, chấn động địa cầu" - Tinh thần thanh niên xung phong mở đường Thắng Lợi.',
-    image: 'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=800&q=80'
+    image: '/images/thoi-hoa-lua/story-chien-dich-dien-bien-phu.jpg'
   },
   QT: {
     name: 'Quảng Trị',
     count: 1150,
     region: 'Tuyến lửa Vĩnh Linh',
     highlight: 'Thành Cổ Quảng Trị, Dòng sông Thạch Hãn, Cầu Hiền Lương - Vĩ tuyến 17 và Nghĩa trang Liệt sĩ Quốc gia Trường Sơn.',
-    image: 'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=800&q=80'
+    image: '/images/thoi-hoa-lua/map-badge-quangtri.jpg'
   },
 };
 
