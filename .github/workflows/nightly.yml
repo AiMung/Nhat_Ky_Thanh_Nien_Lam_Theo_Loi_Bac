@@ -1,0 +1,37 @@
+name: Nightly Keep-Alive & Rebuild
+
+on:
+  schedule:
+    # Chạy mỗi ngày lúc 03:00 UTC (10:00 sáng Việt Nam)
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  ping_and_rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase to prevent project pausing (Keep-Alive)
+        run: |
+          if [ -n "${{ secrets.PUBLIC_SUPABASE_URL }}" ]; then
+            curl -s -X GET "${{ secrets.PUBLIC_SUPABASE_URL }}/rest/v1/categories?select=id&limit=1" \
+              -H "apikey: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}" \
+              -H "Authorization: Bearer ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}"
+            echo "Ping Supabase thành công!"
+          else
+            echo "Chưa cấu hình SUPABASE_URL secret, bỏ qua."
+          fi
+
+      - name: Trigger Build Workflow
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install & Build
+        run: |
+          npm ci
+          npm run build
+        env:
+          PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+          PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
+

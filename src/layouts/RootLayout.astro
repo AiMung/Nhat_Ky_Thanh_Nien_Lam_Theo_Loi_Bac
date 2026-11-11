@@ -1,0 +1,76 @@
+---
+import Header from '@/components/common/Header.astro';
+import Footer from '@/components/common/Footer.astro';
+import PWAInstallPrompt from '@/components/common/PWAInstallPrompt';
+import { withBase } from '@/lib/utils';
+import '@/styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
+
+const {
+  title = 'Ký Ức Lịch Sử - Nền tảng lưu giữ câu chuyện lịch sử Việt Nam',
+  description = 'Số hóa và lưu giữ hồi ức sống động từ nhân chứng lịch sử, cựu chiến binh, thanh niên xung phong và đồng bào qua các thời kỳ.',
+  image = withBase('/icons/icon-512x512.png'),
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <!-- Favicon & PWA -->
+    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+    <link rel="manifest" href={withBase('/manifest.webmanifest')} />
+    <meta name="theme-color" content="#991B1B" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="apple-touch-icon" href={withBase('/icons/icon-192x192.png')} />
+
+    <!-- Open Graph / SEO -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={image} />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Google Fonts: Merriweather & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;0,900;1,400&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="min-h-screen flex flex-col bg-[#FAF7F2] text-[#2C241E]">
+    <Header />
+    
+    <main class="flex-1">
+      <slot />
+    </main>
+
+    <Footer />
+
+    <!-- Island xử lý cài đặt PWA tương thích cả Android Chrome & iOS Safari -->
+    <PWAInstallPrompt client:load />
+
+    <!-- Đăng ký Service Worker cơ bản cho Offline Shell -->
+    <script is:inline define:vars={{ swUrl: withBase('/sw.js') }}>
+      if ('serviceWorker' in navigator && !window.location.host.includes('localhost')) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register(swUrl).catch((err) => {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+        });
+      }
+    </script>
+  </body>
+</html>
+

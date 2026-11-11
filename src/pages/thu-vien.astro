@@ -1,0 +1,37 @@
+---
+import RootLayout from '@/layouts/RootLayout.astro';
+import StoryCard from '@/components/story/StoryCard.astro';
+import SearchBar from '@/components/search/SearchBar';
+import { SAMPLE_STORIES } from '@/lib/supabase';
+---
+
+<RootLayout title="Thư viện Ký ức Lịch sử - Tìm kiếm & Lọc câu chuyện">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    
+    <div class="text-center max-w-3xl mx-auto mb-10">
+      <span class="text-xs font-bold text-redflag-800 uppercase tracking-widest bg-redflag-50 px-3 py-1 rounded-full">
+        Kho tư liệu số
+      </span>
+      <h1 class="font-serif font-black text-3xl sm:text-4xl text-heritage-900 mt-2 mb-4">
+        Thư viện Ký ức Lịch sử
+      </h1>
+      <p class="text-heritage-600 text-sm sm:text-base">
+        Tra cứu hàng ngàn ký ức chân thực theo chủ đề, địa bàn tỉnh thành và các mốc thời kỳ lịch sử.
+      </p>
+    </div>
+
+    <!-- Thanh tìm kiếm không dấu tức thì -->
+    <div class="mb-10">
+      <SearchBar client:load />
+    </div>
+
+    <!-- Danh sách truyện trong thư viện -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {SAMPLE_STORIES.map((story) => (
+        <StoryCard story={story} />
+      ))}
+    </div>
+
+  </div>
+</RootLayout>
+

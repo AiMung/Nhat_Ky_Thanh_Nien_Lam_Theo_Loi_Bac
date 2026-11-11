@@ -1,0 +1,61 @@
+---
+import { withBase } from '@/lib/utils';
+---
+
+<footer class="bg-heritage-900 text-heritage-200 mt-20 border-t-4 border-redflag-800">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+      
+      <!-- Cột 1: Thông tin đề án -->
+      <div class="md:col-span-2">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-8 h-8 rounded-full bg-redflag-800 flex items-center justify-center text-amber-300 font-serif font-black text-sm">
+            ★
+          </div>
+          <span class="font-serif font-bold text-white text-lg tracking-wide">
+            ĐỀ ÁN LƯU GIỮ KÝ ỨC LỊCH SỬ
+          </span>
+        </div>
+        <p class="text-heritage-300 text-sm leading-relaxed max-w-lg mb-4">
+          Nền tảng số hóa và bảo tồn những ký ức, câu chuyện thiêng liêng từ các thế hệ cha anh, cựu chiến binh, nhân chứng lịch sử qua các cuộc kháng chiến bảo vệ Tổ quốc.
+        </p>
+        <p class="text-xs text-amber-300 font-medium">
+          Khẳng định chủ quyền toàn vẹn lãnh thổ thiêng liêng: Hoàng Sa và Trường Sa là của Việt Nam.
+        </p>
+      </div>
+
+      <!-- Cột 2: Điều hướng -->
+      <div>
+        <h3 class="font-serif font-bold text-white text-sm uppercase tracking-wider mb-3">Thư viện</h3>
+        <ul class="space-y-2 text-sm text-heritage-300">
+          <li><a href={withBase('/thu-vien')} class="hover:text-amber-300 transition-colors">Tất cả câu chuyện</a></li>
+          <li><a href={withBase('/ban-do')} class="hover:text-amber-300 transition-colors">Bản đồ ký ức 63 tỉnh thành</a></li>
+          <li><a href={withBase('/dong-thoi-gian')} class="hover:text-amber-300 transition-colors">Dòng thời gian các mốc son</a></li>
+          <li><a href={withBase('/gui-cau-chuyen')} class="hover:text-amber-300 transition-colors">Đóng góp câu chuyện mới</a></li>
+        </ul>
+      </div>
+
+      <!-- Cột 3: Trách nhiệm & Pháp lý -->
+      <div>
+        <h3 class="font-serif font-bold text-white text-sm uppercase tracking-wider mb-3">Chính sách</h3>
+        <ul class="space-y-2 text-sm text-heritage-300">
+          <li><a href="#" class="hover:text-amber-300 transition-colors">Quy chế kiểm duyệt nội dung</a></li>
+          <li><a href="#" class="hover:text-amber-300 transition-colors">Quy trình xử lý & gỡ bài 24h</a></li>
+          <li><a href="#" class="hover:text-amber-300 transition-colors">Cam kết bản quyền tư liệu</a></li>
+          <li><a href="#" class="hover:text-amber-300 transition-colors">Chính sách bảo mật</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="border-t border-heritage-800 mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-heritage-400 gap-4">
+      <div>
+        © 2026 Đề án Ký Ức Lịch Sử - Đoàn TNCS Hồ Chí Minh. Vận hành phi lợi nhuận.
+      </div>
+      <div>
+        Nền tảng PWA Jamstack tối ưu hóa tốc độ cao & bảo vệ dữ liệu.
+      </div>
+    </div>
+  </div>
+</footer>
+

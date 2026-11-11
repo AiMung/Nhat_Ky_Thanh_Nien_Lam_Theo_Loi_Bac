@@ -1,0 +1,108 @@
+---
+import RootLayout from '@/layouts/RootLayout.astro';
+import { withBase } from '@/lib/utils';
+
+const EPOCHS = [
+  {
+    year: '1945',
+    title: 'Cách mạng Tháng Tám & Tuyên ngôn Độc lập',
+    desc: 'Quốc khánh 2/9 tại Quảng trường Ba Đình, khai sinh nước Việt Nam Dân chủ Cộng hòa.',
+    period: '1945-truoc',
+    badge: 'Khai sinh độc lập'
+  },
+  {
+    year: '1954',
+    title: 'Chiến thắng Điện Biên Phủ',
+    desc: '56 ngày đêm khoét núi ngủ hầm, đập tan tập đoàn cứ điểm thực dân Pháp, chấn động địa cầu.',
+    period: '1945-1954',
+    badge: 'Lừng lẫy năm châu'
+  },
+  {
+    year: '1968',
+    title: 'Tổng tiến công & nổi dậy Xuân Mậu Thân',
+    desc: 'Đòn sấm sét giáng vào các đô thị miền Nam, làm phá sản chiến lược Chiến tranh cục bộ.',
+    period: '1955-1975',
+    badge: 'Bước ngoặt chiến lược'
+  },
+  {
+    year: '1975',
+    title: 'Chiến dịch Hồ Chí Minh lịch sử',
+    desc: 'Đại thắng mùa xuân 1975, giải phóng hoàn toàn miền Nam, non sông thu về một mối.',
+    period: '1955-1975',
+    badge: 'Toàn thắng non sông'
+  },
+  {
+    year: '1979',
+    title: 'Chiến đấu bảo vệ Biên giới phía Bắc',
+    desc: 'Cuộc chiến đấu kiên cường bảo vệ từng tấc đất biên cương phía Bắc của Tổ quốc.',
+    period: '1975-1988',
+    badge: 'Giữ vững biên cương'
+  },
+  {
+    year: '1988',
+    title: 'Sự kiện Gạc Ma - Vòng tròn bất tử',
+    desc: '64 chiến sĩ Hải quân anh dũng hy sinh bảo vệ chủ quyền quần đảo Trường Sa thiêng liêng.',
+    period: '1975-1988',
+    badge: 'Bất tử nơi ngọn sóng'
+  },
+  {
+    year: '1990+',
+    title: 'Công cuộc Đổi mới & Hội nhập',
+    desc: 'Đất nước bước vào kỷ nguyên phát triển, đổi mới toàn diện và hội nhập quốc tế sâu rộng.',
+    period: '1989-nay',
+    badge: 'Kiến thiết & Vươn mình'
+  }
+];
+---
+
+<RootLayout title="Dòng thời gian các mốc son lịch sử - Ký Ức Lịch Sử">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    
+    <div class="text-center mb-12">
+      <span class="text-xs font-bold text-redflag-800 uppercase tracking-widest bg-redflag-50 px-3 py-1 rounded-full">
+        Biên niên sử hào hùng
+      </span>
+      <h1 class="font-serif font-black text-3xl sm:text-4xl text-heritage-900 mt-2 mb-3">
+        Dòng thời gian các mốc son lịch sử
+      </h1>
+      <p class="text-sm text-heritage-600">
+        Đi theo dòng chảy lịch sử dân tộc qua các thời khắc quyết định của non sông
+      </p>
+    </div>
+
+    <div class="relative border-l-2 border-heritage-300 ml-4 sm:ml-32 space-y-10 pb-10">
+      {EPOCHS.map((epoch) => (
+        <div class="relative pl-6 group">
+          <!-- Điểm mốc trên dòng thời gian -->
+          <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-redflag-800 border-4 border-white shadow group-hover:scale-125 transition-transform"></div>
+
+          <!-- Nhãn năm bên lề (trên desktop) -->
+          <div class="sm:absolute sm:-left-32 sm:top-0 sm:w-24 sm:text-right font-serif font-black text-2xl text-redflag-900">
+            {epoch.year}
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-heritage-200 shadow-sm hover:shadow-md transition-all">
+            <span class="inline-block text-[11px] font-semibold text-redflag-800 bg-redflag-50 px-2.5 py-0.5 rounded mb-2">
+              {epoch.badge}
+            </span>
+            <h3 class="font-serif font-bold text-lg text-heritage-900 mb-1">
+              {epoch.title}
+            </h3>
+            <p class="text-xs sm:text-sm text-heritage-600 leading-relaxed mb-4">
+              {epoch.desc}
+            </p>
+            <a
+              href={withBase(`/thu-vien?thoi_ky=${epoch.period}`)}
+              class="inline-flex items-center gap-1.5 text-xs font-semibold text-redflag-800 hover:text-redflag-900"
+            >
+              <span>Xem các câu chuyện thời kỳ này</span>
+              <span>→</span>
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+
+  </div>
+</RootLayout>
+

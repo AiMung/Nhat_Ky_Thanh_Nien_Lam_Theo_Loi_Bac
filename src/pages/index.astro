@@ -1,0 +1,218 @@
+---
+import RootLayout from '@/layouts/RootLayout.astro';
+import StoryCard from '@/components/story/StoryCard.astro';
+import SearchBar from '@/components/search/SearchBar';
+import VietnamMap from '@/components/map/VietnamMap';
+import { SAMPLE_STORIES } from '@/lib/supabase';
+import { withBase } from '@/lib/utils';
+
+// Các mốc lịch sử quan trọng
+const TIMELINE_MILESTONES = [
+  { year: '1945', title: 'Cách mạng Tháng Tám & Quốc khánh 2/9', period: '1945-truoc' },
+  { year: '1954', title: 'Chiến thắng Điện Biên Phủ lừng lẫy', period: '1945-1954' },
+  { year: '1968', title: 'Tổng tiến công & nổi dậy Xuân Mậu Thân', period: '1955-1975' },
+  { year: '1975', title: 'Giải phóng miền Nam, Thống nhất non sông', period: '1955-1975' },
+  { year: '1979', title: 'Chiến đấu bảo vệ Biên giới phía Bắc', period: '1975-1988' },
+  { year: '1988', title: 'Vòng tròn bất tử bảo vệ Gạc Ma - Trường Sa', period: '1975-1988' },
+  { year: '1990+', title: 'Thời kỳ Đổi mới & Hội nhập quốc tế', period: '1989-nay' },
+];
+
+// Chủ đề chính kèm biểu tượng
+const CATEGORIES = [
+  { name: 'Anh hùng lực lượng vũ trang', count: '14,200+', icon: '🎖️' },
+  { name: 'Cựu chiến binh', count: '185,000+', icon: '🎖️' },
+  { name: 'Mẹ Việt Nam anh hùng', count: '48,600+', icon: '🌸' },
+  { name: 'Nhân chứng trực tiếp sự kiện', count: '92,400+', icon: '📜' },
+  { name: 'Người có công giúp đỡ cách mạng', count: '38,100+', icon: '🤝' },
+  { name: 'Thanh niên xung phong & Khác', count: '65,000+', icon: '🚩' },
+];
+
+const featuredStory = SAMPLE_STORIES[0];
+const recentStories = SAMPLE_STORIES.slice(1);
+---
+
+<RootLayout>
+  
+  <!-- HERO SECTION -->
+  <section class="relative bg-gradient-to-b from-redflag-900 via-redflag-800 to-heritage-900 text-amber-100 py-16 sm:py-24 px-4 overflow-hidden border-b-4 border-amber-500/40">
+    <!-- Họa tiết nền sao vàng -->
+    <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#F59E0B_1px,transparent_1px)] [background-size:24px_24px]"></div>
+    
+    <div class="max-w-5xl mx-auto text-center relative z-10">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-redflag-950/70 border border-amber-400/30 text-amber-300 text-xs sm:text-sm font-medium mb-6">
+        <span>★</span>
+        <span>Đề án Số hóa Ký ức Lịch sử - Đoàn TNCS Hồ Chí Minh</span>
+      </div>
+
+      <h1 class="font-serif font-black text-3xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-tight mb-6">
+        Lưu giữ ký ức, <br class="hidden sm:inline" />
+        <span class="text-amber-300">truyền lửa ngàn sau</span>
+      </h1>
+
+      <p class="text-base sm:text-lg text-heritage-200 max-w-2xl mx-auto leading-relaxed mb-10">
+        Nơi mỗi câu chuyện là một tượng đài bằng ký ức của nhân chứng, cựu chiến binh và thế hệ cha anh kiên trung vì độc lập, tự do của Tổ quốc.
+      </p>
+
+      <!-- Thanh tìm kiếm không dấu tức thì -->
+      <div class="max-w-2xl mx-auto">
+        <SearchBar client:load />
+      </div>
+
+      <!-- Bộ đếm thống kê trang trọng -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mt-12 pt-8 border-t border-amber-500/20 text-center">
+        <div>
+          <div class="font-serif font-black text-2xl sm:text-3xl text-amber-300">1,8M+</div>
+          <div class="text-xs text-heritage-300 uppercase tracking-wider mt-1">Câu chuyện kể</div>
+        </div>
+        <div>
+          <div class="font-serif font-black text-2xl sm:text-3xl text-amber-300">297K+</div>
+          <div class="text-xs text-heritage-300 uppercase tracking-wider mt-1">Nhân chứng ghi nhận</div>
+        </div>
+        <div>
+          <div class="font-serif font-black text-2xl sm:text-3xl text-amber-300">63</div>
+          <div class="text-xs text-heritage-300 uppercase tracking-wider mt-1">Tỉnh thành toàn quốc</div>
+        </div>
+        <div>
+          <div class="font-serif font-black text-2xl sm:text-3xl text-amber-300">800+</div>
+          <div class="text-xs text-heritage-300 uppercase tracking-wider mt-1">Cơ sở Đoàn đồng hành</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CHỦ ĐỀ CHÍNH -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="text-center mb-10">
+      <span class="text-xs font-bold text-redflag-800 uppercase tracking-widest bg-redflag-50 px-3 py-1 rounded-full">
+        Phân loại tư liệu
+      </span>
+      <h2 class="font-serif font-black text-2xl sm:text-3xl text-heritage-900 mt-2">
+        Các chủ đề ký ức
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+      {CATEGORIES.map((cat) => (
+        <a 
+          href={withBase('/thu-vien')} 
+          class="parchment-card p-4 rounded-xl text-center group hover:-translate-y-1 transition-all duration-300"
+        >
+          <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">
+            {cat.icon}
+          </div>
+          <div class="font-serif font-bold text-sm text-heritage-900 mb-1 group-hover:text-redflag-800">
+            {cat.name}
+          </div>
+          <div class="text-xs text-heritage-500 font-medium">
+            {cat.count} bài
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- DÒNG THỜI GIAN CÁC MỐC SON -->
+  <section class="bg-heritage-100/70 border-y border-heritage-200 py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-10">
+        <span class="text-xs font-bold text-redflag-800 uppercase tracking-widest bg-white px-3 py-1 rounded-full border border-heritage-200">
+          Biên niên sử
+        </span>
+        <h2 class="font-serif font-black text-2xl sm:text-3xl text-heritage-900 mt-2">
+          Dòng thời gian các mốc son lịch sử
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3">
+        {TIMELINE_MILESTONES.map((item) => (
+          <a
+            href={withBase(`/thu-vien?thoi_ky=${item.period}`)}
+            class="bg-white p-4 rounded-xl border border-heritage-200 text-center hover:border-redflag-700 hover:shadow-md transition-all group"
+          >
+            <div class="font-serif font-black text-xl text-redflag-800 group-hover:scale-105 transition-transform">
+              {item.year}
+            </div>
+            <div class="text-xs text-heritage-700 font-medium mt-1 line-clamp-2">
+              {item.title}
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- BẢN ĐỒ KÝ ỨC 63 TỈNH THÀNH (CÓ HOÀNG SA & TRƯỜNG SA) -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="text-center mb-10">
+      <span class="text-xs font-bold text-redflag-800 uppercase tracking-widest bg-redflag-50 px-3 py-1 rounded-full">
+        Không gian địa lý
+      </span>
+      <h2 class="font-serif font-black text-2xl sm:text-3xl text-heritage-900 mt-2">
+        Bản đồ Ký ức Lịch sử Toàn quốc
+      </h2>
+      <p class="text-sm text-heritage-600 mt-2">
+        Chọn từng địa phương để khám phá những chứng tích và câu chuyện bất tử
+      </p>
+    </div>
+
+    <VietnamMap client:visible />
+  </section>
+
+  <!-- CÂU CHUYỆN NỔI BẬT & MỚI NHẤT -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-heritage-200">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <span class="text-xs font-bold text-redflag-800 uppercase tracking-widest bg-redflag-50 px-3 py-1 rounded-full">
+          Góc truyền lửa
+        </span>
+        <h2 class="font-serif font-black text-2xl sm:text-3xl text-heritage-900 mt-2">
+          Câu chuyện nổi bật & Mới nhất
+        </h2>
+      </div>
+
+      <a 
+        href={withBase('/thu-vien')} 
+        class="text-sm font-semibold text-redflag-800 hover:text-redflag-900 flex items-center gap-1 group"
+      >
+        <span>Xem tất cả</span>
+        <span class="group-hover:translate-x-1 transition-transform">→</span>
+      </a>
+    </div>
+
+    <!-- Truyện tiêu điểm (Featured Card độc bản) -->
+    <div class="mb-8">
+      <StoryCard story={featuredStory} featured={true} />
+    </div>
+
+    <!-- Danh sách truyện mới (Được định dạng sạch sẽ, chuẩn hoá tác giả & người kể) -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {recentStories.map((story) => (
+        <StoryCard story={story} />
+      ))}
+    </div>
+  </section>
+
+  <!-- CALL TO ACTION: GỬI CÂU CHUYỆN -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="bg-gradient-to-r from-redflag-900 via-redflag-800 to-heritage-900 rounded-2xl p-8 sm:p-12 text-white text-center relative overflow-hidden shadow-xl">
+      <div class="relative z-10 max-w-2xl mx-auto">
+        <h3 class="font-serif font-black text-2xl sm:text-3xl mb-4 text-amber-200">
+          Bạn có người thân là nhân chứng lịch sử?
+        </h3>
+        <p class="text-sm sm:text-base text-heritage-200 leading-relaxed mb-8">
+          Hãy cùng Đoàn Thanh niên và thế hệ trẻ ghi lại những ký ức vô giá trước khi bụi thời gian làm mờ nhạt. Mỗi lời kể là một trang sử sống động của dân tộc.
+        </p>
+        <a 
+          href={withBase('/gui-cau-chuyen')} 
+          class="inline-flex items-center gap-2 bg-amber-400 hover:bg-amber-300 text-redflag-950 font-serif font-bold px-8 py-3.5 rounded-xl shadow-lg transition-transform hover:scale-105"
+        >
+          <span>Gửi câu chuyện ngay</span>
+          <span>→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</RootLayout>
+

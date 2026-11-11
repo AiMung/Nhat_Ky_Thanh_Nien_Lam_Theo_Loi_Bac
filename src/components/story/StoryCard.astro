@@ -1,0 +1,102 @@
+---
+import { withBase, formatDate } from '@/lib/utils';
+import type { Story } from '@/lib/supabase';
+
+interface Props {
+  story: Story;
+  featured?: boolean;
+}
+
+const { story, featured = false } = Astro.props;
+---
+
+<article class={`parchment-card rounded-xl overflow-hidden flex flex-col transition-all duration-300 ${featured ? 'md:grid md:grid-cols-2 md:gap-6' : ''}`}>
+  
+  {/* Phần Ảnh bìa hoặc Typographic Badge độc bản */}
+  <div class={`relative overflow-hidden ${featured ? 'h-64 md:h-full' : 'h-48'}`}>
+    {story.cover_url ? (
+      <img 
+        src={story.cover_url} 
+        alt={story.title} 
+        loading="lazy" 
+        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      />
+    ) : (
+      <div class="typographic-cover w-full h-full p-6 flex flex-col justify-between text-amber-100">
+        <div class="flex items-center justify-between text-xs">
+          <span class="px-2.5 py-1 rounded bg-redflag-900/80 border border-amber-400/30 font-semibold tracking-wider uppercase text-amber-300">
+            {story.category_name || 'Ký ức'}
+          </span>
+          <span class="text-amber-200/90 font-serif font-bold text-sm">
+            {story.event_year ? `Năm ${story.event_year}` : 'Thời kỳ kháng chiến'}
+          </span>
+        </div>
+        <div class="my-auto">
+          <span class="text-xs uppercase tracking-widest text-amber-300/80 block mb-1">
+            {story.province_name}
+          </span>
+          <p class="font-serif font-bold text-base line-clamp-2 text-white leading-snug">
+            {story.title}
+          </p>
+        </div>
+        <div class="text-[11px] text-amber-200/70 flex items-center justify-between border-t border-amber-500/20 pt-2">
+          <span>Người kể: {story.narrator_name}</span>
+          <span>&#9733; {story.read_minutes} phút đọc</span>
+        </div>
+      </div>
+    )}
+
+    {/* Huy hiệu Tỉnh thành nổi bật */}
+    <div class="absolute top-3 right-3 bg-heritage-900/85 backdrop-blur text-amber-200 text-xs px-2.5 py-1 rounded-full font-medium shadow">
+      {story.province_name}
+    </div>
+  </div>
+
+  {/* Phần Nội dung & Metadata sạch sẽ */}
+  <div class="p-5 flex-1 flex flex-col justify-between">
+    <div>
+      <div class="flex items-center gap-2 text-xs text-heritage-600 mb-2">
+        <span class="font-semibold text-redflag-800 bg-redflag-50 px-2 py-0.5 rounded">
+          {story.category_name || 'Hồi ký'}
+        </span>
+        <span>•</span>
+        <span>{story.read_minutes} phút đọc</span>
+        <span>•</span>
+        <span>{formatDate(story.published_at || story.created_at)}</span>
+      </div>
+
+      <h3 class="font-serif font-bold text-lg text-heritage-900 leading-snug hover:text-redflag-800 transition-colors mb-2">
+        <a href={withBase(`/truyen/${story.slug}`)}>
+          {story.title}
+        </a>
+      </h3>
+
+      <p class="text-sm text-heritage-700 line-clamp-2 leading-relaxed mb-4">
+        {story.summary}
+      </p>
+    </div>
+
+    {/* Thông tin Nhân chứng & Người đóng góp đã được chuẩn hóa riêng biệt */}
+    <div class="pt-4 border-t border-heritage-100 flex items-center justify-between text-xs">
+      <div>
+        <div class="text-heritage-900 font-semibold">
+          Kể bởi: <span class="text-redflag-800">{story.narrator_name}</span>
+        </div>
+        {story.contributor_name && (
+          <div class="text-heritage-500 text-[11px] truncate max-w-[200px]" title={story.contributor_name}>
+            Ghi: {story.contributor_name}
+          </div>
+        )}
+      </div>
+
+      <a 
+        href={withBase(`/truyen/${story.slug}`)} 
+        class="text-xs font-semibold text-redflag-800 hover:text-redflag-900 flex items-center gap-1 group"
+      >
+        Đọc tiếp
+        <span class="group-hover:translate-x-0.5 transition-transform">→</span>
+      </a>
+    </div>
+
+  </div>
+</article>

@@ -1,0 +1,56 @@
+---
+import { withBase } from '@/lib/utils';
+---
+
+<header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-heritage-200">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16 sm:h-20">
+      
+      <!-- Logo & Tiêu đề dự án -->
+      <a href={withBase('/')} class="flex items-center gap-3 group">
+        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-redflag-800 flex items-center justify-center text-amber-300 font-serif font-black text-xl shadow-md group-hover:scale-105 transition-transform">
+          ★
+        </div>
+        <div>
+          <div class="font-serif font-bold text-redflag-900 text-lg sm:text-xl tracking-tight leading-none">
+            KÝ ỨC LỊCH SỬ
+          </div>
+          <div class="text-xs text-heritage-600 font-medium tracking-wider uppercase mt-1">
+            Đoàn TNCS Hồ Chí Minh
+          </div>
+        </div>
+      </a>
+
+      <!-- Menu Điều hướng chính -->
+      <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-heritage-800">
+        <a href={withBase('/')} class="hover:text-redflag-700 transition-colors">Trang chủ</a>
+        <a href={withBase('/thu-vien')} class="hover:text-redflag-700 transition-colors">Thư viện ký ức</a>
+        <a href={withBase('/ban-do')} class="hover:text-redflag-700 transition-colors">Bản đồ ký ức</a>
+        <a href={withBase('/dong-thoi-gian')} class="hover:text-redflag-700 transition-colors">Dòng thời gian</a>
+        <a href={withBase('/quan-tri/duyet-bai')} class="hover:text-redflag-700 text-xs px-2 py-1 rounded bg-heritage-100 text-heritage-700">Quản trị</a>
+      </nav>
+
+      <!-- Hành động chính -->
+      <div class="flex items-center gap-3">
+        <a 
+          href={withBase('/gui-cau-chuyen')} 
+          class="inline-flex items-center gap-2 bg-redflag-800 hover:bg-redflag-900 text-amber-100 px-4 py-2 sm:px-5 sm:py-2.5 rounded-lg text-sm font-medium shadow-sm transition-all hover:shadow"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          <span>Gửi câu chuyện</span>
+        </a>
+
+        <a 
+          href={withBase('/tai-khoan/dang-nhap')} 
+          class="hidden sm:inline-flex items-center px-3.5 py-2 rounded-lg border border-heritage-300 text-sm font-medium text-heritage-700 hover:bg-heritage-100 transition-colors"
+        >
+          Tài khoản
+        </a>
+      </div>
+
+    </div>
+  </div>
+</header>
+

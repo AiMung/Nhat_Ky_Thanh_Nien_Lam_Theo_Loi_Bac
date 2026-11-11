@@ -1,0 +1,19 @@
+{
+  "name": "Ký Ức Lịch Sử Việt Nam",
+  "short_name": "Ký Ức Việt",
+  "description": "Nền tảng lưu giữ và truyền lửa những câu chuyện lịch sử Việt Nam",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FAF7F2",
+  "theme_color": "#991B1B",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
+

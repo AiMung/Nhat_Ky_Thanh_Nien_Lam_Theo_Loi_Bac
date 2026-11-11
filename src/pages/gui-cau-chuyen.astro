@@ -1,0 +1,189 @@
+---
+import RootLayout from '@/layouts/RootLayout.astro';
+---
+
+<RootLayout title="Gửi câu chuyện ký ức - Đề án Ký Ức Lịch Sử">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    
+    <div class="text-center mb-8">
+      <span class="text-xs font-bold text-redflag-800 uppercase tracking-widest bg-redflag-50 px-3 py-1 rounded-full">
+        Đóng góp cho thế hệ mai sau
+      </span>
+      <h1 class="font-serif font-black text-2xl sm:text-3xl text-heritage-900 mt-2 mb-2">
+        Gửi câu chuyện ký ức lịch sử
+      </h1>
+      <p class="text-xs sm:text-sm text-heritage-600">
+        Mỗi hồi ức được gửi về sẽ được Ban biên tập xác minh, biên tập và xuất bản trang trọng.
+      </p>
+    </div>
+
+    <form 
+      id="storyForm"
+      class="bg-white p-6 sm:p-8 rounded-2xl border border-heritage-200 shadow-sm space-y-6"
+      onsubmit="event.preventDefault(); alert('Cảm ơn bạn đã đóng góp! Câu chuyện đã được lưu vào hàng đợi kiểm duyệt.');"
+    >
+      <!-- Tiêu đề câu chuyện -->
+      <div>
+        <label for="title" class="block text-xs font-bold text-heritage-800 uppercase tracking-wider mb-2">
+          Tiêu đề câu chuyện <span class="text-redflag-700">*</span>
+        </label>
+        <input
+          type="text"
+          id="title"
+          required
+          placeholder="Ví dụ: Ký ức về căn hầm bí mật nuôi giấu cán bộ tại Sài Gòn..."
+          class="w-full px-4 py-3 rounded-xl border border-heritage-300 text-heritage-900 text-sm focus:ring-2 focus:ring-redflag-700 focus:outline-none"
+        />
+      </div>
+
+      <!-- Phân tách rõ ràng Nhân chứng và Người đóng góp (Khắc phục lỗi trang tham chiếu) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label for="narrator" class="block text-xs font-bold text-heritage-800 uppercase tracking-wider mb-2">
+            Tên Nhân chứng lịch sử / Người kể <span class="text-redflag-700">*</span>
+          </label>
+          <input
+            type="text"
+            id="narrator"
+            required
+            placeholder="Ví dụ: Bác Nguyễn Văn Hùng (Cựu chiến binh)"
+            class="w-full px-4 py-3 rounded-xl border border-heritage-300 text-heritage-900 text-sm focus:ring-2 focus:ring-redflag-700 focus:outline-none"
+          />
+        </div>
+
+        <div>
+          <label for="contributor" class="block text-xs font-bold text-heritage-800 uppercase tracking-wider mb-2">
+            Người / Chi đoàn ghi chép & gửi bài
+          </label>
+          <input
+            type="text"
+            id="contributor"
+            placeholder="Ví dụ: Chi đoàn Phường Bến Nghé, Quận 1"
+            class="w-full px-4 py-3 rounded-xl border border-heritage-300 text-heritage-900 text-sm focus:ring-2 focus:ring-redflag-700 focus:outline-none"
+          />
+        </div>
+      </div>
+
+      <!-- Địa bàn & Thời kỳ & Năm -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div>
+          <label for="province" class="block text-xs font-bold text-heritage-800 uppercase tracking-wider mb-2">
+            Địa bàn xảy ra sự kiện <span class="text-redflag-700">*</span>
+          </label>
+          <select
+            id="province"
+            required
+            class="w-full px-4 py-3 rounded-xl border border-heritage-300 text-heritage-900 text-sm focus:ring-2 focus:ring-redflag-700 focus:outline-none"
+          >
+            <option value="HCM">TP. Hồ Chí Minh</option>
+            <option value="HN">Hà Nội</option>
+            <option value="DN">Đà Nẵng (gồm Hoàng Sa)</option>
+            <option value="KH">Khánh Hòa (gồm Trường Sa)</option>
+            <option value="DB">Điện Biên</option>
+            <option value="QT">Quảng Trị</option>
+            <option value="TH">Thanh Hóa</option>
+            <option value="NA">Nghệ An</option>
+            <option value="TN">Tây Ninh</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="period" class="block text-xs font-bold text-heritage-800 uppercase tracking-wider mb-2">
+            Thời kỳ lịch sử <span class="text-redflag-700">*</span>
+          </label>
+          <select
+            id="period"
+            required
+            class="w-full px-4 py-3 rounded-xl border border-heritage-300 text-heritage-900 text-sm focus:ring-2 focus:ring-redflag-700 focus:outline-none"
+          >
+            <option value="1955-1975">1955 - 1975 (Chống Mỹ cứu nước)</option>
+            <option value="1945-1954">1945 - 1954 (Kháng chiến chống Pháp)</option>
+            <option value="1945-truoc">Trước năm 1945</option>
+            <option value="1975-1988">1975 - 1988 (Bảo vệ biên giới & hải đảo)</option>
+            <option value="1989-nay">1989 - Nay (Đổi mới & Xây dựng)</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="year" class="block text-xs font-bold text-heritage-800 uppercase tracking-wider mb-2">
+            Năm sự kiện diễn ra
+          </label>
+          <input
+            type="number"
+            id="year"
+            min="1900"
+            max="2026"
+            placeholder="Ví dụ: 1968"
+            class="w-full px-4 py-3 rounded-xl border border-heritage-300 text-heritage-900 text-sm focus:ring-2 focus:ring-redflag-700 focus:outline-none"
+          />
+        </div>
+      </div>
+
+      <!-- Tóm tắt ngắn -->
+      <div>
+        <label for="summary" class="block text-xs font-bold text-heritage-800 uppercase tracking-wider mb-2">
+          Đoạn tóm tắt ngắn (1-2 câu ngắn gọn) <span class="text-redflag-700">*</span>
+        </label>
+        <textarea
+          id="summary"
+          required
+          rows="2"
+          placeholder="Tóm tắt ngắn gọn nội dung then chốt của câu chuyện..."
+          class="w-full px-4 py-3 rounded-xl border border-heritage-300 text-heritage-900 text-sm focus:ring-2 focus:ring-redflag-700 focus:outline-none"
+        ></textarea>
+      </div>
+
+      <!-- Nội dung chi tiết -->
+      <div>
+        <label for="body" class="block text-xs font-bold text-heritage-800 uppercase tracking-wider mb-2">
+          Nội dung câu chuyện đầy đủ <span class="text-redflag-700">*</span>
+        </label>
+        <textarea
+          id="body"
+          required
+          rows="8"
+          placeholder="Ghi chép chân thực lời kể của nhân chứng, hoàn cảnh, diễn biến và ý nghĩa sự kiện..."
+          class="w-full px-4 py-3 rounded-xl border border-heritage-300 text-heritage-900 text-sm focus:ring-2 focus:ring-redflag-700 focus:outline-none"
+        ></textarea>
+      </div>
+
+      <!-- Tải ảnh tư liệu (Nén client-side) -->
+      <div>
+        <label class="block text-xs font-bold text-heritage-800 uppercase tracking-wider mb-2">
+          Ảnh tư liệu / Nhân chứng (Tối đa 3 ảnh, tự động nén tối ưu)
+        </label>
+        <input 
+          type="file" 
+          accept="image/png, image/jpeg, image/webp" 
+          multiple
+          class="block w-full text-xs text-heritage-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-heritage-100 file:text-heritage-800 hover:file:bg-heritage-200 cursor-pointer"
+        />
+        <p class="text-[11px] text-heritage-500 mt-1.5">
+          Hệ thống sẽ tự động scale và nén WebP trước khi gửi để tiết kiệm dung lượng.
+        </p>
+      </div>
+
+      <!-- Cam kết bản quyền bắt buộc -->
+      <div class="p-4 rounded-xl bg-heritage-50 border border-heritage-200 space-y-3">
+        <label class="flex items-start gap-2.5 text-xs text-heritage-700 cursor-pointer">
+          <input type="checkbox" required class="mt-0.5 rounded text-redflag-800 focus:ring-redflag-700" />
+          <span>Tôi cam kết thông tin và câu chuyện này được ghi nhận trung thực từ nhân chứng lịch sử hoặc tư liệu có căn cứ.</span>
+        </label>
+
+        <label class="flex items-start gap-2.5 text-xs text-heritage-700 cursor-pointer">
+          <input type="checkbox" required class="mt-0.5 rounded text-redflag-800 focus:ring-redflag-700" />
+          <span>Hình ảnh tải lên thuộc quyền sở hữu của tôi/gia đình hoặc là tư liệu lịch sử được phép phổ biến.</span>
+        </label>
+      </div>
+
+      <button
+        type="submit"
+        class="w-full py-4 rounded-xl bg-redflag-800 hover:bg-redflag-900 text-amber-100 font-serif font-bold text-base shadow-lg transition-transform hover:scale-[1.01]"
+      >
+        Gửi câu chuyện vào hàng đợi kiểm duyệt
+      </button>
+
+    </form>
+  </div>
+</RootLayout>
+

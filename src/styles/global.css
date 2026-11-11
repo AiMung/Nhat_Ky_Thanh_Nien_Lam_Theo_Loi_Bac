@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-parchment: #FAF7F2;
+    --text-primary: #2C241E;
+    --border-warm: #E7D5BA;
+  }
+
+  body {
+    background-color: var(--bg-parchment);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, .font-historical {
+    font-family: 'Merriweather', 'Lora', Georgia, serif;
+  }
+}
+
+/* Hiệu ứng giấy ngả vàng hoài niệm */
+.parchment-card {
+  background-color: #FFFFFF;
+  border: 1px solid #EBE3D5;
+  box-shadow: 0 2px 8px rgba(95, 69, 42, 0.05);
+}
+
+.parchment-card:hover {
+  border-color: #D5BA92;
+  box-shadow: 0 4px 16px rgba(95, 69, 42, 0.1);
+}
+
+/* Card Cover Typographic tự động khi bài viết không có ảnh tư liệu */
+.typographic-cover {
+  background: linear-gradient(135deg, #7F1D1D 0%, #450A0A 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.typographic-cover::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(#F59E0B 1px, transparent 1px);
+  background-size: 16px 16px;
+  opacity: 0.15;
+}
+
