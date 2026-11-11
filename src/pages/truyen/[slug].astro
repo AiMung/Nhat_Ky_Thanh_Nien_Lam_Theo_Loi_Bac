@@ -1,11 +1,12 @@
 ---
 import RootLayout from '@/layouts/RootLayout.astro';
-import { SAMPLE_STORIES, type Story } from '@/lib/supabase';
+import StoryReaderToolbar from '@/components/story/StoryReaderToolbar';
+import { getAllStories, type Story } from '@/lib/storage';
 import { formatDate, withBase } from '@/lib/utils';
 
 export async function getStaticPaths() {
-  // Lấy danh sách câu chuyện tĩnh lúc build
-  return SAMPLE_STORIES.map((story) => ({
+  const stories = getAllStories();
+  return stories.map((story) => ({
     params: { slug: story.slug },
     props: { story },
   }));
@@ -17,105 +18,134 @@ interface Props {
 
 const { story } = Astro.props;
 
-// Chuyển đổi định dạng Markdown cơ bản sang HTML an toàn
+// Xử lý markdown cơ bản thành các khối bài viết trang trọng
 const formattedBody = story.body
-  .replace(/^### (.*$)/gim, '<h3 class="font-serif font-bold text-xl text-heritage-900 mt-6 mb-3">$1</h3>')
-  .replace(/^> (.*$)/gim, '<blockquote class="border-l-4 border-redflag-700 pl-4 py-2 my-4 italic bg-redflag-50/60 text-heritage-800 rounded-r">$1</blockquote>')
-  .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-  .replace(/\n\n/g, '</p><p class="mb-4 text-heritage-800 leading-relaxed text-base sm:text-lg">');
+  .replace(/^### (.*$)/gim, '<h3 class="font-serif font-black text-xl sm:text-2xl text-slate-900 mt-8 mb-4 pb-2 border-b border-slate-200">$1</h3>')
+  .replace(/^> (.*$)/gim, '<blockquote class="border-l-4 border-doan-700 pl-5 py-3 my-6 italic bg-doan-50/70 text-slate-800 rounded-r-xl font-serif text-lg leading-relaxed">$1</blockquote>')
+  .replace(/\*\*(.*?)\*\*/g, '<strong class="text-slate-950 font-bold">$1</strong>')
+  .replace(/\n\n/g, '</p><p class="mb-5 text-slate-800 leading-relaxed">');
 ---
 
 <RootLayout 
-  title={`${story.title} - Ký Ức Lịch Sử`}
+  title={`${story.title} - Nhật Ký Thanh Niên Làm Theo Lời Bác`}
   description={story.summary}
+  image={story.cover_url}
 >
   <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
     
     <!-- Breadcrumb điều hướng -->
-    <nav class="flex items-center gap-2 text-xs text-heritage-600 mb-6">
-      <a href={withBase('/')} class="hover:text-redflag-800">Trang chủ</a>
+    <nav class="flex items-center gap-2 text-xs text-slate-500 mb-6">
+      <a href={withBase('/')} class="hover:text-doan-800 font-medium">Trang chủ</a>
       <span>/</span>
-      <a href={withBase('/thu-vien')} class="hover:text-redflag-800">Thư viện ký ức</a>
+      <a href={withBase('/thu-vien')} class="hover:text-doan-800 font-medium">Thư viện nhật ký</a>
       <span>/</span>
-      <span class="text-heritage-900 font-medium truncate">{story.title}</span>
+      <span class="text-slate-800 font-bold truncate max-w-xs">{story.title}</span>
     </nav>
 
     <!-- Header câu chuyện -->
-    <header class="mb-8 pb-6 border-b border-heritage-200">
-      <div class="flex flex-wrap items-center gap-2 text-xs mb-3">
-        <span class="font-semibold text-redflag-800 bg-redflag-50 px-2.5 py-1 rounded">
-          {story.category_name || 'Ký ức lịch sử'}
+    <header class="mb-8">
+      
+      <!-- Tags và Huy hiệu -->
+      <div class="flex flex-wrap items-center gap-2.5 text-xs mb-4">
+        <span class="font-bold text-doan-900 bg-doan-50 border border-doan-200 px-3 py-1 rounded-full uppercase tracking-wider">
+          {story.category_name}
         </span>
-        <span class="bg-heritage-100 text-heritage-800 px-2.5 py-1 rounded font-medium">
+        <span class="bg-slate-100 text-slate-800 px-3 py-1 rounded-full font-semibold">
           📍 {story.province_name}
         </span>
         {story.event_year && (
-          <span class="bg-heritage-100 text-heritage-800 px-2.5 py-1 rounded font-medium">
+          <span class="bg-slate-100 text-slate-800 px-3 py-1 rounded-full font-semibold">
             Năm {story.event_year}
           </span>
         )}
-        <span class="text-heritage-500">
+        <span class="text-slate-500">
           • {story.read_minutes} phút đọc
         </span>
-        <span class="text-heritage-500">
-          • Ngày đăng: {formatDate(story.published_at || story.created_at)}
+        <span class="text-slate-500">
+          • Ngày xuất bản: {formatDate(story.published_at || story.created_at)}
         </span>
       </div>
 
-      <h1 class="font-serif font-black text-2xl sm:text-4xl text-heritage-900 leading-tight mb-4">
+      <h1 class="font-serif font-black text-2xl sm:text-4xl text-slate-900 leading-tight mb-5">
         {story.title}
       </h1>
 
-      <p class="text-base sm:text-lg text-heritage-700 italic bg-heritage-100/60 p-4 rounded-xl border-l-4 border-heritage-400">
+      <!-- Đoạn tóm tắt nổi bật trang nhã -->
+      <p class="text-base sm:text-lg text-slate-700 italic bg-amber-50/70 p-5 rounded-2xl border-l-4 border-gold-500 leading-relaxed mb-6">
         "{story.summary}"
       </p>
 
-      <!-- Khung thông tin Nhân chứng & Người ghi chép chuẩn hoá -->
-      <div class="mt-6 p-4 rounded-xl bg-white border border-heritage-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <!-- Khung thông tin Người kể và Đơn vị ghi chép riêng biệt -->
+      <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <div class="text-xs text-heritage-500 uppercase tracking-wider">Nhân chứng lịch sử / Người kể</div>
-          <div class="font-serif font-bold text-base text-redflag-800">{story.narrator_name}</div>
+          <div class="text-[11px] text-slate-400 uppercase tracking-wider font-bold">Nhân chứng lịch sử / Người kể lại:</div>
+          <div class="font-serif font-bold text-base text-doan-900 mt-0.5">{story.narrator_name}</div>
         </div>
 
-        {story.contributor_name && (
-          <div class="sm:border-l sm:border-heritage-200 sm:pl-6">
-            <div class="text-xs text-heritage-500 uppercase tracking-wider">Đơn vị / Người ghi chép & đóng góp</div>
-            <div class="font-medium text-sm text-heritage-800">{story.contributor_name}</div>
-          </div>
-        )}
+        <div class="sm:border-l sm:border-slate-200 sm:pl-6">
+          <div class="text-[11px] text-slate-400 uppercase tracking-wider font-bold">Đơn vị / Chi đoàn ghi chép & gửi bài:</div>
+          <div class="font-semibold text-sm text-slate-800 mt-0.5">{story.contributor_unit || story.contributor_name}</div>
+        </div>
       </div>
+
     </header>
 
-    <!-- Nội dung chính của câu chuyện -->
-    <div class="prose max-w-none text-heritage-800 text-base sm:text-lg leading-relaxed font-serif">
-      <div set:html={`<p class="mb-4 text-heritage-800 leading-relaxed">${formattedBody}</p>`} />
+    <!-- Ảnh phóng to sắc nét của bài viết -->
+    <div class="mb-8 rounded-2xl overflow-hidden shadow-lg border border-slate-200 max-h-[480px]">
+      <img
+        src={story.cover_url}
+        alt={story.title}
+        class="w-full h-full object-cover"
+      />
     </div>
 
-    <!-- Chân bài viết & Nút Báo cáo sai lệch / Gỡ bài -->
-    <footer class="mt-12 pt-6 border-t border-heritage-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="text-xs text-heritage-500">
-        Bài viết được duyệt và xuất bản theo Quy chế lưu giữ ký ức lịch sử.
-      </div>
+    <!-- Thanh công cụ tương tác: Nghe đọc tiếng Việt, chỉnh cỡ chữ, bookmark, share -->
+    <StoryReaderToolbar 
+      client:load 
+      storyId={story.id} 
+      storyTitle={story.title} 
+      storyContent={story.summary + ' ' + story.body} 
+    />
 
-      <div class="flex items-center gap-3">
-        <button 
-          onclick="navigator.clipboard.writeText(window.location.href); alert('Đã sao chép liên kết câu chuyện!');"
-          class="px-3.5 py-2 rounded-lg border border-heritage-300 text-xs font-medium text-heritage-700 hover:bg-heritage-100 flex items-center gap-1.5"
-        >
-          <span>🔗</span>
-          <span>Chia sẻ câu chuyện</span>
-        </button>
+    <!-- Nội dung bài viết đầy đủ -->
+    <div 
+      id="story-body-content"
+      class="prose max-w-none text-slate-800 leading-relaxed font-serif text-[18px] transition-all"
+    >
+      <div set:html={`<p class="mb-5 text-slate-800 leading-relaxed">${formattedBody}</p>`} />
+    </div>
 
-        <button 
-          onclick="alert('Bộ phận kiểm duyệt sẽ tiếp nhận yêu cầu xác minh trong vòng 24 giờ. Cảm ơn quý bạn đọc!');"
-          class="px-3.5 py-2 rounded-lg bg-redflag-50 text-redflag-800 border border-redflag-200 text-xs font-medium hover:bg-redflag-100 flex items-center gap-1.5"
-        >
-          <span>🚩</span>
-          <span>Báo cáo sai lệch / Yêu cầu gỡ bài</span>
-        </button>
+    <!-- Hộp xác nhận tư liệu của Đoàn TNCS Hồ Chí Minh -->
+    <div class="mt-12 p-6 rounded-2xl bg-gradient-to-r from-doan-50 to-white border border-doan-200 flex items-start gap-4 shadow-sm">
+      <div class="w-10 h-10 rounded-xl bg-doan-800 text-gold-300 flex items-center justify-center font-bold text-lg shrink-0">
+        ★
       </div>
+      <div class="text-xs text-slate-600 leading-relaxed">
+        <strong class="text-doan-900 font-bold block mb-1">
+          XÁC THỰC BỞI BAN BIÊN TẬP ĐỀ ÁN SỐ HÓA KÝ ỨC - THÀNH ĐOÀN TP. HỒ CHÍ MINH
+        </strong>
+        Tư liệu trên đã được đối chiếu, biên tập cẩn trọng nhằm giáo dục truyền thống cách mạng và truyền lửa nhiệt huyết cho thế hệ trẻ. Mọi ý kiến đóng góp, xin liên hệ Ban Tuyên giáo Thành Đoàn.
+      </div>
+    </div>
+
+    <!-- Chân trang bài viết & Báo cáo sai lệch -->
+    <footer class="mt-8 pt-6 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+      <a 
+        href={withBase('/thu-vien')}
+        class="text-doan-800 hover:text-doan-900 font-bold flex items-center gap-1.5"
+      >
+        <span>←</span>
+        <span>Quay lại Thư viện nhật ký</span>
+      </a>
+
+      <button 
+        onclick="alert('Cảm ơn bạn! Ban Biên tập sẽ tiến hành rà soát và phản hồi trong 24 giờ làm việc.');"
+        class="px-4 py-2 rounded-xl bg-redflag-50 hover:bg-redflag-100 text-redflag-800 border border-redflag-200 font-semibold flex items-center gap-1.5 transition-colors"
+      >
+        <span>🚩</span>
+        <span>Báo cáo thông tin chưa chính xác</span>
+      </button>
     </footer>
 
   </article>
 </RootLayout>
-

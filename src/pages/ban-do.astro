@@ -3,21 +3,23 @@ import RootLayout from '@/layouts/RootLayout.astro';
 import VietnamMap from '@/components/map/VietnamMap';
 ---
 
-<RootLayout title="Bản đồ Ký ức Lịch sử Việt Nam - 63 Tỉnh thành, Hoàng Sa & Trường Sa">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+<RootLayout title="Bản đồ Địa chỉ Đỏ & Ký ức Lịch sử - Thành Đoàn TP. Hồ Chí Minh">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    
     <div class="text-center max-w-3xl mx-auto mb-10">
-      <span class="text-xs font-bold text-redflag-800 uppercase tracking-widest bg-redflag-50 px-3 py-1 rounded-full">
-        Không gian địa lý lịch sử
+      <span class="text-xs font-bold text-redflag-800 uppercase tracking-widest bg-redflag-50 px-3 py-1 rounded-full border border-redflag-200">
+        Không gian Địa lý & Chủ quyền
       </span>
-      <h1 class="font-serif font-black text-3xl sm:text-4xl text-heritage-900 mt-2 mb-3">
-        Bản đồ Ký ức Lịch sử Việt Nam
+      <h1 class="font-serif font-black text-3xl sm:text-4xl text-slate-900 mt-2.5 mb-3">
+        Bản Đồ Ký Ức & Địa Chỉ Đỏ Lịch Sử
       </h1>
-      <p class="text-sm text-heritage-600">
-        Khám phá kho tư liệu ký ức gắn liền với từng tấc đất quê hương, từ địa đầu Móng Cái đến mũi Cà Mau, cùng hai quần đảo thiêng liêng Hoàng Sa và Trường Sa.
+      <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+        Theo chân các thế hệ thanh niên thành phố mang tên Bác khám phá các chiến tích hào hùng từ đất liền tới hải đảo xa xôi, khẳng định trọn vẹn chủ quyền Hoàng Sa và Trường Sa.
       </p>
     </div>
 
+    <!-- Component bản đồ tương tác -->
     <VietnamMap client:load />
+
   </div>
 </RootLayout>
-

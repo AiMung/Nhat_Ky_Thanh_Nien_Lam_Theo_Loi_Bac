@@ -1,6 +1,6 @@
 ---
 import { withBase, formatDate } from '@/lib/utils';
-import type { Story } from '@/lib/supabase';
+import type { Story } from '@/lib/storage';
 
 interface Props {
   story: Story;
@@ -10,91 +10,80 @@ interface Props {
 const { story, featured = false } = Astro.props;
 ---
 
-<article class={`parchment-card rounded-xl overflow-hidden flex flex-col transition-all duration-300 ${featured ? 'md:grid md:grid-cols-2 md:gap-6' : ''}`}>
+<article class={`youth-card rounded-2xl overflow-hidden flex flex-col group ${featured ? 'lg:grid lg:grid-cols-12 lg:gap-6 bg-gradient-to-r from-white to-doan-50/40 border-doan-200' : ''}`}>
   
-  {/* Phần Ảnh bìa hoặc Typographic Badge độc bản */}
-  <div class={`relative overflow-hidden ${featured ? 'h-64 md:h-full' : 'h-48'}`}>
-    {story.cover_url ? (
-      <img 
-        src={story.cover_url} 
-        alt={story.title} 
-        loading="lazy" 
-        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-      />
-    ) : (
-      <div class="typographic-cover w-full h-full p-6 flex flex-col justify-between text-amber-100">
-        <div class="flex items-center justify-between text-xs">
-          <span class="px-2.5 py-1 rounded bg-redflag-900/80 border border-amber-400/30 font-semibold tracking-wider uppercase text-amber-300">
-            {story.category_name || 'Ký ức'}
-          </span>
-          <span class="text-amber-200/90 font-serif font-bold text-sm">
-            {story.event_year ? `Năm ${story.event_year}` : 'Thời kỳ kháng chiến'}
-          </span>
-        </div>
-        <div class="my-auto">
-          <span class="text-xs uppercase tracking-widest text-amber-300/80 block mb-1">
-            {story.province_name}
-          </span>
-          <p class="font-serif font-bold text-base line-clamp-2 text-white leading-snug">
-            {story.title}
-          </p>
-        </div>
-        <div class="text-[11px] text-amber-200/70 flex items-center justify-between border-t border-amber-500/20 pt-2">
-          <span>Người kể: {story.narrator_name}</span>
-          <span>&#9733; {story.read_minutes} phút đọc</span>
-        </div>
-      </div>
-    )}
+  <!-- Hình ảnh câu chuyện sắc nét kèm nhãn danh mục -->
+  <div class={`relative overflow-hidden ${featured ? 'lg:col-span-7 h-72 lg:h-full' : 'h-52'}`}>
+    <img 
+      src={story.cover_url} 
+      alt={story.title} 
+      loading="lazy" 
+      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+    />
+    
+    <!-- Lớp phủ bảo vệ tương phản -->
+    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-900/20 to-transparent"></div>
 
-    {/* Huy hiệu Tỉnh thành nổi bật */}
-    <div class="absolute top-3 right-3 bg-heritage-900/85 backdrop-blur text-amber-200 text-xs px-2.5 py-1 rounded-full font-medium shadow">
-      {story.province_name}
+    <!-- Huy hiệu Địa phương & Năm sự kiện -->
+    <div class="absolute top-3.5 left-3.5 flex items-center gap-2">
+      <span class="bg-doan-900/90 backdrop-blur-md text-gold-300 text-[11px] font-bold px-3 py-1 rounded-full shadow border border-gold-400/30">
+        📍 {story.province_name}
+      </span>
+      {story.event_year && (
+        <span class="bg-slate-900/80 backdrop-blur-md text-white text-[11px] font-semibold px-2.5 py-1 rounded-full shadow">
+          {story.event_year}
+        </span>
+      )}
+    </div>
+
+    <!-- Tên chủ đề nổi bật trên ảnh -->
+    <div class="absolute bottom-3 left-3.5 right-3.5 flex items-center justify-between text-xs text-white">
+      <span class="font-bold text-gold-300 uppercase tracking-wider text-[11px] bg-redflag-900/90 backdrop-blur px-2.5 py-0.5 rounded-md border border-gold-400/30">
+        {story.category_name}
+      </span>
+      <span class="text-[11px] text-slate-300 flex items-center gap-1">
+        ⏱️ {story.read_minutes} phút đọc
+      </span>
     </div>
   </div>
 
-  {/* Phần Nội dung & Metadata sạch sẽ */}
-  <div class="p-5 flex-1 flex flex-col justify-between">
+  <!-- Phần Nội dung & Metadata sạch sẽ -->
+  <div class={`p-5 flex-1 flex flex-col justify-between ${featured ? 'lg:col-span-5 lg:py-6 lg:pr-6 lg:pl-0' : ''}`}>
     <div>
-      <div class="flex items-center gap-2 text-xs text-heritage-600 mb-2">
-        <span class="font-semibold text-redflag-800 bg-redflag-50 px-2 py-0.5 rounded">
-          {story.category_name || 'Hồi ký'}
-        </span>
+      <div class="flex items-center gap-2 text-xs text-slate-500 mb-2.5">
+        <span>Đăng ngày: {formatDate(story.published_at || story.created_at)}</span>
         <span>•</span>
-        <span>{story.read_minutes} phút đọc</span>
-        <span>•</span>
-        <span>{formatDate(story.published_at || story.created_at)}</span>
+        <span class="text-doan-700 font-semibold">{story.period === '1989-nay' ? 'Thời bình & Hội nhập' : 'Thời kỳ kháng chiến'}</span>
       </div>
 
-      <h3 class="font-serif font-bold text-lg text-heritage-900 leading-snug hover:text-redflag-800 transition-colors mb-2">
+      <h3 class={`font-serif font-black text-slate-900 leading-snug group-hover:text-doan-800 transition-colors mb-2.5 ${featured ? 'text-xl lg:text-2xl' : 'text-base sm:text-lg'}`}>
         <a href={withBase(`/truyen/${story.slug}`)}>
           {story.title}
         </a>
       </h3>
 
-      <p class="text-sm text-heritage-700 line-clamp-2 leading-relaxed mb-4">
+      <p class="text-xs sm:text-sm text-slate-600 line-clamp-3 leading-relaxed mb-4">
         {story.summary}
       </p>
     </div>
 
-    {/* Thông tin Nhân chứng & Người đóng góp đã được chuẩn hóa riêng biệt */}
-    <div class="pt-4 border-t border-heritage-100 flex items-center justify-between text-xs">
-      <div>
-        <div class="text-heritage-900 font-semibold">
-          Kể bởi: <span class="text-redflag-800">{story.narrator_name}</span>
+    <!-- Thông tin Người kể và Đơn vị ghi chép riêng biệt -->
+    <div class="pt-4 border-t border-slate-100 flex items-center justify-between gap-3 text-xs">
+      <div class="truncate">
+        <div class="text-slate-900 font-bold truncate">
+          Kể bởi: <span class="text-doan-800">{story.narrator_name}</span>
         </div>
-        {story.contributor_name && (
-          <div class="text-heritage-500 text-[11px] truncate max-w-[200px]" title={story.contributor_name}>
-            Ghi: {story.contributor_name}
-          </div>
-        )}
+        <div class="text-slate-500 text-[11px] truncate mt-0.5" title={story.contributor_unit || story.contributor_name}>
+          Đơn vị: {story.contributor_unit || story.contributor_name}
+        </div>
       </div>
 
       <a 
         href={withBase(`/truyen/${story.slug}`)} 
-        class="text-xs font-semibold text-redflag-800 hover:text-redflag-900 flex items-center gap-1 group"
+        class="shrink-0 font-bold text-doan-800 hover:text-redflag-700 flex items-center gap-1 group/link bg-doan-50 hover:bg-doan-100 px-3 py-1.5 rounded-lg transition-colors"
       >
-        Đọc tiếp
-        <span class="group-hover:translate-x-0.5 transition-transform">→</span>
+        <span>Đọc ngay</span>
+        <span class="group-hover/link:translate-x-0.5 transition-transform">→</span>
       </a>
     </div>
 

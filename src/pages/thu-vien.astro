@@ -1,37 +1,26 @@
 ---
 import RootLayout from '@/layouts/RootLayout.astro';
-import StoryCard from '@/components/story/StoryCard.astro';
-import SearchBar from '@/components/search/SearchBar';
-import { SAMPLE_STORIES } from '@/lib/supabase';
+import StoryLibraryView from '@/components/story/StoryLibraryView';
 ---
 
-<RootLayout title="Thư viện Ký ức Lịch sử - Tìm kiếm & Lọc câu chuyện">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+<RootLayout title="Thư viện Nhật Ký Ký Ức - Thành Đoàn TP. Hồ Chí Minh">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     
+    <!-- Tiêu đề trang trọng -->
     <div class="text-center max-w-3xl mx-auto mb-10">
-      <span class="text-xs font-bold text-redflag-800 uppercase tracking-widest bg-redflag-50 px-3 py-1 rounded-full">
-        Kho tư liệu số
+      <span class="text-xs font-bold text-doan-800 uppercase tracking-widest bg-doan-50 px-3 py-1 rounded-full border border-doan-200">
+        Kho tư liệu truyền thống
       </span>
-      <h1 class="font-serif font-black text-3xl sm:text-4xl text-heritage-900 mt-2 mb-4">
-        Thư viện Ký ức Lịch sử
+      <h1 class="font-serif font-black text-3xl sm:text-4xl text-slate-900 mt-2.5 mb-3">
+        Thư Viện Nhật Ký Thanh Niên
       </h1>
-      <p class="text-heritage-600 text-sm sm:text-base">
-        Tra cứu hàng ngàn ký ức chân thực theo chủ đề, địa bàn tỉnh thành và các mốc thời kỳ lịch sử.
+      <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+        Tra cứu hàng ngàn trang hồi ức, chiến công và việc làm ý nghĩa của thanh niên TP. Hồ Chí Minh qua các thời kỳ lịch sử.
       </p>
     </div>
 
-    <!-- Thanh tìm kiếm không dấu tức thì -->
-    <div class="mb-10">
-      <SearchBar client:load />
-    </div>
-
-    <!-- Danh sách truyện trong thư viện -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {SAMPLE_STORIES.map((story) => (
-        <StoryCard story={story} />
-      ))}
-    </div>
+    <!-- Component bộ lọc & tìm kiếm tương tác thật 100% -->
+    <StoryLibraryView client:load />
 
   </div>
 </RootLayout>
-

@@ -1,194 +1,228 @@
 import { useState } from 'react';
 import { withBase } from '@/lib/utils';
-import { MapPin, BookOpen } from 'lucide-react';
+import { MapPin, BookOpen, Compass, Shield } from 'lucide-react';
 
-const PROVINCE_STATS: Record<string, { count: number; region: string; name: string }> = {
-  HN: { name: 'Hà Nội', count: 124, region: 'Bắc Bộ' },
-  HCM: { name: 'TP. Hồ Chí Minh', count: 285, region: 'Nam Bộ' },
-  DB: { name: 'Điện Biên', count: 96, region: 'Bắc Bộ' },
-  QT: { name: 'Quảng Trị', count: 182, region: 'Trung Bộ' },
-  DN: { name: 'Đà Nẵng (gồm Quần đảo Hoàng Sa)', count: 68, region: 'Trung Bộ' },
-  KH: { name: 'Khánh Hòa (gồm Quần đảo Trường Sa)', count: 75, region: 'Trung Bộ' },
-  TH: { name: 'Thanh Hóa', count: 112, region: 'Bắc Trung Bộ' },
-  NA: { name: 'Nghệ An', count: 145, region: 'Bắc Trung Bộ' },
-  TN: { name: 'Tây Ninh', count: 54, region: 'Nam Bộ' },
-  BD: { name: 'Bình Dương', count: 48, region: 'Nam Bộ' },
-  CT: { name: 'Cần Thơ', count: 62, region: 'Tây Nam Bộ' },
+interface ProvinceInfo {
+  name: string;
+  count: number;
+  region: string;
+  highlight: string;
+  image: string;
+}
+
+const PROVINCE_MAP: Record<string, ProvinceInfo> = {
+  HCM: {
+    name: 'TP. Hồ Chí Minh',
+    count: 2450,
+    region: 'Đô thị đặc biệt phía Nam',
+    highlight: 'Nơi Bác Hồ ra đi tìm đường cứu nước (Bến Nhà Rồng), Căn cứ Núi Dinh, Hầm vũ khí Biệt động Sài Gòn, Lá phổi xanh Rừng Sác Cần Giờ và Chiến dịch Mùa hè xanh huyền thoại.',
+    image: 'https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=800&q=80'
+  },
+  DN: {
+    name: 'Đà Nẵng & Quần đảo Hoàng Sa',
+    count: 680,
+    region: 'Miền Trung kiên cường',
+    highlight: 'Thành phố đầu sóng ngọn gió, nơi thanh niên luôn hướng về huyện đảo Hoàng Sa thiêng liêng và giữ vững an ninh biển đảo.',
+    image: 'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=800&q=80'
+  },
+  KH: {
+    name: 'Khánh Hòa & Quần đảo Trường Sa',
+    count: 890,
+    region: 'Quân dân Thềm lục địa phía Nam',
+    highlight: 'Nơi tuổi đôi mươi người lính Hải quân gìn giữ từng cột mốc chủ quyền tại 21 đảo, điểm đảo thuộc huyện đảo Trường Sa và cụm Nhà giàn DK1.',
+    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80'
+  },
+  HN: {
+    name: 'Thủ đô Hà Nội',
+    count: 1820,
+    region: 'Trái tim cả nước',
+    highlight: 'Quảng trường Ba Đình lịch sử, Lăng Chủ tịch Hồ Chí Minh, Khu di tích Phủ Chủ tịch - Nơi Bác sống và làm việc.',
+    image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=800&q=80'
+  },
+  DB: {
+    name: 'Điện Biên',
+    count: 620,
+    region: 'Tây Bắc hùng vĩ',
+    highlight: 'Chiến thắng Điện Biên Phủ "Lừng lẫy năm châu, chấn động địa cầu" - Tinh thần thanh niên xung phong mở đường Thắng Lợi.',
+    image: 'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=800&q=80'
+  },
+  QT: {
+    name: 'Quảng Trị',
+    count: 1150,
+    region: 'Tuyến lửa Vĩnh Linh',
+    highlight: 'Thành Cổ Quảng Trị, Dòng sông Thạch Hãn, Cầu Hiền Lương - Vĩ tuyến 17 và Nghĩa trang Liệt sĩ Quốc gia Trường Sơn.',
+    image: 'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=800&q=80'
+  },
 };
 
 export default function VietnamMap() {
-  const [activeProvince, setActiveProvince] = useState<string>('HCM');
-
-  const selected = PROVINCE_STATS[activeProvince] || {
-    name: 'TP. Hồ Chí Minh',
-    count: 285,
-    region: 'Nam Bộ'
-  };
+  const [selectedKey, setSelectedKey] = useState<string>('HCM');
+  const current = PROVINCE_MAP[selectedKey] || PROVINCE_MAP.HCM;
 
   return (
-    <div className="bg-white rounded-2xl border border-heritage-200 shadow-sm p-6 lg:p-8">
-      <div className="flex flex-col lg:flex-row gap-8 items-center">
+    <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-6 sm:p-10">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
         
-        {/* Bản đồ SVG trực quan có Hoàng Sa và Trường Sa */}
-        <div className="w-full lg:w-1/2 flex flex-col items-center">
-          <div className="relative w-full max-w-[340px] aspect-[3/4] bg-heritage-50 rounded-2xl border border-heritage-200 p-4 flex flex-col justify-between overflow-hidden">
+        {/* Bản đồ tương tác trực quan */}
+        <div className="lg:col-span-6 flex flex-col items-center">
+          
+          <div className="w-full max-w-md bg-gradient-to-b from-slate-900 to-doan-950 text-white rounded-3xl p-6 shadow-2xl border border-white/10 relative overflow-hidden">
             
-            {/* Header bản đồ */}
-            <div className="text-center z-10">
-              <span className="text-[11px] font-bold text-redflag-800 tracking-wider uppercase bg-white/80 px-2.5 py-1 rounded-full border border-heritage-200">
-                Bản đồ Ký ức Lịch sử Việt Nam
+            {/* Họa tiết nền */}
+            <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#F59E0B_1px,transparent_1px)] [background-size:16px_16px]"></div>
+
+            <div className="flex items-center justify-between mb-6 relative z-10">
+              <span className="text-[11px] font-bold text-gold-300 uppercase tracking-widest bg-white/10 px-3 py-1 rounded-full border border-gold-400/30 flex items-center gap-1.5">
+                <Compass className="w-3.5 h-3.5" />
+                <span>Không gian Lịch sử Toàn quốc</span>
               </span>
+              <span className="text-[10px] text-slate-400 font-medium">Bấm chọn địa bàn</span>
             </div>
 
-            {/* Minh họa mô phỏng vị trí các tỉnh trọng điểm & 2 Quần đảo */}
-            <div className="relative flex-1 flex flex-col justify-around py-4">
+            {/* Các điểm nút địa danh trọng điểm */}
+            <div className="space-y-4 relative z-10">
               
-              {/* Miền Bắc */}
-              <div className="flex justify-around items-center">
-                <button
-                  onClick={() => setActiveProvince('DB')}
-                  className={`px-2.5 py-1 rounded text-xs font-medium transition-all ${
-                    activeProvince === 'DB' 
-                      ? 'bg-redflag-800 text-amber-200 ring-2 ring-redflag-600 scale-105' 
-                      : 'bg-heritage-200 text-heritage-800 hover:bg-heritage-300'
-                  }`}
-                >
-                  Điện Biên ({PROVINCE_STATS.DB.count})
-                </button>
-
-                <button
-                  onClick={() => setActiveProvince('HN')}
-                  className={`px-3 py-1.5 rounded text-xs font-bold transition-all ${
-                    activeProvince === 'HN' 
-                      ? 'bg-redflag-800 text-amber-200 ring-2 ring-redflag-600 scale-105' 
-                      : 'bg-redflag-100 text-redflag-900 hover:bg-redflag-200'
-                  }`}
-                >
-                  ★ Hà Nội ({PROVINCE_STATS.HN.count})
-                </button>
-              </div>
-
-              {/* Miền Trung & Quần đảo Hoàng Sa */}
-              <div className="flex justify-between items-center px-4 relative">
-                <button
-                  onClick={() => setActiveProvince('QT')}
-                  className={`px-2 py-1 rounded text-xs font-medium transition-all ${
-                    activeProvince === 'QT' 
-                      ? 'bg-redflag-800 text-amber-200 ring-2 ring-redflag-600' 
-                      : 'bg-heritage-200 text-heritage-800 hover:bg-heritage-300'
-                  }`}
-                >
-                  Quảng Trị ({PROVINCE_STATS.QT.count})
-                </button>
-
-                {/* Quần đảo Hoàng Sa (Thuộc TP. Đà Nẵng) */}
-                <div 
-                  onClick={() => setActiveProvince('DN')}
-                  className="cursor-pointer bg-amber-100/90 hover:bg-amber-200 border-2 border-dashed border-amber-600 rounded-lg p-2 text-center transition-all shadow-sm"
-                  title="Quần đảo Hoàng Sa (Thuộc TP. Đà Nẵng)"
-                >
-                  <div className="text-[10px] font-black text-redflag-900 uppercase">
-                    Q.Đ HOÀNG SA
-                  </div>
-                  <div className="text-[9px] text-heritage-600">
-                    (TP. Đà Nẵng)
-                  </div>
+              {/* Cụm Miền Bắc */}
+              <div className="p-3 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between gap-2">
+                <div className="text-xs text-slate-400 font-semibold uppercase">Bắc Bộ:</div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setSelectedKey('DB')}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                      selectedKey === 'DB' ? 'bg-redflag-700 text-gold-200 ring-2 ring-gold-400 scale-105' : 'bg-white/10 hover:bg-white/20'
+                    }`}
+                  >
+                    Điện Biên
+                  </button>
+                  <button
+                    onClick={() => setSelectedKey('HN')}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                      selectedKey === 'HN' ? 'bg-redflag-700 text-gold-200 ring-2 ring-gold-400 scale-105' : 'bg-white/10 hover:bg-white/20'
+                    }`}
+                  >
+                    ★ Thủ đô Hà Nội
+                  </button>
                 </div>
               </div>
 
-              {/* Miền Nam & Quần đảo Trường Sa */}
-              <div className="flex justify-between items-center px-2 relative">
+              {/* Cụm Miền Trung & Hoàng Sa */}
+              <div className="p-3 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between gap-2">
                 <button
-                  onClick={() => setActiveProvince('HCM')}
-                  className={`px-3 py-2 rounded-lg text-xs font-bold transition-all ${
-                    activeProvince === 'HCM' 
-                      ? 'bg-redflag-800 text-amber-200 ring-2 ring-redflag-600 scale-105 shadow-md' 
-                      : 'bg-redflag-700 text-white hover:bg-redflag-800'
+                  onClick={() => setSelectedKey('QT')}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                    selectedKey === 'QT' ? 'bg-redflag-700 text-gold-200 ring-2 ring-gold-400' : 'bg-white/10 hover:bg-white/20'
                   }`}
                 >
-                  ★ TP. Hồ Chí Minh ({PROVINCE_STATS.HCM.count})
+                  Quảng Trị
                 </button>
 
-                {/* Quần đảo Trường Sa (Thuộc Tỉnh Khánh Hòa) */}
-                <div 
-                  onClick={() => setActiveProvince('KH')}
-                  className="cursor-pointer bg-redflag-50 hover:bg-redflag-100 border-2 border-dashed border-redflag-600 rounded-lg p-2.5 text-center transition-all shadow-sm"
-                  title="Quần đảo Trường Sa (Thuộc Tỉnh Khánh Hòa)"
+                {/* Quần đảo Hoàng Sa (TP. Đà Nẵng) */}
+                <button
+                  onClick={() => setSelectedKey('DN')}
+                  className={`px-3 py-2 rounded-xl text-xs font-black transition-all border-2 flex items-center gap-1.5 ${
+                    selectedKey === 'DN'
+                      ? 'bg-gold-500 text-slate-950 border-gold-300 ring-2 ring-gold-300 scale-105 shadow-lg'
+                      : 'bg-gold-500/20 text-gold-300 border-gold-500/50 hover:bg-gold-500/30'
+                  }`}
+                  title="Quần đảo Hoàng Sa thuộc chủ quyền thiêng liêng của Việt Nam (TP. Đà Nẵng)"
                 >
-                  <div className="text-[10px] font-black text-redflag-900 uppercase">
-                    Q.Đ TRƯỜNG SA
-                  </div>
-                  <div className="text-[9px] text-heritage-600">
-                    (Khánh Hòa)
-                  </div>
-                </div>
+                  <Shield className="w-3.5 h-3.5" />
+                  <span>Q.Đ HOÀNG SA (ĐÀ NẴNG)</span>
+                </button>
               </div>
 
-              {/* Tây Nam Bộ */}
-              <div className="flex justify-start px-6">
-                <button
-                  onClick={() => setActiveProvince('CT')}
-                  className={`px-2.5 py-1 rounded text-xs font-medium transition-all ${
-                    activeProvince === 'CT' 
-                      ? 'bg-redflag-800 text-amber-200 ring-2 ring-redflag-600' 
-                      : 'bg-heritage-200 text-heritage-800 hover:bg-heritage-300'
-                  }`}
-                >
-                  Cần Thơ ({PROVINCE_STATS.CT.count})
-                </button>
+              {/* Cụm TP. Hồ Chí Minh & Quần đảo Trường Sa */}
+              <div className="p-4 rounded-2xl bg-gradient-to-r from-redflag-950/80 to-doan-900/80 border border-gold-400/40 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold text-gold-300 uppercase">Thành phố mang tên Bác:</span>
+                  <button
+                    onClick={() => setSelectedKey('HCM')}
+                    className={`px-4 py-2 rounded-xl text-xs font-black transition-all ${
+                      selectedKey === 'HCM'
+                        ? 'bg-gradient-to-r from-redflag-700 to-doan-800 text-gold-200 ring-2 ring-gold-400 scale-105 shadow-xl'
+                        : 'bg-white/15 hover:bg-white/25 text-white'
+                    }`}
+                  >
+                    ★ TP. HỒ CHÍ MINH ({PROVINCE_MAP.HCM.count})
+                  </button>
+                </div>
+
+                <div className="pt-2 border-t border-white/10 flex items-center justify-between">
+                  <span className="text-[10px] text-slate-300">Biển đảo thiêng liêng:</span>
+                  {/* Quần đảo Trường Sa (Tỉnh Khánh Hòa) */}
+                  <button
+                    onClick={() => setSelectedKey('KH')}
+                    className={`px-3 py-2 rounded-xl text-xs font-black transition-all border-2 flex items-center gap-1.5 ${
+                      selectedKey === 'KH'
+                        ? 'bg-redflag-700 text-gold-200 border-gold-400 ring-2 ring-gold-300 scale-105 shadow-xl'
+                        : 'bg-redflag-900/40 text-gold-200 border-redflag-500/60 hover:bg-redflag-900/60'
+                    }`}
+                    title="Quần đảo Trường Sa và Nhà giàn DK1 (Tỉnh Khánh Hòa)"
+                  >
+                    <Shield className="w-3.5 h-3.5 text-gold-400" />
+                    <span>Q.Đ TRƯỜNG SA (KHÁNH HÒA)</span>
+                  </button>
+                </div>
               </div>
 
             </div>
 
-            <div className="text-[10px] text-center text-heritage-500 border-t border-heritage-200 pt-2">
-              Khẳng định chủ quyền trọn vẹn của Việt Nam trên hai quần đảo Hoàng Sa và Trường Sa
+            <div className="mt-6 pt-3 border-t border-white/15 text-center text-[11px] text-gold-300/90 font-medium">
+              ★ Khẳng định đanh thép: Hoàng Sa và Trường Sa là máu thịt thiêng liêng của Việt Nam ★
             </div>
 
           </div>
+
         </div>
 
-        {/* Bảng thông tin chi tiết địa phương đã chọn */}
-        <div className="w-full lg:w-1/2">
-          <div className="inline-flex items-center gap-2 text-xs font-semibold text-redflag-800 bg-redflag-50 px-3 py-1 rounded-full mb-3">
-            <MapPin className="w-3.5 h-3.5" />
-            <span>Địa phương đang chọn</span>
-          </div>
-
-          <h3 className="font-serif font-black text-2xl text-heritage-900 mb-2">
-            {selected.name}
-          </h3>
-
-          <p className="text-sm text-heritage-600 mb-6">
-            Thuộc khu vực <strong>{selected.region}</strong>. Nơi đã ghi dấu hàng ngàn chiến công oanh liệt và những câu chuyện kiên trung của quân và dân ta qua các thời kỳ.
-          </p>
-
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="bg-heritage-50 p-4 rounded-xl border border-heritage-200">
-              <div className="text-2xl font-black font-serif text-redflag-800">
-                {selected.count}+
-              </div>
-              <div className="text-xs text-heritage-600 font-medium">
-                Câu chuyện đã số hóa
-              </div>
-            </div>
-
-            <div className="bg-heritage-50 p-4 rounded-xl border border-heritage-200">
-              <div className="text-2xl font-black font-serif text-heritage-800">
-                100%
-              </div>
-              <div className="text-xs text-heritage-600 font-medium">
-                Đã qua xác minh & duyệt
-              </div>
+        {/* Thông tin chi tiết & Hình ảnh minh chứng địa phương */}
+        <div className="lg:col-span-6 space-y-5">
+          <div className="relative h-56 rounded-2xl overflow-hidden shadow-lg border border-slate-200">
+            <img
+              src={current.image}
+              alt={current.name}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+            <div className="absolute bottom-4 left-5 right-5 text-white">
+              <span className="text-xs font-bold text-gold-300 uppercase tracking-wider bg-redflag-900/90 px-3 py-1 rounded-full border border-gold-400/30">
+                {current.region}
+              </span>
+              <h3 className="font-serif font-black text-2xl text-white mt-2">
+                {current.name}
+              </h3>
             </div>
           </div>
 
-          <a
-            href={withBase(`/thu-vien?tinh=${activeProvince}`)}
-            className="inline-flex items-center gap-2 bg-heritage-900 hover:bg-black text-amber-100 px-5 py-3 rounded-xl text-sm font-medium transition-all shadow"
-          >
-            <BookOpen className="w-4 h-4 text-amber-300" />
-            <span>Xem tất cả câu chuyện tại {selected.name}</span>
-          </a>
+          <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+            <div className="flex items-center gap-2 text-xs font-bold text-doan-800">
+              <MapPin className="w-4 h-4 text-redflag-700" />
+              <span>Dấu ấn lịch sử & Công trình thanh niên tiêu biểu:</span>
+            </div>
+            <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-serif">
+              {current.highlight}
+            </p>
+          </div>
+
+          <div className="flex items-center justify-between pt-2">
+            <div>
+              <div className="text-2xl font-black font-serif text-doan-800">
+                {current.count.toLocaleString()} +
+              </div>
+              <div className="text-xs text-slate-500 font-semibold uppercase">
+                Trang nhật ký & Tư liệu
+              </div>
+            </div>
+
+            <a
+              href={withBase('/thu-vien')}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-doan-800 hover:bg-doan-900 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all"
+            >
+              <BookOpen className="w-4 h-4 text-gold-300" />
+              <span>Xem nhật ký tại {current.name}</span>
+            </a>
+          </div>
+
         </div>
 
       </div>

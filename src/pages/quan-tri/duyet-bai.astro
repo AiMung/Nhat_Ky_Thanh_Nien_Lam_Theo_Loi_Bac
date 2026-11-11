@@ -1,97 +1,37 @@
 ---
 import RootLayout from '@/layouts/RootLayout.astro';
-
-// Giả lập danh sách bài chờ duyệt trong hàng đợi
-const PENDING_STORIES = [
-  {
-    id: 'p-1',
-    title: 'Những ngày tiếp tế lương thực cho chiến trường Tây Ninh năm 1972',
-    narrator: 'Bà Lê Thị Tươi (Gia đình có công giúp đỡ cách mạng)',
-    contributor: 'Đoàn Thanh niên Huyện Củ Chi',
-    province: 'Tây Ninh',
-    created_at: 'Hôm nay lúc 09:30',
-    summary: 'Ký ức giấu gạo trong ghe đáy hai lớp, vượt trạm tuần tra đưa lương thực cho bộ đội miền Đông Nam Bộ...'
-  },
-  {
-    id: 'p-2',
-    title: 'Kỷ vật chiếc bi-đông khắc tên đồng đội ngã xuống ở Vị Xuyên',
-    narrator: 'Bác Trần Quốc Bảo (Cựu chiến binh Mặt trận Vị Xuyên)',
-    contributor: 'CLB Sử học Trẻ',
-    province: 'Hà Giang',
-    created_at: 'Hôm qua lúc 16:45',
-    summary: 'Chiếc bi-đông nhôm đã móp méo nhưng là vật chứng duy nhất còn lại của tiểu đội 8 người...'
-  }
-];
+import AdminModerationQueue from '@/components/admin/AdminModerationQueue';
 ---
 
-<RootLayout title="Hàng đợi kiểm duyệt bài viết - Quản trị Ký Ức Lịch Sử">
-  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+<RootLayout title="Hàng đợi kiểm duyệt bài viết - Thành Đoàn TP. Hồ Chí Minh">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
     
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-heritage-200">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
       <div>
-        <span class="text-xs font-bold text-redflag-800 uppercase tracking-widest bg-redflag-50 px-3 py-1 rounded-full">
-          Bảng điều khiển Quản trị
-        </span>
-        <h1 class="font-serif font-black text-2xl sm:text-3xl text-heritage-900 mt-2">
-          Hàng đợi kiểm duyệt & Xuất bản
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold text-redflag-800 uppercase tracking-widest bg-redflag-50 px-3 py-1 rounded-full border border-redflag-200">
+            Ban Tuyên giáo Thành Đoàn
+          </span>
+        </div>
+        <h1 class="font-serif font-black text-2xl sm:text-3xl text-slate-900 mt-2">
+          Kiểm Duyệt & Xuất Bản Nhật Ký
         </h1>
+        <p class="text-xs sm:text-sm text-slate-500 mt-1">
+          Hệ thống phê duyệt hai tầng: Tiền kiểm tư liệu trước khi công bố rộng rãi trên Cổng thông tin
+        </p>
       </div>
 
-      <!-- Nút Xuất bản ngay (Instant Publish qua Edge Function) -->
       <button
-        onclick="alert('Đã kích hoạt Edge Function trigger GitHub Action rebuild & deploy tĩnh! Website sẽ cập nhật trong ~45 giây.');"
-        class="inline-flex items-center gap-2 bg-redflag-800 hover:bg-redflag-900 text-amber-100 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-serif font-bold shadow transition-all"
+        onclick="alert('Đã đồng bộ dữ liệu xuất bản tĩnh lên máy chủ!');"
+        class="inline-flex items-center gap-2 bg-gradient-to-r from-redflag-800 to-doan-900 text-white px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all"
       >
         <span>⚡</span>
         <span>Xuất bản ngay (Instant Build)</span>
       </button>
     </div>
 
-    <!-- Danh sách bài đang chờ duyệt -->
-    <div class="space-y-4">
-      {PENDING_STORIES.map((item) => (
-        <div class="bg-white p-6 rounded-2xl border border-heritage-200 shadow-sm flex flex-col md:flex-row justify-between gap-6">
-          <div class="flex-1">
-            <div class="flex items-center gap-2 text-xs text-heritage-500 mb-2">
-              <span class="bg-amber-100 text-amber-900 font-semibold px-2 py-0.5 rounded">Chờ duyệt</span>
-              <span>•</span>
-              <span>📍 {item.province}</span>
-              <span>•</span>
-              <span>{item.created_at}</span>
-            </div>
-
-            <h3 class="font-serif font-bold text-lg text-heritage-900 mb-2">
-              {item.title}
-            </h3>
-
-            <p class="text-xs sm:text-sm text-heritage-700 mb-3">
-              {item.summary}
-            </p>
-
-            <div class="text-xs text-heritage-600 space-y-1 border-t border-heritage-100 pt-3">
-              <div>Người kể: <strong class="text-heritage-900">{item.narrator}</strong></div>
-              <div>Người gửi: <strong class="text-heritage-900">{item.contributor}</strong></div>
-            </div>
-          </div>
-
-          <!-- Nút thao tác Admin -->
-          <div class="flex md:flex-col items-center justify-center gap-2 border-t md:border-t-0 md:border-l border-heritage-100 pt-4 md:pt-0 md:pl-6 min-w-[140px]">
-            <button
-              onclick="alert('Đã duyệt bài thành công! Bài viết sẽ được đưa vào đợt xuất bản tiếp theo.');"
-              class="w-full py-2 px-4 rounded-lg bg-green-700 hover:bg-green-800 text-white font-medium text-xs shadow-sm transition-colors text-center"
-            >
-              ✓ Duyệt bài
-            </button>
-            <button
-              onclick="const reason = prompt('Nhập lý do từ chối gửi cho tác giả:'); if (reason) alert('Đã từ chối bài viết.');"
-              class="w-full py-2 px-4 rounded-lg bg-heritage-100 hover:bg-red-50 text-redflag-700 font-medium text-xs border border-heritage-300 transition-colors text-center"
-            >
-              ✕ Từ chối
-            </button>
-          </div>
-        </div>
-      ))}
-    </div>
+    <!-- Hàng đợi kiểm duyệt tương tác thật 100% -->
+    <AdminModerationQueue client:load />
 
   </div>
 </RootLayout>

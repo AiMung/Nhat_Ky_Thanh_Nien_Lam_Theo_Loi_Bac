@@ -4,48 +4,45 @@
 
 @layer base {
   :root {
-    --bg-parchment: #FAF7F2;
-    --text-primary: #2C241E;
-    --border-warm: #E7D5BA;
+    --bg-page: #F8FAFC;
+    --text-primary: #1E293B;
   }
 
   body {
-    background-color: var(--bg-parchment);
+    background-color: var(--bg-page);
     color: var(--text-primary);
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
 
-  h1, h2, h3, h4, .font-historical {
+  h1, h2, h3, h4, .font-serif-historical {
     font-family: 'Merriweather', 'Lora', Georgia, serif;
   }
 }
 
-/* Hiệu ứng giấy ngả vàng hoài niệm */
-.parchment-card {
+/* Thẻ bài viết hiện đại với hiệu ứng nổi bật */
+.youth-card {
   background-color: #FFFFFF;
-  border: 1px solid #EBE3D5;
-  box-shadow: 0 2px 8px rgba(95, 69, 42, 0.05);
+  border: 1px solid #E2E8F0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.parchment-card:hover {
-  border-color: #D5BA92;
-  box-shadow: 0 4px 16px rgba(95, 69, 42, 0.1);
+.youth-card:hover {
+  transform: translateY(-4px);
+  border-color: #CBD5E1;
+  box-shadow: 0 16px 32px -8px rgba(0, 82, 163, 0.12);
 }
 
-/* Card Cover Typographic tự động khi bài viết không có ảnh tư liệu */
-.typographic-cover {
-  background: linear-gradient(135deg, #7F1D1D 0%, #450A0A 100%);
-  position: relative;
-  overflow: hidden;
+/* Gradient đặc trưng Đoàn Thanh Niên */
+.bg-gradient-youth {
+  background: linear-gradient(135deg, #0052A3 0%, #1D4ED8 50%, #991B1B 100%);
 }
 
-.typographic-cover::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(#F59E0B 1px, transparent 1px);
-  background-size: 16px 16px;
-  opacity: 0.15;
+.bg-gradient-hero {
+  background: radial-gradient(circle at top center, #991B1B 0%, #7F1D1D 45%, #003A75 100%);
 }
 
+/* Hiệu ứng viền phát sáng nhẹ */
+.glow-gold {
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+}

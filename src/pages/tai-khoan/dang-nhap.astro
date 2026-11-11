@@ -1,60 +1,117 @@
 ---
 import RootLayout from '@/layouts/RootLayout.astro';
+import { withBase } from '@/lib/utils';
 ---
 
-<RootLayout title="Đăng nhập - Đề án Ký Ức Lịch Sử">
+<RootLayout title="Đăng nhập tài khoản - Nhật Ký Thanh Niên Làm Theo Lời Bác">
   <div class="max-w-md mx-auto px-4 py-16">
-    <div class="bg-white p-8 rounded-2xl border border-heritage-200 shadow-sm text-center">
+    <div class="bg-white p-8 sm:p-10 rounded-3xl border border-slate-200 shadow-xl text-center">
       
-      <div class="w-12 h-12 rounded-full bg-redflag-800 flex items-center justify-center text-amber-300 font-serif font-black text-xl mx-auto mb-4 shadow">
+      <!-- Huy hiệu Đoàn -->
+      <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-redflag-700 to-doan-800 flex items-center justify-center text-gold-300 font-serif font-black text-2xl mx-auto mb-4 shadow-lg">
         ★
       </div>
 
-      <h1 class="font-serif font-black text-2xl text-heritage-900 mb-2">
-        Đăng nhập hệ thống
+      <span class="text-[11px] font-bold text-doan-800 bg-doan-50 px-3 py-1 rounded-full border border-doan-200 uppercase tracking-wider">
+        Thành Đoàn TP. Hồ Chí Minh
+      </span>
+
+      <h1 class="font-serif font-black text-2xl text-slate-900 mt-2.5 mb-2">
+        Đăng Nhập Hệ Thống
       </h1>
-      <p class="text-xs text-heritage-600 mb-6">
-        Dành cho người đóng góp theo dõi bài viết và Ban biên tập kiểm duyệt
+      <p class="text-xs text-slate-500 mb-8 leading-relaxed">
+        Chọn quyền truy cập để trải nghiệm đầy đủ chức năng gửi bài, quản lý nhật ký và duyệt bài viết.
       </p>
 
-      <div class="space-y-4">
-        <!-- Đăng nhập bằng Google -->
+      <div class="space-y-3">
+        <!-- Đăng nhập 1 chạm với tư cách Quản trị Ban Biên tập -->
         <button
-          onclick="alert('Chức năng Google OAuth sẽ kết nối với Supabase Auth khi bạn điền PUBLIC_SUPABASE_URL.');"
-          class="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl border border-heritage-300 hover:bg-heritage-50 text-heritage-800 text-sm font-medium transition-colors"
+          id="btnAdminLogin"
+          class="w-full flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-xl bg-redflag-800 hover:bg-redflag-900 text-white text-xs sm:text-sm font-bold shadow-md transition-all hover:scale-[1.01]"
         >
-          <svg class="w-5 h-5" viewBox="0 0 24 24">
-            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-          </svg>
-          <span>Tiếp tục với tài khoản Google</span>
+          <span>🛡️</span>
+          <span>Đăng nhập quyền Ban Biên tập (Admin)</span>
+        </button>
+
+        <!-- Đăng nhập 1 chạm với tư cách Đoàn viên -->
+        <button
+          id="btnMemberLogin"
+          class="w-full flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-xl bg-doan-800 hover:bg-doan-900 text-white text-xs sm:text-sm font-bold shadow-md transition-all hover:scale-[1.01]"
+        >
+          <span>👤</span>
+          <span>Đăng nhập quyền Đoàn viên TP.HCM</span>
         </button>
 
         <div class="flex items-center gap-3 my-4">
-          <div class="h-px flex-1 bg-heritage-200"></div>
-          <span class="text-xs text-heritage-400">hoặc</span>
-          <div class="h-px flex-1 bg-heritage-200"></div>
+          <div class="h-px flex-1 bg-slate-200"></div>
+          <span class="text-xs text-slate-400">hoặc qua Email</span>
+          <div class="h-px flex-1 bg-slate-200"></div>
         </div>
 
-        <!-- Đăng nhập Magic Link Email -->
         <input
           type="email"
-          id="emailInput"
-          placeholder="Nhập địa chỉ email của bạn..."
-          class="w-full px-4 py-3 rounded-xl border border-heritage-300 text-heritage-900 text-sm focus:ring-2 focus:ring-redflag-700 focus:outline-none"
+          id="emailBox"
+          placeholder="Nhập email của bạn (vd: doanvien@tphcm.gov.vn)..."
+          class="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 text-xs sm:text-sm focus:ring-2 focus:ring-doan-700 focus:outline-none"
         />
 
         <button
-          onclick="const email = document.getElementById('emailInput').value; if(email) alert('Đã gửi Magic link đăng nhập vào hộp thư ' + email + '!');"
-          class="w-full py-3 px-4 rounded-xl bg-redflag-800 hover:bg-redflag-900 text-amber-100 font-serif font-bold text-sm shadow transition-colors"
+          id="btnMagicLogin"
+          class="w-full py-3 px-4 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-semibold transition-colors"
         >
-          Gửi Magic link đăng nhập qua Email
+          Gửi mã đăng nhập nhanh qua Email
         </button>
       </div>
 
     </div>
   </div>
-</RootLayout>
 
+  <script is:inline define:vars={{ homeUrl: withBase('/'), adminUrl: withBase('/quan-tri/duyet-bai') }}>
+    document.getElementById('btnAdminLogin')?.addEventListener('click', () => {
+      localStorage.setItem('dtn_hcm_current_user_v2', JSON.stringify({
+        id: 'admin-1',
+        name: 'Đ/c Trần Quốc Tuấn',
+        email: 'bientap@thanhdoan.tphcm.gov.vn',
+        unit: 'Ban Tuyên giáo Thành Đoàn TP.HCM',
+        role: 'admin',
+        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80'
+      }));
+      window.dispatchEvent(new Event('auth-changed'));
+      alert('Đăng nhập thành công với quyền: Quản trị viên Ban Biên tập!');
+      window.location.href = adminUrl;
+    });
+
+    document.getElementById('btnMemberLogin')?.addEventListener('click', () => {
+      localStorage.setItem('dtn_hcm_current_user_v2', JSON.stringify({
+        id: 'user-1',
+        name: 'Nguyễn Văn An',
+        email: 'vanan.doan@tphcm.gov.vn',
+        unit: 'Chi đoàn Ban Phong trào Thành Đoàn',
+        role: 'member',
+        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'
+      }));
+      window.dispatchEvent(new Event('auth-changed'));
+      alert('Đăng nhập thành công với tư cách Đoàn viên TP.HCM!');
+      window.location.href = homeUrl;
+    });
+
+    document.getElementById('btnMagicLogin')?.addEventListener('click', () => {
+      const email = document.getElementById('emailBox').value;
+      if (!email) {
+        alert('Vui lòng nhập email của bạn.');
+        return;
+      }
+      localStorage.setItem('dtn_hcm_current_user_v2', JSON.stringify({
+        id: 'user-' + Date.now(),
+        name: email.split('@')[0],
+        email: email,
+        unit: 'Đoàn Thanh niên TP.HCM',
+        role: 'member',
+        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'
+      }));
+      window.dispatchEvent(new Event('auth-changed'));
+      alert('Đã gửi xác thực và đăng nhập thành công!');
+      window.location.href = homeUrl;
+    });
+  </script>
+</RootLayout>

@@ -1,56 +1,51 @@
 ---
 import { withBase } from '@/lib/utils';
+import UserAuthNav from '@/components/common/UserAuthNav';
 ---
 
-<header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-heritage-200">
+<header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex items-center justify-between h-16 sm:h-20">
+    <div class="flex items-center justify-between h-20">
       
-      <!-- Logo & Tiêu đề dự án -->
-      <a href={withBase('/')} class="flex items-center gap-3 group">
-        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-redflag-800 flex items-center justify-center text-amber-300 font-serif font-black text-xl shadow-md group-hover:scale-105 transition-transform">
-          ★
-        </div>
-        <div>
-          <div class="font-serif font-bold text-redflag-900 text-lg sm:text-xl tracking-tight leading-none">
-            KÝ ỨC LỊCH SỬ
+      <!-- Logo Huy hiệu Đoàn & Tiêu đề đề án -->
+      <a href={withBase('/')} class="flex items-center gap-3.5 group">
+        <div class="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-redflag-700 via-doan-800 to-doan-900 p-0.5 shadow-md group-hover:scale-105 transition-all duration-300">
+          <div class="w-full h-full rounded-2xl bg-white flex items-center justify-center overflow-hidden p-1">
+            <!-- Huy hiệu Đoàn TNCS Hồ Chí Minh cách điệu -->
+            <div class="w-full h-full rounded-xl bg-gradient-to-tr from-redflag-800 to-doan-700 flex flex-col items-center justify-center text-white">
+              <span class="text-gold-400 font-serif font-black text-xl leading-none">★</span>
+              <span class="text-[8px] font-black tracking-widest text-gold-300 uppercase leading-none mt-0.5">ĐOÀN</span>
+            </div>
           </div>
-          <div class="text-xs text-heritage-600 font-medium tracking-wider uppercase mt-1">
-            Đoàn TNCS Hồ Chí Minh
+        </div>
+
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] font-bold text-doan-800 bg-doan-50 px-2 py-0.5 rounded-full border border-doan-200 uppercase tracking-wider">
+              Thành Đoàn TP. Hồ Chí Minh
+            </span>
+          </div>
+          <div class="font-serif font-black text-slate-900 text-base sm:text-lg tracking-tight leading-tight mt-1 group-hover:text-doan-800 transition-colors">
+            NHẬT KÝ THANH NIÊN LÀM THEO LỜI BÁC
           </div>
         </div>
       </a>
 
       <!-- Menu Điều hướng chính -->
-      <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-heritage-800">
-        <a href={withBase('/')} class="hover:text-redflag-700 transition-colors">Trang chủ</a>
-        <a href={withBase('/thu-vien')} class="hover:text-redflag-700 transition-colors">Thư viện ký ức</a>
-        <a href={withBase('/ban-do')} class="hover:text-redflag-700 transition-colors">Bản đồ ký ức</a>
-        <a href={withBase('/dong-thoi-gian')} class="hover:text-redflag-700 transition-colors">Dòng thời gian</a>
-        <a href={withBase('/quan-tri/duyet-bai')} class="hover:text-redflag-700 text-xs px-2 py-1 rounded bg-heritage-100 text-heritage-700">Quản trị</a>
+      <nav class="hidden xl:flex items-center gap-7 text-sm font-semibold text-slate-700">
+        <a href={withBase('/')} class="hover:text-doan-800 transition-colors">Trang chủ</a>
+        <a href={withBase('/thu-vien')} class="hover:text-doan-800 transition-colors">Thư viện nhật ký</a>
+        <a href={withBase('/ban-do')} class="hover:text-doan-800 transition-colors">Bản đồ Địa chỉ Đỏ</a>
+        <a href={withBase('/dong-thoi-gian')} class="hover:text-doan-800 transition-colors">Dòng thời gian</a>
+        <a href={withBase('/quan-tri/duyet-bai')} class="hover:text-redflag-700 transition-colors flex items-center gap-1.5 text-xs bg-redflag-50 px-2.5 py-1 rounded-lg text-redflag-800 font-bold border border-redflag-200">
+          <span>🛡️</span>
+          <span>Kiểm duyệt</span>
+        </a>
       </nav>
 
-      <!-- Hành động chính -->
-      <div class="flex items-center gap-3">
-        <a 
-          href={withBase('/gui-cau-chuyen')} 
-          class="inline-flex items-center gap-2 bg-redflag-800 hover:bg-redflag-900 text-amber-100 px-4 py-2 sm:px-5 sm:py-2.5 rounded-lg text-sm font-medium shadow-sm transition-all hover:shadow"
-        >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-          </svg>
-          <span>Gửi câu chuyện</span>
-        </a>
-
-        <a 
-          href={withBase('/tai-khoan/dang-nhap')} 
-          class="hidden sm:inline-flex items-center px-3.5 py-2 rounded-lg border border-heritage-300 text-sm font-medium text-heritage-700 hover:bg-heritage-100 transition-colors"
-        >
-          Tài khoản
-        </a>
-      </div>
+      <!-- Khung tài khoản & Nút gửi bài thực tế -->
+      <UserAuthNav client:load />
 
     </div>
   </div>
 </header>
-
