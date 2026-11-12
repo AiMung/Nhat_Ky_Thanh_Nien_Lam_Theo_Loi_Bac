@@ -194,7 +194,7 @@ export default function MyStoriesView() {
                 {/* Các nút hành động: Xem, Sửa, Xóa */}
                 <div className="flex lg:flex-col items-center justify-center gap-2 border-t lg:border-t-0 lg:border-l border-slate-100 pt-4 lg:pt-0 lg:pl-6 min-w-[150px]">
                   <a
-                    href={withBase(`/truyen/${story.slug}`)}
+                    href={withBase(`/truyen/chi-tiet?slug=${story.slug}`)}
                     className="w-full py-2 px-3 border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
                   >
                     <Eye className="w-3.5 h-3.5" />

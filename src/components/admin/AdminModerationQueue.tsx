@@ -232,7 +232,7 @@ export default function AdminModerationQueue() {
                 )}
 
                 <a
-                  href={withBase(`/truyen/${item.slug}`)}
+                  href={withBase(`/truyen/chi-tiet?slug=${item.slug}`)}
                   className="w-full py-2 px-3 border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-medium text-center flex items-center justify-center gap-1"
                 >
                   <Eye className="w-3.5 h-3.5" />

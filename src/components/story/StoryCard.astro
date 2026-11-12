@@ -62,7 +62,7 @@ const { story, featured = false } = Astro.props;
       </div>
 
       <h3 class={`font-serif font-bold text-slate-900 leading-snug group-hover:text-red-700 transition-colors mb-2 line-clamp-2 ${featured ? 'text-xl lg:text-2xl' : 'text-base sm:text-lg'}`}>
-        <a href={withBase(`/truyen/${story.slug}`)}>
+        <a href={withBase(`/truyen/chi-tiet?slug=${story.slug}`)}>
           {story.title}
         </a>
       </h3>
@@ -84,7 +84,7 @@ const { story, featured = false } = Astro.props;
       </div>
 
       <a 
-        href={withBase(`/truyen/${story.slug}`)} 
+        href={withBase(`/truyen/chi-tiet?slug=${story.slug}`)} 
         class="shrink-0 font-semibold text-red-700 hover:text-red-800 flex items-center gap-1 group/link bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors"
       >
         <span>Đọc tiếp</span>

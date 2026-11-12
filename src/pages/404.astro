@@ -1,0 +1,51 @@
+---
+import RootLayout from '@/layouts/RootLayout.astro';
+import { withBase } from '@/lib/utils';
+---
+
+<RootLayout title="Trang không tìm thấy - 404">
+  <div id="dynamicStoryFallback" class="min-h-[500px] flex items-center justify-center p-6 text-center">
+    <!-- Inline script kiểm tra xem URL có phải là /truyen/:slug hay không để chuyển hướng ngay lập tức -->
+    <script is:inline>
+      (function() {
+        var pathname = window.location.pathname;
+        var match = pathname.match(/\/truyen\/([^/?#]+)/);
+        if (match && match[1] && match[1] !== 'chi-tiet') {
+          var slug = match[1];
+          // Chuyển hướng sang trang xem chi tiết động ngay lập tức
+          var basePath = '';
+          var hostPath = window.location.pathname;
+          var targetUrl = (window.__BASE_PATH__ || '') + '/truyen/chi-tiet?slug=' + encodeURIComponent(slug);
+          window.location.replace(targetUrl);
+        }
+      })();
+    </script>
+
+    <div class="max-w-md mx-auto py-16">
+      <div class="w-20 h-20 rounded-3xl bg-red-50 text-red-700 flex items-center justify-center text-3xl mx-auto mb-5 border border-red-200 shadow-sm">
+        ★
+      </div>
+      <h1 class="font-serif font-black text-3xl text-slate-900 mb-2">
+        404 - Không tìm thấy trang
+      </h1>
+      <p class="text-sm text-slate-600 mb-8 leading-relaxed">
+        Đường dẫn bạn truy cập có thể đã được thay đổi hoặc chưa được cập nhật. Vui lòng quay lại Trang chủ hoặc Thư viện nhật ký.
+      </p>
+
+      <div class="flex items-center justify-center gap-3">
+        <a
+          href={withBase('/')}
+          class="px-6 py-3 rounded-2xl bg-red-700 hover:bg-red-800 text-white font-bold text-xs shadow-md transition-all"
+        >
+          Trang chủ
+        </a>
+        <a
+          href={withBase('/thu-vien')}
+          class="px-6 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-colors"
+        >
+          Thư viện nhật ký
+        </a>
+      </div>
+    </div>
+  </div>
+</RootLayout>

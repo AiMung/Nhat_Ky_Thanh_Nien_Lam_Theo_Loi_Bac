@@ -5,6 +5,8 @@ import SearchBar from '@/components/search/SearchBar';
 import VietnamMap from '@/components/map/VietnamMap';
 import EmberSparks from '@/components/common/EmberSparks';
 import SocialPostBar from '@/components/story/SocialPostBar';
+import InteractiveTimelineGsap from '@/components/home/InteractiveTimelineGsap';
+import LeaderboardSection from '@/components/home/LeaderboardSection';
 import { getAllStories } from '@/lib/storage';
 import { withBase } from '@/lib/utils';
 
@@ -127,19 +129,19 @@ const TIMELINE_MILESTONES = [
           </div>
         </div>
 
-        <!-- Cột phải: Hộp trích dẫn Bác Hồ, Thanh tìm kiếm & Chỉ số thống kê -->
-        <div class="lg:col-span-7 space-y-4">
+        <!-- Cột phải: Hộp trích dẫn Bác Hồ, Chỉ số thống kê & Thanh tìm kiếm -->
+        <div class="lg:col-span-7 space-y-3.5">
           
           <!-- Hộp Trích dẫn bất hủ của Bác Hồ: Thiết kế chuẩn Enterprise Ruby sang trọng -->
-          <div class="p-4 sm:p-5 rounded-2xl bg-red-950/60 backdrop-blur-md border border-amber-400/40 text-amber-100 shadow-2xl">
+          <div class="p-4 sm:p-5 rounded-2xl bg-red-950/70 backdrop-blur-md border border-amber-400/40 text-amber-100 shadow-2xl">
             <div class="flex items-start gap-3">
               <span class="text-3xl text-amber-300 leading-none select-none">“</span>
               <div class="flex-1">
-                <p class="font-serif italic text-base sm:text-lg text-amber-200 leading-relaxed font-semibold">
+                <p class="font-serif italic text-sm sm:text-base text-amber-200 leading-relaxed font-semibold">
                   Không có việc gì khó, chỉ sợ lòng không bền<br class="hidden sm:inline" />
                   Đào núi và lấp biển, quyết chí ắt làm nên.
                 </p>
-                <div class="text-[11px] sm:text-xs text-amber-300 font-bold uppercase tracking-wider mt-2 flex items-center gap-1.5">
+                <div class="text-[11px] text-amber-300 font-bold uppercase tracking-wider mt-1.5 flex items-center gap-1.5">
                   <span>★</span>
                   <span>Lời Bác Hồ tặng Đội Thanh niên xung phong (1951)</span>
                   <span>★</span>
@@ -148,29 +150,29 @@ const TIMELINE_MILESTONES = [
             </div>
           </div>
 
-          <!-- Thanh tìm kiếm không dấu thời gian thực: Container z-30 để dropdown hiển thị đè lên trên -->
-          <div class="relative z-30 bg-white/95 backdrop-blur-md p-1.5 rounded-2xl shadow-2xl border border-white/30">
-            <SearchBar client:load />
+          <!-- Bốn con số ấn tượng chuẩn Enterprise: Sáng rõ, vàng chói lọi, không bị chìm, không bị đè lấp -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <div class="p-3 rounded-2xl bg-slate-900/80 hover:bg-slate-900/90 backdrop-blur-md border border-amber-400/30 text-center transition-all shadow-md">
+              <div class="font-serif font-black text-2xl sm:text-3xl text-amber-300 drop-shadow-[0_2px_8px_rgba(251,191,36,0.4)]">20,000+</div>
+              <div class="text-[10px] sm:text-[11px] text-amber-100 uppercase tracking-wider font-bold mt-0.5">Trang nhật ký</div>
+            </div>
+            <div class="p-3 rounded-2xl bg-slate-900/80 hover:bg-slate-900/90 backdrop-blur-md border border-amber-400/30 text-center transition-all shadow-md">
+              <div class="font-serif font-black text-2xl sm:text-3xl text-amber-300 drop-shadow-[0_2px_8px_rgba(251,191,36,0.4)]">800+</div>
+              <div class="text-[10px] sm:text-[11px] text-amber-100 uppercase tracking-wider font-bold mt-0.5">Cơ sở Đoàn</div>
+            </div>
+            <div class="p-3 rounded-2xl bg-slate-900/80 hover:bg-slate-900/90 backdrop-blur-md border border-amber-400/30 text-center transition-all shadow-md">
+              <div class="font-serif font-black text-2xl sm:text-3xl text-amber-300 drop-shadow-[0_2px_8px_rgba(251,191,36,0.4)]">100</div>
+              <div class="text-[10px] sm:text-[11px] text-amber-100 uppercase tracking-wider font-bold mt-0.5">Địa chỉ Đỏ 3D</div>
+            </div>
+            <div class="p-3 rounded-2xl bg-slate-900/80 hover:bg-slate-900/90 backdrop-blur-md border border-amber-400/30 text-center transition-all shadow-md">
+              <div class="font-serif font-black text-2xl sm:text-3xl text-amber-300 drop-shadow-[0_2px_8px_rgba(251,191,36,0.4)]">100%</div>
+              <div class="text-[10px] sm:text-[11px] text-amber-100 uppercase tracking-wider font-bold mt-0.5">Xác minh chuẩn</div>
+            </div>
           </div>
 
-          <!-- Bốn con số ấn tượng chuẩn Enterprise: Mờ kính sang trọng, không u ám -->
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1">
-            <div class="p-3 rounded-2xl bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/20 text-center transition-colors shadow-sm">
-              <div class="font-serif font-black text-xl sm:text-2xl text-amber-300 drop-shadow-xs">20,000+</div>
-              <div class="text-[10px] text-white/90 uppercase tracking-wider font-bold mt-0.5">Trang nhật ký</div>
-            </div>
-            <div class="p-3 rounded-2xl bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/20 text-center transition-colors shadow-sm">
-              <div class="font-serif font-black text-xl sm:text-2xl text-amber-300 drop-shadow-xs">800+</div>
-              <div class="text-[10px] text-white/90 uppercase tracking-wider font-bold mt-0.5">Cơ sở Đoàn</div>
-            </div>
-            <div class="p-3 rounded-2xl bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/20 text-center transition-colors shadow-sm">
-              <div class="font-serif font-black text-xl sm:text-2xl text-amber-300 drop-shadow-xs">100</div>
-              <div class="text-[10px] text-white/90 uppercase tracking-wider font-bold mt-0.5">Địa chỉ Đỏ 3D</div>
-            </div>
-            <div class="p-3 rounded-2xl bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/20 text-center transition-colors shadow-sm">
-              <div class="font-serif font-black text-xl sm:text-2xl text-amber-300 drop-shadow-xs">100%</div>
-              <div class="text-[10px] text-white/90 uppercase tracking-wider font-bold mt-0.5">Xác minh chuẩn</div>
-            </div>
+          <!-- Thanh tìm kiếm không dấu thời gian thực: Đặt dưới các số thống kê, dropdown xổ xuống thoáng đãng -->
+          <div class="relative z-30 bg-white/95 backdrop-blur-md p-1.5 rounded-2xl shadow-xl border border-white/40">
+            <SearchBar client:load />
           </div>
 
         </div>
@@ -256,32 +258,27 @@ const TIMELINE_MILESTONES = [
     </div>
   </section>
 
-  <!-- DÒNG THỜI GIAN MỐC SON CỦA ĐOÀN VÀ TUỔI TRẺ -->
+  <!-- DÒNG THỜI GIAN MỐC SON CỦA ĐOÀN VÀ TUỔI TRẺ (HIỆU ỨNG GSAP-STYLE INTERACTIVE CHUYÊN NGHIỆP) -->
   <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-    <div class="text-center max-w-3xl mx-auto mb-12">
-      <span class="text-xs font-bold text-doan-800 uppercase tracking-widest bg-doan-50 px-3 py-1 rounded-full border border-doan-200">
-        Biên niên sử vàng
+    <div class="text-center max-w-3xl mx-auto mb-10">
+      <span class="text-xs font-bold text-red-700 uppercase tracking-widest bg-red-50 px-3 py-1 rounded-full border border-red-200">
+        Biên niên sử vàng hào hùng
       </span>
       <h2 class="font-serif font-black text-2xl sm:text-3xl text-slate-900 mt-2.5">
-        Những mốc son lịch sử hào hùng của dân tộc
+        Những Mốc Son Lịch Sử Hào Hùng Của Dân Tộc
       </h2>
+      <p class="text-sm text-slate-600 mt-2">
+        Hành trình hơn 90 năm rèn luyện, chiến đấu và dựng xây non sông vẻ vang của các thế hệ thanh niên dưới ngọn cờ của Đảng và Bác Hồ
+      </p>
     </div>
 
-    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
-      {TIMELINE_MILESTONES.map((item) => (
-        <a
-          href={withBase('/dong-thoi-gian')}
-          class="bg-white p-4 rounded-xl border border-slate-200 hover:border-doan-600 hover:shadow-card-hover transition-all text-center group flex flex-col justify-between"
-        >
-          <div class="font-serif font-black text-xl text-redflag-800 group-hover:scale-105 transition-transform">
-            {item.year}
-          </div>
-          <div class="text-[11px] text-slate-700 font-medium mt-1.5 line-clamp-3 leading-snug">
-            {item.title}
-          </div>
-        </a>
-      ))}
-    </div>
+    <!-- Component timeline tương tác GSAP mượt mà -->
+    <InteractiveTimelineGsap client:load />
+  </section>
+
+  <!-- BẢNG XẾP HẠNG THI ĐUA ĐÓNG GÓP KÝ ỨC (37 TỔ DÂN PHỐ P. XUÂN HƯƠNG - ĐÀ LẠT & ĐOÀN CƠ SỞ) -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <LeaderboardSection client:load />
   </section>
 
   <!-- TRUYỆN NỔI BẬT & MỚI NHẤT (DÒNG BÀI NEWSFEED) -->

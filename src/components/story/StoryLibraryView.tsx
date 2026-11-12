@@ -192,7 +192,7 @@ export default function StoryLibraryView() {
                     {formatDate(story.published_at || story.created_at)}
                   </div>
                   <h3 className="font-serif font-bold text-slate-900 text-base sm:text-lg leading-snug group-hover:text-red-700 transition-colors mb-2 line-clamp-2">
-                    <a href={withBase(`/truyen/${story.slug}`)}>
+                    <a href={withBase(`/truyen/chi-tiet?slug=${story.slug}`)}>
                       {story.title}
                     </a>
                   </h3>
@@ -208,7 +208,7 @@ export default function StoryLibraryView() {
                     </div>
                   </div>
                   <a
-                    href={withBase(`/truyen/${story.slug}`)}
+                    href={withBase(`/truyen/chi-tiet?slug=${story.slug}`)}
                     className="shrink-0 font-semibold text-red-700 hover:text-red-800 flex items-center gap-1 group/link bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors"
                   >
                     <span>Đọc tiếp</span>
