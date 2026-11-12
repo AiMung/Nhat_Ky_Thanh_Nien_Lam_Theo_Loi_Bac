@@ -9,14 +9,11 @@ import UserAuthNav from '@/components/common/UserAuthNav';
       
       <!-- Logo Huy hiệu Đoàn & Tiêu đề đề án chuẩn Enterprise -->
       <a href={withBase('/')} class="flex items-center gap-3 shrink-0 group">
-        <div class="relative w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-red-600 to-red-800 p-0.5 shadow-sm group-hover:scale-105 transition-transform">
-          <div class="w-full h-full rounded-[10px] bg-white flex items-center justify-center p-1">
-            <div class="w-full h-full rounded-lg bg-gradient-to-tr from-red-700 to-blue-800 flex flex-col items-center justify-center text-white">
-              <span class="text-amber-400 font-serif font-black text-base sm:text-lg leading-none">★</span>
-              <span class="text-[7px] font-black tracking-widest text-amber-200 uppercase leading-none mt-0.5">ĐOÀN</span>
-            </div>
-          </div>
-        </div>
+        <img
+          src={withBase('/images/thoi-hoa-lua/logo-doan.webp')}
+          alt="Huy hiệu Đoàn TNCS Hồ Chí Minh"
+          class="w-10 h-10 sm:w-11 sm:h-11 object-contain drop-shadow-sm group-hover:scale-105 transition-transform"
+        />
 
         <div class="shrink-0">
           <div class="text-[10px] font-bold text-red-700 uppercase tracking-wider leading-none">
@@ -41,6 +38,9 @@ import UserAuthNav from '@/components/common/UserAuthNav';
         </a>
         <a href={withBase('/dong-thoi-gian')} class="px-3.5 py-2 rounded-lg hover:text-red-700 hover:bg-slate-50 transition-colors whitespace-nowrap">
           Dòng thời gian
+        </a>
+        <a href={withBase('/ve-de-an')} class="px-3.5 py-2 rounded-lg hover:text-red-700 hover:bg-slate-50 transition-colors whitespace-nowrap">
+          Về đề án
         </a>
         <a href={withBase('/tai-khoan/truyen-cua-toi')} class="px-3.5 py-2 rounded-lg hover:text-red-700 hover:bg-slate-50 transition-colors whitespace-nowrap">
           Truyện của tôi
@@ -80,6 +80,9 @@ import UserAuthNav from '@/components/common/UserAuthNav';
     </a>
     <a href={withBase('/dong-thoi-gian')} class="block px-3 py-2 rounded-lg font-semibold text-slate-800 hover:bg-slate-50 hover:text-red-700">
       Dòng thời gian
+    </a>
+    <a href={withBase('/ve-de-an')} class="block px-3 py-2 rounded-lg font-semibold text-slate-800 hover:bg-slate-50 hover:text-red-700">
+      Về đề án
     </a>
     <a href={withBase('/tai-khoan/truyen-cua-toi')} class="block px-3 py-2 rounded-lg font-semibold text-slate-800 hover:bg-slate-50 hover:text-red-700">
       Truyện của tôi

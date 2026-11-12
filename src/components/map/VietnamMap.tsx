@@ -110,6 +110,29 @@ const PROVINCE_MAP: Record<string, ProvinceStoryData> = {
     featuredUnit: 'Tỉnh Đoàn Quảng Trị',
     coords: { x: 46, y: 39 }
   },
+  MN: {
+    id: 'MN',
+    name: 'Mũi Né — Phan Thiết (Bình Thuận)',
+    code: 'BT',
+    region: 'Duyên hải Nam Trung Bộ • Dấu ấn thời niên thiếu Bác Hồ',
+    count: 530,
+    highlight: 'Khu di tích Trường Dục Thanh bên bờ biển Phan Thiết - Mũi Né nơi thầy giáo Nguyễn Tất Thành (Bác Hồ) dừng chân dạy học năm 1910 trước khi vào Sài Gòn ra đi tìm đường cứu nước.',
+    image: '/images/thoi-hoa-lua/story-1.jpg',
+    featuredUnit: 'Thành Đoàn Phan Thiết & Tuổi trẻ Bình Thuận',
+    coords: { x: 53, y: 73 }
+  },
+  CD: {
+    id: 'CD',
+    name: 'Côn Đảo (Bà Rịa — Vũng Tàu)',
+    code: 'BV',
+    region: 'Hòn đảo thiêng liêng • Biểu tượng bất khuất',
+    count: 420,
+    highlight: 'Nghĩa trang Hàng Dương, nơi yên nghỉ của nữ Anh hùng liệt sĩ Võ Thị Sáu, Tổng Bí thư Lê Hồng Phong, nhà yêu nước Nguyễn An Ninh và hàng vạn chiến sĩ cách mạng kiên trung.',
+    image: '/images/thoi-hoa-lua/story-me-tien-con-ra-tran.jpg',
+    featuredUnit: 'Huyện Đoàn Côn Đảo & Tuổi trẻ Côn Đảo',
+    coords: { x: 46, y: 88 },
+    isIsland: true
+  },
   DB: {
     id: 'DB',
     name: 'Điện Biên',
@@ -125,7 +148,7 @@ const PROVINCE_MAP: Record<string, ProvinceStoryData> = {
 
 export default function VietnamMap() {
   const [selectedKey, setSelectedKey] = useState<string>('LD');
-  const [viewMode, setViewMode] = useState<'highcharts' | 'svg'>('highcharts');
+  const [viewMode, setViewMode] = useState<'highcharts' | 'svg'>('svg');
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -272,6 +295,8 @@ export default function VietnamMap() {
                           else if (p.name.includes('Khánh Hòa')) setSelectedKey('KH');
                           else if (p.name.includes('Quảng Trị')) setSelectedKey('QT');
                           else if (p.name.includes('Điện Biên')) setSelectedKey('DB');
+                          else if (p.name.includes('Bình Thuận') || p.name.includes('Mũi Né') || p.name.includes('Phan Thiết')) setSelectedKey('MN');
+                          else if (p.name.includes('Vũng Tàu') || p.name.includes('Côn Đảo')) setSelectedKey('CD');
                         }
                       }}
                     />
@@ -279,37 +304,96 @@ export default function VietnamMap() {
                 </MapErrorBoundary>
               </div>
             ) : (
-              /* BẢN ĐỒ SVG HÌNH CHỮ S TƯƠNG TÁC (LUÔN HOẠT ĐỘNG 100% KHÔNG BAO GIỜ TRẮNG TRƠN) */
-              <div className="relative w-full h-[460px] select-none">
-                <svg viewBox="0 0 320 480" className="w-full h-full filter drop-shadow-md">
+              /* BẢN ĐỒ SVG HÌNH CHỮ S TƯƠNG TÁC HÀO HÙNG (HOÀNG SA, TRƯỜNG SA, MŨI NÉ, ĐÀ LẠT, CÔN ĐẢO) */
+              <div className="relative w-full h-[520px] select-none rounded-2xl bg-amber-50/40 p-2 overflow-hidden border border-amber-200/60">
+                <svg viewBox="0 0 340 500" className="w-full h-full filter drop-shadow-md">
+                  <defs>
+                    <linearGradient id="mapGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#fef3c7" stopOpacity="0.9" />
+                      <stop offset="100%" stopColor="#fee2e2" stopOpacity="0.9" />
+                    </linearGradient>
+                    <pattern id="seaPattern" width="20" height="20" patternUnits="userSpaceOnUse">
+                      <path d="M 0 10 Q 5 5, 10 10 T 20 10" fill="none" stroke="#e0f2fe" strokeWidth="0.8" />
+                    </pattern>
+                  </defs>
+
+                  {/* Nền biển Đông xanh dịu */}
+                  <rect width="340" height="500" fill="#f8fafc" />
+                  <rect width="340" height="500" fill="url(#seaPattern)" />
+
+                  {/* Lãnh thổ Việt Nam hình chữ S duyên dáng, chuẩn địa lý */}
                   <path
-                    d="M 80 55 Q 120 40, 160 60 Q 180 80, 140 100 Q 120 120, 145 150 Q 160 175, 150 200 Q 140 230, 180 250 Q 200 270, 180 300 Q 160 330, 175 360 Q 165 385, 130 395 Q 100 405, 95 380 Q 120 365, 125 340 Q 115 315, 105 330 Q 90 320, 100 280 Q 90 230, 110 180 Q 90 140, 80 100 Z"
-                    fill="#f8fafc"
-                    stroke="#94a3b8"
-                    strokeWidth="2"
+                    d="M 75 45 
+                       Q 115 35, 155 50 
+                       Q 175 70, 145 95 
+                       Q 125 115, 140 140 
+                       Q 155 165, 145 195 
+                       Q 135 220, 165 245 
+                       Q 185 265, 175 295 
+                       Q 160 325, 175 355 
+                       Q 170 380, 145 395 
+                       Q 125 405, 95 400 
+                       Q 85 385, 105 370 
+                       Q 120 355, 125 335 
+                       Q 115 315, 105 325 
+                       Q 95 315, 100 275 
+                       Q 90 230, 105 180 
+                       Q 85 140, 75 95 Z"
+                    fill="url(#mapGradient)"
+                    stroke="#dc2626"
+                    strokeWidth="2.2"
+                    className="transition-all"
                   />
 
-                  {/* Quần đảo Hoàng Sa */}
-                  <g className="cursor-pointer" onClick={() => setSelectedKey('DN')}>
-                    <rect x="210" y="195" width="65" height="45" rx="8" fill="#eff6ff" stroke="#93c5fd" strokeWidth="1" strokeDasharray="3 3" />
-                    <text x="215" y="210" fontSize="8" fill="#1e40af" fontWeight="bold">Q.Đ HOÀNG SA</text>
-                    <text x="215" y="222" fontSize="7" fill="#64748b">(Đà Nẵng)</text>
-                    <circle cx="230" cy="230" r="3" fill="#dc2626" />
-                    <circle cx="245" cy="225" r="2.5" fill="#dc2626" />
-                    <circle cx="255" cy="232" r="3" fill="#dc2626" />
+                  {/* Đảo Phú Quốc (Kiên Giang) */}
+                  <g className="cursor-pointer" onClick={() => setSelectedKey('HCM')}>
+                    <ellipse cx="82" cy="405" rx="6" ry="12" fill="#fed7aa" stroke="#ea580c" strokeWidth="1.2" transform="rotate(-15 82 405)" />
+                    <text x="75" y="425" fontSize="7" fill="#c2410c" fontWeight="bold">Đ. PHÚ QUỐC</text>
                   </g>
 
-                  {/* Quần đảo Trường Sa */}
-                  <g className="cursor-pointer" onClick={() => setSelectedKey('KH')}>
-                    <rect x="220" y="340" width="75" height="55" rx="8" fill="#eff6ff" stroke="#93c5fd" strokeWidth="1" strokeDasharray="3 3" />
-                    <text x="225" y="355" fontSize="8" fill="#1e40af" fontWeight="bold">Q.Đ TRƯỜNG SA</text>
-                    <text x="225" y="367" fontSize="7" fill="#64748b">(Khánh Hòa) & DK1</text>
-                    <circle cx="240" cy="378" r="3.5" fill="#dc2626" />
-                    <circle cx="255" cy="372" r="2.5" fill="#dc2626" />
-                    <circle cx="270" cy="382" r="3" fill="#dc2626" />
+                  {/* Quần đảo Côn Đảo (Bà Rịa - Vũng Tàu) */}
+                  <g className="cursor-pointer" onClick={() => setSelectedKey('CD')}>
+                    <ellipse cx="140" cy="435" rx="5" ry="4" fill="#fee2e2" stroke="#dc2626" strokeWidth="1.2" />
+                    <circle cx="148" cy="438" r="2.5" fill="#dc2626" />
+                    <text x="120" y="452" fontSize="7.5" fill="#b91c1c" fontWeight="bold">Q.Đ CÔN ĐẢO</text>
+                    <text x="120" y="460" fontSize="6.5" fill="#64748b">(Bà Rịa - Vũng Tàu)</text>
                   </g>
 
-                  <text x="175" y="290" fontSize="11" fill="#cbd5e1" fontWeight="bold" letterSpacing="3">BIỂN ĐÔNG</text>
+                  {/* Quần đảo Hoàng Sa thiêng liêng */}
+                  <g className="cursor-pointer group" onClick={() => setSelectedKey('DN')}>
+                    <rect x="215" y="180" width="85" height="58" rx="10" fill="#eff6ff" stroke="#3b82f6" strokeWidth="1.5" strokeDasharray="3 3" />
+                    <rect x="220" y="186" width="10" height="7" fill="#dc2626" rx="1" />
+                    <polygon points="225,188 226,191 224,191" fill="#facc15" />
+                    <text x="235" y="193" fontSize="8.5" fill="#1e40af" fontWeight="900">Q.Đ HOÀNG SA</text>
+                    <text x="220" y="206" fontSize="7" fill="#475569">Chủ quyền Việt Nam</text>
+                    <text x="220" y="215" fontSize="6.5" fill="#64748b">(Thuộc TP. Đà Nẵng)</text>
+                    {/* Các đảo thuộc Hoàng Sa */}
+                    <circle cx="235" cy="225" r="3.5" fill="#dc2626" />
+                    <text x="241" y="227" fontSize="6" fill="#1e3a8a">Đ. Hoàng Sa</text>
+                    <circle cx="275" cy="222" r="3" fill="#dc2626" />
+                    <text x="270" y="232" fontSize="6" fill="#1e3a8a">Đ. Phú Lâm</text>
+                  </g>
+
+                  {/* Quần đảo Trường Sa thiêng liêng */}
+                  <g className="cursor-pointer group" onClick={() => setSelectedKey('KH')}>
+                    <rect x="215" y="315" width="95" height="78" rx="10" fill="#eff6ff" stroke="#3b82f6" strokeWidth="1.5" strokeDasharray="3 3" />
+                    <rect x="220" y="322" width="10" height="7" fill="#dc2626" rx="1" />
+                    <polygon points="225,324 226,327 224,327" fill="#facc15" />
+                    <text x="235" y="329" fontSize="8.5" fill="#1e40af" fontWeight="900">Q.Đ TRƯỜNG SA</text>
+                    <text x="220" y="341" fontSize="7" fill="#475569">Chủ quyền Việt Nam</text>
+                    <text x="220" y="350" fontSize="6.5" fill="#64748b">(H. Trường Sa - Khánh Hòa)</text>
+                    {/* Các đảo và Cụm Nhà giàn DK1 */}
+                    <circle cx="235" cy="362" r="3.5" fill="#dc2626" />
+                    <text x="241" y="364" fontSize="6" fill="#1e3a8a">Đ. Song Tử</text>
+                    <circle cx="275" cy="365" r="3.5" fill="#dc2626" />
+                    <text x="260" y="375" fontSize="6" fill="#1e3a8a">Đ. Trường Sa Lớn</text>
+                    <circle cx="240" cy="380" r="3" fill="#d97706" />
+                    <text x="246" y="383" fontSize="6" fill="#92400e" fontWeight="bold">Nhà giàn DK1</text>
+                  </g>
+
+                  {/* Dòng chữ Biển Đông thiêng liêng */}
+                  <text x="180" y="275" fontSize="12" fill="#94a3b8" fontWeight="bold" letterSpacing="4">BIỂN ĐÔNG</text>
+                  <text x="180" y="290" fontSize="7.5" fill="#cbd5e1" fontStyle="italic">Vùng biển chủ quyền thiêng liêng của Tổ quốc</text>
                 </svg>
 
                 {/* Các điểm Pin phát sáng */}
@@ -326,18 +410,20 @@ export default function VietnamMap() {
                       }`}
                     >
                       {isSelected && (
-                        <span className="absolute -inset-2 rounded-full bg-red-600/30 animate-ping"></span>
+                        <span className="absolute -inset-2 rounded-full bg-red-600/40 animate-ping"></span>
                       )}
                       <div className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold shadow-md border transition-all ${
                         isSelected
                           ? 'bg-red-700 text-white border-amber-300 ring-2 ring-red-400'
                           : prov.id === 'LD'
-                          ? 'bg-amber-500 text-white border-amber-300'
+                          ? 'bg-amber-500 text-white border-amber-300 ring-1 ring-amber-400'
+                          : prov.id === 'MN'
+                          ? 'bg-emerald-600 text-white border-emerald-300'
                           : prov.isIsland
                           ? 'bg-blue-800 text-white border-blue-300'
                           : 'bg-white text-slate-800 border-slate-300'
                       }`}>
-                        <span>{prov.id === 'LD' ? '🌸' : isSelected ? '★' : '📍'}</span>
+                        <span>{prov.id === 'LD' ? '🌸' : prov.id === 'MN' ? '🏖️' : isSelected ? '★' : '📍'}</span>
                         <span className="whitespace-nowrap">{prov.name.split(' (')[0]}</span>
                       </div>
                     </button>

@@ -181,9 +181,39 @@ const TIMELINE_MILESTONES = [
     </div>
   </section>
 
-  <!-- THANH ĐĂNG BÀI NHANH PHONG CÁCH FACEBOOK & THỜI HOA LỬA (Nổi bật ngay dưới Hero) -->
-  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <SocialPostBar client:load />
+  <!-- BANNER KHÁM PHÁ & ĐỌC TRUYỆN DÀNH CHO ĐOÀN VIÊN VÀ NHÂN DÂN (ƯU TIÊN TRẢI NGHIỆM ĐỌC) -->
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+    <div class="bg-gradient-to-r from-amber-50 via-white to-red-50 rounded-3xl border border-amber-200/80 p-5 sm:p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <img
+          src={withBase('/images/thoi-hoa-lua/logo-doan.webp')}
+          alt="Huy hiệu Đoàn"
+          class="w-12 h-12 object-contain drop-shadow shrink-0"
+        />
+        <div>
+          <h3 class="font-serif font-black text-slate-900 text-base sm:text-lg">
+            Thư viện Ký Ức & Tấm Gương Đạo Đức Hồ Chí Minh
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-600 mt-0.5">
+            Mời bạn đọc, cán bộ, đoàn viên thanh niên 37 Tổ Dân Phố Phường Xuân Hương cùng khám phá những mẩu chuyện cảm động về Bác Hồ và trang sử vẻ vang.
+          </p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 shrink-0">
+        <a
+          href={withBase('/thu-vien')}
+          class="px-5 py-2.5 rounded-xl bg-red-700 hover:bg-red-800 text-white font-bold text-xs sm:text-sm shadow transition-colors flex items-center gap-1.5"
+        >
+          <span>📖 Khám phá Thư viện</span>
+        </a>
+        <a
+          href={withBase('/ban-do')}
+          class="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs sm:text-sm border border-slate-300 shadow-xs transition-colors"
+        >
+          <span>🗺️ Bản đồ Địa chỉ Đỏ</span>
+        </a>
+      </div>
+    </div>
   </section>
 
   <!-- 6 CHỦ ĐỀ CHUYÊN ĐỀ THANH NIÊN LÀM THEO LỜI BÁC -->

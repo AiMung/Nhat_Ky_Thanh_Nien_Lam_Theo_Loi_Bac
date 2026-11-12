@@ -4,23 +4,44 @@ import VietnamMap from '@/components/map/VietnamMap';
 import { withBase } from '@/lib/utils';
 ---
 
-<RootLayout title="Bản đồ Địa chỉ Đỏ & Ký ức Lịch sử - Thành Đoàn TP. Hồ Chí Minh">
+<RootLayout title="Bản đồ Địa chỉ Đỏ & Ký ức Lịch sử - Đoàn TNCS Hồ Chí Minh Phường Xuân Hương">
   
-  <!-- Banner tiêu đề chuẩn Enterprise: Sáng sủa, trang trọng, thanh lịch -->
-  <section class="bg-gradient-to-b from-white via-slate-50 to-slate-100/80 border-b border-slate-200 py-10 px-4">
-    <div class="max-w-7xl mx-auto text-center">
-      <div class="inline-flex items-center gap-2 text-xs text-slate-500 font-semibold mb-2.5 uppercase tracking-wider">
-        <a href={withBase('/')} class="hover:text-red-700 transition-colors">Trang chủ</a>
+  <!-- Hero Banner Bản đồ Ký ức Lịch sử với hình ảnh Panoramic cổ kính hào hùng -->
+  <section 
+    class="relative text-white py-14 sm:py-20 px-4 border-b-4 border-amber-500 overflow-hidden shadow-hero"
+    style="background-image: linear-gradient(to bottom, rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.94)), url('/images/vietnam-panoramic-map.jpg'); background-size: cover; background-position: center;"
+  >
+    <!-- Họa tiết tàn lửa mờ -->
+    <div class="absolute inset-0 bg-gradient-to-r from-red-950/60 via-transparent to-black/60 pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto text-center relative z-10">
+      <div class="inline-flex items-center gap-2 text-xs font-bold text-amber-300 bg-black/60 px-4 py-1.5 rounded-full border border-amber-400/50 mb-3 shadow-lg">
+        <a href={withBase('/')} class="hover:text-white transition-colors">Trang chủ</a>
         <span>/</span>
-        <span class="text-red-700 font-bold">Bản đồ Địa chỉ Đỏ</span>
+        <span class="text-amber-400 uppercase tracking-wider">Bản đồ Địa chỉ Đỏ Toàn Quốc</span>
       </div>
 
-      <h1 class="font-serif font-bold text-2xl sm:text-4xl text-slate-900 tracking-tight leading-tight mb-2">
+      <h1 class="font-serif font-black text-3xl sm:text-5xl text-white tracking-tight leading-tight mb-3 drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)]">
         BẢN ĐỒ KÝ ỨC LỊCH SỬ & ĐỊA CHỈ ĐỎ
       </h1>
-      <p class="text-xs sm:text-sm text-slate-600 max-w-2xl mx-auto leading-relaxed">
-        Theo chân các thế hệ thanh niên khám phá các chiến tích hào hùng, khẳng định trọn vẹn chủ quyền thiêng liêng đối với hai quần đảo Hoàng Sa và Trường Sa.
+      <p class="text-xs sm:text-base text-amber-100 max-w-3xl mx-auto leading-relaxed drop-shadow font-medium">
+        Theo chân các thế hệ thanh niên khám phá các chiến tích hào hùng từ địa đầu Móng Cái đến Mũi Cà Mau, khẳng định trọn vẹn chủ quyền thiêng liêng đối với hai quần đảo <strong>Hoàng Sa</strong> và <strong>Trường Sa</strong>.
       </p>
+
+      <div class="mt-6 flex flex-wrap items-center justify-center gap-2.5 text-xs">
+        <span class="px-3.5 py-1.5 rounded-full bg-red-900/80 border border-red-500/60 text-amber-200 font-bold shadow-md">
+          🌊 Q.Đ Hoàng Sa (Đà Nẵng)
+        </span>
+        <span class="px-3.5 py-1.5 rounded-full bg-red-900/80 border border-red-500/60 text-amber-200 font-bold shadow-md">
+          ⚓ Q.Đ Trường Sa (Khánh Hòa)
+        </span>
+        <span class="px-3.5 py-1.5 rounded-full bg-blue-900/80 border border-blue-400/60 text-blue-200 font-bold shadow-md">
+          🏖️ Mũi Né (Bình Thuận)
+        </span>
+        <span class="px-3.5 py-1.5 rounded-full bg-amber-900/80 border border-amber-400/60 text-amber-200 font-bold shadow-md">
+          🌸 P. Xuân Hương (Đà Lạt)
+        </span>
+      </div>
     </div>
   </section>
 

@@ -1,0 +1,95 @@
+---
+import RootLayout from '@/layouts/RootLayout.astro';
+import { withBase } from '@/lib/utils';
+
+const MODULES = [
+  { id: 1, title: 'Bối cảnh & Tầm quan trọng của Đề án', img: '/images/thoi-hoa-lua/vede-m01.jpg' },
+  { id: 2, title: 'Mục tiêu chiến lược số hóa ký ức', img: '/images/thoi-hoa-lua/vede-m02.jpg' },
+  { id: 3, title: 'Đối tượng và phạm vi nhân chứng', img: '/images/thoi-hoa-lua/vede-m03.jpg' },
+  { id: 4, title: 'Quy trình thu thập và xác minh tư liệu', img: '/images/thoi-hoa-lua/vede-m04.jpg' },
+  { id: 5, title: 'Nền tảng số hóa & Bản đồ Địa chỉ Đỏ', img: '/images/thoi-hoa-lua/vede-m05.jpg' },
+  { id: 6, title: 'Phát huy giá trị trong thanh thiếu nhi', img: '/images/thoi-hoa-lua/vede-m06.jpg' },
+  { id: 7, title: 'Phong trào thi đua 37 Tổ Dân Phố', img: '/images/thoi-hoa-lua/vede-m07.jpg' },
+  { id: 8, title: 'Chăm sóc nhân chứng & Đền ơn đáp nghĩa', img: '/images/thoi-hoa-lua/vede-m08.jpg' },
+  { id: 9, title: 'Bảo tồn kỷ vật & Di cảo thời chiến', img: '/images/thoi-hoa-lua/vede-m09.jpg' },
+  { id: 10, title: 'Hợp tác liên ngành & Lan tỏa đa nền tảng', img: '/images/thoi-hoa-lua/vede-m10.jpg' },
+  { id: 11, title: 'Kế hoạch hành động dài hạn đến 2030', img: '/images/thoi-hoa-lua/vede-m11.jpg' },
+];
+---
+
+<RootLayout title="Về Đề Án - Nhật Ký Thanh Niên Làm Theo Lời Bác">
+  
+  <!-- Hero Banner Về Đề Án chuẩn Thời Hoa Lửa 100% -->
+  <section 
+    class="relative text-white py-16 sm:py-24 px-4 border-b-4 border-amber-500 overflow-hidden shadow-hero"
+    style="background-image: linear-gradient(to bottom, rgba(30, 20, 15, 0.75), rgba(30, 20, 15, 0.92)), url('/images/thoi-hoa-lua-banner-ref.jpg'); background-size: cover; background-position: center;"
+  >
+    <div class="max-w-5xl mx-auto text-center relative z-10">
+      <div class="inline-flex items-center gap-2 text-xs font-bold text-amber-300 bg-black/60 px-4 py-1.5 rounded-full border border-amber-400/50 mb-4 shadow-lg">
+        <a href={withBase('/')} class="hover:text-white transition-colors">Trang chủ</a>
+        <span>/</span>
+        <span class="text-amber-400 uppercase tracking-wider">Về đề án</span>
+      </div>
+
+      <h1 class="font-serif font-black text-3xl sm:text-5xl text-white tracking-tight leading-tight mb-4 drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)]">
+        Về đề án
+      </h1>
+      <p class="text-sm sm:text-lg text-amber-100 max-w-3xl mx-auto leading-relaxed drop-shadow font-medium">
+        Ý nghĩa, mục tiêu và nội dung của Đề án — hành trình gìn giữ và lan tỏa ký ức của các nhân chứng lịch sử, gắn liền với phong trào học tập và làm theo tư tưởng, đạo đức, phong cách Hồ Chí Minh của tuổi trẻ 37 Tổ Dân Phố Phường Xuân Hương, TP. Đà Lạt.
+      </p>
+    </div>
+  </section>
+
+  <!-- Nội dung đề án chi tiết -->
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+    
+    <!-- Khung giới thiệu tóm lược -->
+    <div class="bg-amber-50/80 rounded-3xl p-6 sm:p-10 border border-amber-200/80 mb-12 shadow-sm">
+      <div class="flex items-center gap-3 mb-4">
+        <img
+          src={withBase('/images/thoi-hoa-lua/logo-doan.webp')}
+          alt="Huy hiệu Đoàn"
+          class="w-10 h-10 object-contain drop-shadow"
+        />
+        <div>
+          <span class="text-xs font-bold text-red-700 uppercase tracking-wider">Công trình thanh niên trọng điểm</span>
+          <h2 class="font-serif font-black text-xl sm:text-2xl text-slate-900">
+            Số hóa Ký ức Lịch sử & Nhật ký Thanh niên Làm theo lời Bác
+          </h2>
+        </div>
+      </div>
+      <p class="text-sm sm:text-base text-slate-700 leading-relaxed">
+        Đề án ra đời với sứ mệnh kết nối hai bờ thế hệ: Thế hệ cha anh đã cống hiến trọn vẹn tuổi thanh xuân cho sự nghiệp giải phóng dân tộc, bảo vệ toàn vẹn non sông biển đảo, và thế hệ thanh niên thời đại số mang trong mình khát vọng vươn lên, tinh thần tự lực tự cường và lòng biết ơn sâu sắc.
+      </p>
+    </div>
+
+    <!-- Danh sách 11 modules nội dung chuẩn của đề án -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {MODULES.map((mod) => (
+        <div class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-md transition-shadow group flex flex-col">
+          <div class="relative overflow-hidden aspect-[4/3] bg-slate-100">
+            <img 
+              src={withBase(mod.img)} 
+              alt={mod.title}
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+            />
+            <div class="absolute top-3 left-3 bg-red-700 text-white text-[11px] font-bold px-2.5 py-1 rounded-lg shadow">
+              Chuyên đề {mod.id.toString().padStart(2, '0')}
+            </div>
+          </div>
+          <div class="p-5 flex-1 flex flex-col justify-between">
+            <h3 class="font-serif font-bold text-slate-900 text-base group-hover:text-red-700 transition-colors">
+              {mod.title}
+            </h3>
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+              <span>Đoàn Phường Xuân Hương</span>
+              <span class="font-bold text-red-700">Xem tư liệu →</span>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+  </div>
+
+</RootLayout>

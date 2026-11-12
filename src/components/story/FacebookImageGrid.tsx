@@ -17,13 +17,13 @@ export default function FacebookImageGrid({ images, title = '', onRemove, isEdit
 
   return (
     <div className="relative rounded-2xl overflow-hidden my-3 border border-slate-200/80 bg-slate-900/5 select-none">
-      {/* 1 ẢNH: Hiển thị tràn viền sắc nét, ưu tiên giữ trọn khuôn mặt nhân chứng (object-top) */}
+      {/* 1 ẢNH: Hiển thị trọn vẹn, không bao giờ bị cắt xén khuôn mặt nhân chứng hay chân dung Bác */}
       {count === 1 && (
-        <div className="relative group overflow-hidden max-h-[540px] bg-slate-950/5 flex items-center justify-center">
+        <div className="relative group overflow-hidden max-h-[580px] bg-slate-950/5 flex items-center justify-center rounded-2xl">
           <img
             src={images[0]}
             alt={title || 'Hình ảnh tư liệu'}
-            className="w-full max-h-[540px] object-cover object-top group-hover:scale-[1.01] transition-transform duration-500 cursor-pointer"
+            className="w-full max-h-[580px] object-contain group-hover:scale-[1.01] transition-transform duration-500 cursor-pointer"
             onClick={() => setPreviewIdx(0)}
           />
           <div 

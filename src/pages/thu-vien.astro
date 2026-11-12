@@ -4,22 +4,27 @@ import StoryLibraryView from '@/components/story/StoryLibraryView';
 import { withBase } from '@/lib/utils';
 ---
 
-<RootLayout title="Thư viện Nhật Ký Ký Ức - Thành Đoàn TP. Hồ Chí Minh">
+<RootLayout title="Thư viện Nhật Ký Ký Ức - Đoàn TNCS Hồ Chí Minh Phường Xuân Hương">
   
-  <!-- Banner tiêu đề chuẩn Enterprise: Sáng sủa, trang trọng, thanh lịch -->
-  <section class="bg-gradient-to-b from-white via-slate-50 to-slate-100/80 border-b border-slate-200 py-10 px-4">
-    <div class="max-w-7xl mx-auto text-center">
-      <div class="inline-flex items-center gap-2 text-xs text-slate-500 font-semibold mb-2.5 uppercase tracking-wider">
-        <a href={withBase('/')} class="hover:text-red-700 transition-colors">Trang chủ</a>
+  <!-- Hero Banner Thư viện Ký ức Lịch sử phong cách Thời Hoa Lửa -->
+  <section 
+    class="relative text-white py-14 sm:py-20 px-4 border-b-4 border-amber-500 overflow-hidden shadow-hero"
+    style="background-image: linear-gradient(to bottom, rgba(15, 23, 42, 0.82), rgba(15, 23, 42, 0.94)), url('/images/thoi-hoa-lua/hero-thu-vien.jpg'); background-size: cover; background-position: center;"
+  >
+    <div class="absolute inset-0 bg-gradient-to-r from-red-950/60 via-transparent to-black/60 pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto text-center relative z-10">
+      <div class="inline-flex items-center gap-2 text-xs font-bold text-amber-300 bg-black/60 px-4 py-1.5 rounded-full border border-amber-400/50 mb-3 shadow-lg">
+        <a href={withBase('/')} class="hover:text-white transition-colors">Trang chủ</a>
         <span>/</span>
-        <span class="text-red-700 font-bold">Thư viện ký ức</span>
+        <span class="text-amber-400 uppercase tracking-wider">Thư viện Nhật ký Ký ức</span>
       </div>
 
-      <h1 class="font-serif font-bold text-2xl sm:text-4xl text-slate-900 tracking-tight leading-tight mb-2">
-        THƯ VIỆN KÝ ỨC & NHẬT KÝ THANH NIÊN
+      <h1 class="font-serif font-black text-3xl sm:text-5xl text-white tracking-tight leading-tight mb-3 drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)]">
+        THƯ VIỆN KÝ ỨC & BÀI HỌC LÀM THEO LỜI BÁC
       </h1>
-      <p class="text-xs sm:text-sm text-slate-600 max-w-2xl mx-auto leading-relaxed">
-        Tra cứu hàng ngàn trang hồi ức, chiến công hào hùng và những việc làm bình dị mà cao quý của tuổi trẻ qua các thời kỳ lịch sử.
+      <p class="text-xs sm:text-base text-amber-100 max-w-2xl mx-auto leading-relaxed drop-shadow font-medium">
+        Đọc và suy ngẫm những mẩu chuyện cảm động về Chủ tịch Hồ Chí Minh, những trang hồi ức thời hoa lửa và gương sáng đoàn viên thanh niên 37 Tổ Dân Phố Phường Xuân Hương, TP. Đà Lạt.
       </p>
     </div>
   </section>
