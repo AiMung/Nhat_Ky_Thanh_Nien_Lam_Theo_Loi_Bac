@@ -1,20 +1,8 @@
 import { useState, useEffect } from 'react';
 import { getCurrentUser, updateStory, deleteStory, type Story, type UserSession } from '@/lib/storage';
 import { withBase } from '@/lib/utils';
+import ImageUploadBox from '@/components/story/ImageUploadBox';
 import { Edit3, Trash2, Save, X, AlertTriangle, CheckCircle2 } from 'lucide-react';
-
-const COVER_PRESETS = [
-  { label: 'Thời hoa lửa Trường Sơn', url: '/images/thoi-hoa-lua-hero.jpg' },
-  { label: 'Chiến sĩ Trường Sa', url: '/images/truong-sa-chu-quyen.jpg' },
-  { label: 'Kháng chiến cứu quốc', url: '/images/thoi-hoa-lua/cat-khang-chien.jpg' },
-  { label: 'Mẹ Việt Nam Anh Hùng', url: '/images/thoi-hoa-lua/cat-me-vnah.jpg' },
-  { label: 'Hậu phương tiền tuyến', url: '/images/thoi-hoa-lua/cat-hau-phuong.jpg' },
-  { label: 'Biển đảo quê hương', url: '/images/thoi-hoa-lua/cat-bien-dao.jpg' },
-  { label: 'Biên giới hải đảo', url: '/images/thoi-hoa-lua/cat-bien-gioi.jpg' },
-  { label: 'Đại tướng Võ Nguyên Giáp', url: '/images/thoi-hoa-lua/vna-potal-chan-dung-dai-tuong-vo-nguyen-giap-184218511-16-3-52.jpg' },
-  { label: 'Hà Nội 12 ngày đêm', url: '/images/thoi-hoa-lua/story-ha-noi-12-ngay-dem.jpg' },
-  { label: 'Chiến dịch Điện Biên Phủ', url: '/images/thoi-hoa-lua/story-chien-dich-dien-bien-phu.jpg' },
-];
 
 interface Props {
   story: Story;
@@ -38,7 +26,9 @@ export default function StoryActionToolbar({ story, onUpdated, onDeleted }: Prop
   const [category, setCategory] = useState(story.category_id);
   const [provinceCode, setProvinceCode] = useState(story.province_code);
   const [period, setPeriod] = useState(story.period);
-  const [coverUrl, setCoverUrl] = useState(story.cover_url);
+  const [images, setImages] = useState<string[]>(
+    story.images && story.images.length > 0 ? story.images : [story.cover_url]
+  );
 
   useEffect(() => {
     setUser(getCurrentUser());
@@ -59,7 +49,7 @@ export default function StoryActionToolbar({ story, onUpdated, onDeleted }: Prop
       'tinh-nguyen': 'Tình nguyện vì cộng đồng',
       'bien-dao': 'Bảo vệ chủ quyền Biển đảo',
       'hoc-tap-bac': 'Học tập & Làm theo lời Bác',
-      'cong-trinh-thanh-nien': 'Công trình Thanh niên thời đại số',
+      'me-viet-nam-anh-hung': 'Mẹ Việt Nam Anh Hùng & Hậu phương',
     };
 
     const provinceMap: Record<string, string> = {
@@ -71,6 +61,8 @@ export default function StoryActionToolbar({ story, onUpdated, onDeleted }: Prop
       QT: 'Quảng Trị',
       TN: 'Tây Ninh',
     };
+
+    const coverUrl = images.length > 0 ? images[0] : story.cover_url;
 
     const success = updateStory(story.id, {
       title,
@@ -85,6 +77,7 @@ export default function StoryActionToolbar({ story, onUpdated, onDeleted }: Prop
       province_name: provinceMap[provinceCode] || story.province_name,
       period,
       cover_url: coverUrl,
+      images: images,
     });
 
     if (success) {
@@ -295,31 +288,12 @@ export default function StoryActionToolbar({ story, onUpdated, onDeleted }: Prop
 
               <div>
                 <label className="block font-bold text-slate-800 mb-2">
-                  Chọn ảnh đại diện tiêu biểu (Thời Hoa Lửa)
+                  Hình ảnh đính kèm (Chọn file, Paste Ctrl+V, hoặc chọn từ Kho tư liệu)
                 </label>
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 mb-3">
-                  {COVER_PRESETS.map((p) => (
-                    <button
-                      key={p.url}
-                      type="button"
-                      onClick={() => setCoverUrl(p.url)}
-                      className={`relative rounded-xl overflow-hidden border-2 text-left h-20 transition-all ${
-                        coverUrl === p.url ? 'border-doan-800 ring-2 ring-doan-700' : 'border-slate-200 opacity-70 hover:opacity-100'
-                      }`}
-                    >
-                      <img src={p.url} alt={p.label} className="w-full h-full object-cover" />
-                      <div className="absolute inset-x-0 bottom-0 bg-slate-950/80 p-1 text-[9px] font-bold text-white truncate">
-                        {p.label}
-                      </div>
-                    </button>
-                  ))}
-                </div>
-                <input
-                  type="text"
-                  value={coverUrl}
-                  onChange={(e) => setCoverUrl(e.target.value)}
-                  placeholder="Hoặc nhập đường dẫn ảnh..."
-                  className="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs text-slate-600"
+                <ImageUploadBox
+                  images={images}
+                  onChange={setImages}
+                  maxImages={8}
                 />
               </div>
 

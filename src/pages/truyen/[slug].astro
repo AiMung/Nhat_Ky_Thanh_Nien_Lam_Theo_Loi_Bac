@@ -2,6 +2,7 @@
 import RootLayout from '@/layouts/RootLayout.astro';
 import StoryReaderToolbar from '@/components/story/StoryReaderToolbar';
 import StoryActionToolbar from '@/components/story/StoryActionToolbar';
+import FacebookImageGrid from '@/components/story/FacebookImageGrid';
 import { getAllStories, type Story } from '@/lib/storage';
 import { formatDate, withBase } from '@/lib/utils';
 
@@ -96,12 +97,12 @@ const formattedBody = story.body
 
     </header>
 
-    <!-- Ảnh phóng to sắc nét của bài viết -->
-    <div class="mb-8 rounded-2xl overflow-hidden shadow-lg border border-slate-200 max-h-[480px]">
-      <img
-        src={story.cover_url}
-        alt={story.title}
-        class="w-full h-full object-cover"
+    <!-- Hình ảnh & Album Facebook Collage của bài viết -->
+    <div class="mb-8">
+      <FacebookImageGrid 
+        client:load 
+        images={story.images && story.images.length > 0 ? story.images : [story.cover_url]} 
+        title={story.title} 
       />
     </div>
 

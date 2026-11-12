@@ -34,6 +34,11 @@ const { story, featured = false } = Astro.props;
           {story.event_year}
         </span>
       )}
+      {story.images && story.images.length > 1 && (
+        <span class="bg-slate-950/80 backdrop-blur-md text-gold-300 text-[11px] font-bold px-2 py-1 rounded-full shadow border border-gold-400/30 flex items-center gap-1">
+          📷 {story.images.length} ảnh
+        </span>
+      )}
     </div>
 
     <!-- Tên chủ đề nổi bật trên ảnh -->

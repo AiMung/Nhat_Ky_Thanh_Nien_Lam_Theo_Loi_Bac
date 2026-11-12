@@ -22,6 +22,7 @@ export interface Story {
   status: 'draft' | 'pending' | 'approved' | 'rejected';
   reject_reason?: string;
   cover_url: string;
+  images?: string[]; // Danh sách nhiều ảnh (Album Facebook style)
   read_minutes: number;
   published_at?: string;
   created_at: string;

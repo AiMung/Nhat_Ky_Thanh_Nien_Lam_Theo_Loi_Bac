@@ -4,6 +4,7 @@ import StoryCard from '@/components/story/StoryCard.astro';
 import SearchBar from '@/components/search/SearchBar';
 import VietnamMap from '@/components/map/VietnamMap';
 import EmberSparks from '@/components/common/EmberSparks';
+import SocialPostBar from '@/components/story/SocialPostBar';
 import { getAllStories } from '@/lib/storage';
 import { withBase } from '@/lib/utils';
 
@@ -62,7 +63,7 @@ const CATEGORIES = [
 // Dòng thời gian các mốc son
 const TIMELINE_MILESTONES = [
   { year: '1931', title: 'Thành lập Đoàn TNCS Đông Dương (Đoàn TNCS Hồ Chí Minh)', period: '1945-truoc' },
-  { year: '1954', title: 'Chiến thắng lịch sử Điện Biên Phủ "Lừng lẫy năm châu"', period: '1945-1954' },
+  { year: '1954', title: 'Chiến thắng Điện Biên Phủ "Lừng lẫy năm châu"', period: '1945-1954' },
   { year: '1968', title: 'Phong trào HSSV và Biệt động Sài Gòn trong Tết Mậu Thân', period: '1955-1975' },
   { year: '1972', title: 'Hà Nội 12 ngày đêm Điện Biên Phủ trên không quật khởi', period: '1955-1975' },
   { year: '1975', title: 'Đại thắng mùa Xuân - Tuổi trẻ tiếp quản và dựng xây Thành phố', period: '1955-1975' },
@@ -74,74 +75,111 @@ const TIMELINE_MILESTONES = [
 <RootLayout title="Nhật Ký Thanh Niên Làm Theo Lời Bác - Thành Đoàn TP. Hồ Chí Minh">
   
   <!-- HERO BANNER TRANG TRỌNG & RỰC RỠ SẮC MÀU THỜI HOA LỬA (HÌNH ẢNH CHÂN THỰC 100%) -->
-  <section class="relative text-white py-16 sm:py-24 px-4 overflow-hidden border-b-4 border-gold-500 shadow-hero min-h-[580px] flex items-center">
+  <section class="relative text-white py-14 sm:py-20 px-4 overflow-hidden border-b-4 border-gold-500 shadow-hero min-h-[580px] lg:min-h-[620px] flex items-center">
     
-    <!-- HÌNH NỀN GỐC THỜI HOA LỬA RỰC RỠ ĐẦY ĐỦ CHI TIẾT -->
+    <!-- HÌNH NỀN GỐC THỜI HOA LỬA SẮC NÉT (Bác Hồ, Đại tướng Giáp, Mẹ VNAH ở góc trái) -->
     <div class="absolute inset-0 z-0">
       <img
         src="/images/thoi-hoa-lua-hero.jpg"
         alt="Thời hoa lửa - Tuổi trẻ Việt Nam làm theo lời Bác"
-        class="w-full h-full object-cover object-left-top sm:object-center filter brightness-95 contrast-105"
+        class="w-full h-full object-cover object-left sm:object-center filter brightness-90 contrast-105"
       />
-      <!-- Phủ lớp chuyển màu nghệ thuật bảo đảm chữ đọc sắc nét nhưng vẫn giữ trọn hình tượng Bác Hồ, tượng Mẹ và cờ Tổ quốc -->
-      <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-redflag-950/60 to-redflag-950/40 sm:bg-gradient-to-r sm:from-slate-950/80 sm:via-redflag-950/50 sm:to-slate-950/85"></div>
+      <!-- Lớp phủ chuyển màu bảo đảm đọc chữ rõ nét trên mọi màn hình nhưng vẫn giữ trọn hình tượng Bác Hồ và cờ Tổ quốc -->
+      <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-redflag-950/40 lg:bg-gradient-to-r lg:from-slate-950/70 lg:via-slate-950/50 lg:to-slate-950/85"></div>
     </div>
 
     <!-- Hiệu ứng tàn lửa hoa lửa bập bùng (Ember Sparks) -->
     <EmberSparks client:load />
     
-    <div class="max-w-6xl mx-auto text-center relative z-10 w-full py-4">
-      
-      <!-- Badge Đơn vị chỉ đạo -->
-      <div class="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-slate-950/80 backdrop-blur-md border border-gold-400/60 text-gold-300 text-xs sm:text-sm font-bold mb-6 shadow-xl animate-in fade-in">
-        <span class="text-gold-400">★</span>
-        <span class="tracking-wide">ĐOÀN TNCS HỒ CHÍ MINH THÀNH PHỐ HỒ CHÍ MINH</span>
-        <span class="text-gold-400">★</span>
+    <div class="max-w-7xl mx-auto relative z-10 w-full py-2">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        
+        <!-- Cột trái: Tôn vinh danh xưng Thành Đoàn & Khẩu hiệu hành động -->
+        <div class="lg:col-span-5 text-center lg:text-left">
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-gold-400/60 text-gold-300 text-xs font-bold mb-4 shadow-xl">
+            <span class="text-gold-400">★</span>
+            <span class="tracking-wide">ĐOÀN TNCS HỒ CHÍ MINH TP. HỒ CHÍ MINH</span>
+            <span class="text-gold-400">★</span>
+          </div>
+
+          <h1 class="font-serif font-black text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-tight drop-shadow-lg">
+            NHẬT KÝ THANH NIÊN <br />
+            <span class="text-gold-400 drop-shadow-[0_4px_16px_rgba(234,179,8,0.5)]">LÀM THEO LỜI BÁC</span>
+          </h1>
+
+          <p class="text-xs sm:text-sm text-gold-100/90 font-medium leading-relaxed mt-4 max-w-lg mx-auto lg:mx-0">
+            Nền tảng số hóa những trang ký ức hào hùng của các thế hệ thanh niên thành phố mang tên Bác — nơi mỗi việc làm bình dị đều thắp sáng ngọn lửa yêu nước.
+          </p>
+
+          <div class="mt-6 flex flex-wrap items-center justify-center lg:justify-start gap-3">
+            <a 
+              href={withBase('/gui-cau-chuyen')} 
+              class="inline-flex items-center gap-2 bg-gradient-to-r from-redflag-700 to-redflag-800 hover:from-redflag-800 hover:to-redflag-900 text-gold-200 px-5 py-3 rounded-2xl text-xs sm:text-sm font-bold shadow-lg transition-transform hover:scale-105"
+            >
+              <span>✍️ Viết nhật ký gửi ngay</span>
+            </a>
+            <a 
+              href={withBase('/thu-vien')} 
+              class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/30 text-white px-5 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-colors backdrop-blur"
+            >
+              <span>📖 Khám phá Thư viện</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Cột phải: Hộp trích dẫn Bác Hồ, Thanh tìm kiếm & Chỉ số thống kê -->
+        <div class="lg:col-span-7 space-y-4">
+          
+          <!-- Hộp Trích dẫn bất hủ của Bác Hồ -->
+          <div class="p-5 rounded-3xl bg-slate-950/70 backdrop-blur-md border border-gold-500/40 text-gold-100 shadow-2xl">
+            <div class="flex items-start gap-3">
+              <span class="text-2xl text-gold-400 leading-none">“</span>
+              <div class="flex-1">
+                <p class="font-serif italic text-base sm:text-lg text-gold-200 leading-relaxed">
+                  Không có việc gì khó, chỉ sợ lòng không bền<br class="hidden sm:inline" />
+                  Đào núi và lấp biển, quyết chí ắt làm nên.
+                </p>
+                <div class="text-[11px] sm:text-xs text-gold-400 font-bold uppercase tracking-widest mt-2">
+                  — Lời Bác Hồ tặng Đội Thanh niên xung phong (1951) —
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Thanh tìm kiếm không dấu thời gian thực -->
+          <div class="bg-slate-950/60 backdrop-blur-md p-2 rounded-2xl border border-white/15 shadow-xl">
+            <SearchBar client:load />
+          </div>
+
+          <!-- Bốn con số ấn tượng khẳng định sức sống phong trào -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-2">
+            <div class="p-3 rounded-2xl bg-slate-950/70 backdrop-blur border border-white/10 text-center">
+              <div class="font-serif font-black text-xl sm:text-2xl text-gold-400">20,000+</div>
+              <div class="text-[10px] text-slate-300 uppercase tracking-wider font-semibold mt-0.5">Trang nhật ký</div>
+            </div>
+            <div class="p-3 rounded-2xl bg-slate-950/70 backdrop-blur border border-white/10 text-center">
+              <div class="font-serif font-black text-xl sm:text-2xl text-gold-400">800+</div>
+              <div class="text-[10px] text-slate-300 uppercase tracking-wider font-semibold mt-0.5">Cơ sở Đoàn</div>
+            </div>
+            <div class="p-3 rounded-2xl bg-slate-950/70 backdrop-blur border border-white/10 text-center">
+              <div class="font-serif font-black text-xl sm:text-2xl text-gold-400">100</div>
+              <div class="text-[10px] text-slate-300 uppercase tracking-wider font-semibold mt-0.5">Địa chỉ Đỏ 3D</div>
+            </div>
+            <div class="p-3 rounded-2xl bg-slate-950/70 backdrop-blur border border-white/10 text-center">
+              <div class="font-serif font-black text-xl sm:text-2xl text-gold-400">100%</div>
+              <div class="text-[10px] text-slate-300 uppercase tracking-wider font-semibold mt-0.5">Xác minh chuẩn</div>
+            </div>
+          </div>
+
+        </div>
+
       </div>
-
-      <!-- Tiêu đề lớn đầy khí thế hào hùng -->
-      <h1 class="font-serif font-black text-3xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-tight mb-5 drop-shadow-lg">
-        NHẬT KÝ THANH NIÊN <br />
-        <span class="text-gold-400 drop-shadow-[0_4px_16px_rgba(234,179,8,0.5)]">LÀM THEO LỜI BÁC</span>
-      </h1>
-
-      <!-- Trích dẫn bất hủ của Chủ tịch Hồ Chí Minh -->
-      <div class="max-w-2xl mx-auto mb-8 p-4 sm:p-5 rounded-2xl bg-slate-950/60 backdrop-blur-md border border-gold-500/30 text-gold-100 shadow-2xl">
-        <p class="font-serif italic text-base sm:text-lg leading-relaxed">
-          "Không có việc gì khó, chỉ sợ lòng không bền<br class="hidden sm:inline" />
-          Đào núi và lấp biển, quyết chí ắt làm nên."
-        </p>
-        <div class="text-[11px] sm:text-xs text-gold-300 font-bold uppercase tracking-widest mt-2">
-          — Lời Bác Hồ tặng Đội Thanh niên xung phong (1951) —
-        </div>
-      </div>
-
-      <!-- Thanh tìm kiếm không dấu thời gian thực -->
-      <div class="max-w-3xl mx-auto mb-10">
-        <SearchBar client:load />
-      </div>
-
-      <!-- Bốn con số ấn tượng khẳng định sức sống phong trào -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 max-w-4xl mx-auto pt-6 border-t border-gold-500/30">
-        <div class="p-3.5 sm:p-4 rounded-2xl bg-slate-950/70 backdrop-blur border border-white/10 hover:border-gold-400/50 transition-colors">
-          <div class="font-serif font-black text-2xl sm:text-4xl text-gold-400">20,000+</div>
-          <div class="text-[10px] sm:text-xs text-slate-200 uppercase tracking-wider font-semibold mt-1">Trang nhật ký đã lưu</div>
-        </div>
-        <div class="p-3.5 sm:p-4 rounded-2xl bg-slate-950/70 backdrop-blur border border-white/10 hover:border-gold-400/50 transition-colors">
-          <div class="font-serif font-black text-2xl sm:text-4xl text-gold-400">800+</div>
-          <div class="text-[10px] sm:text-xs text-slate-200 uppercase tracking-wider font-semibold mt-1">Cơ sở Đoàn đồng hành</div>
-        </div>
-        <div class="p-3.5 sm:p-4 rounded-2xl bg-slate-950/70 backdrop-blur border border-white/10 hover:border-gold-400/50 transition-colors">
-          <div class="font-serif font-black text-2xl sm:text-4xl text-gold-400">100</div>
-          <div class="text-[10px] sm:text-xs text-slate-200 uppercase tracking-wider font-semibold mt-1">Địa chỉ Đỏ số hóa 3D</div>
-        </div>
-        <div class="p-3.5 sm:p-4 rounded-2xl bg-slate-950/70 backdrop-blur border border-white/10 hover:border-gold-400/50 transition-colors">
-          <div class="font-serif font-black text-2xl sm:text-4xl text-gold-400">100%</div>
-          <div class="text-[10px] sm:text-xs text-slate-200 uppercase tracking-wider font-semibold mt-1">Xác minh trung thực</div>
-        </div>
-      </div>
-
     </div>
+  </section>
+
+  <!-- THANH ĐĂNG BÀI NHANH PHONG CÁCH FACEBOOK & THỜI HOA LỬA (Nổi bật ngay dưới Hero) -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <SocialPostBar client:load />
   </section>
 
   <!-- 6 CHỦ ĐỀ CHUYÊN ĐỀ THANH NIÊN LÀM THEO LỜI BÁC -->
@@ -161,7 +199,7 @@ const TIMELINE_MILESTONES = [
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {CATEGORIES.map((cat) => (
         <a 
-          href={withBase('/thu-vien')} 
+          href={withBase(`/thu-vien?cat=${cat.id}`)} 
           class="group youth-card rounded-2xl overflow-hidden flex flex-col bg-white border border-slate-200 shadow-sm hover:shadow-card-hover transition-all"
         >
           <div class="relative h-48 overflow-hidden bg-slate-100">
@@ -244,7 +282,7 @@ const TIMELINE_MILESTONES = [
     </div>
   </section>
 
-  <!-- TRUYỆN NỔI BẬT & MỚI NHẤT -->
+  <!-- TRUYỆN NỔI BẬT & MỚI NHẤT (DÒNG BÀI NEWSFEED) -->
   <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-slate-200">
     <div class="flex items-center justify-between mb-10">
       <div>
