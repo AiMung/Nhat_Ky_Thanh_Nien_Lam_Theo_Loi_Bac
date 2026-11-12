@@ -1,0 +1,172 @@
+[
+  {
+    "name": "An Giang",
+    "filename": "an-giang.json",
+    "commune_count": 301
+  },
+  {
+    "name": "Hồ Chí Minh",
+    "filename": "ho-chi-minh.json",
+    "commune_count": 495
+  },
+  {
+    "name": "Bắc Ninh",
+    "filename": "bac-ninh.json",
+    "commune_count": 358
+  },
+  {
+    "name": "Thái Nguyên",
+    "filename": "thai-nguyen.json",
+    "commune_count": 302
+  },
+  {
+    "name": "Cà Mau",
+    "filename": "ca-mau.json",
+    "commune_count": 165
+  },
+  {
+    "name": "Vĩnh Long",
+    "filename": "vinh-long.json",
+    "commune_count": 379
+  },
+  {
+    "name": "Gia Lai",
+    "filename": "gia-lai.json",
+    "commune_count": 381
+  },
+  {
+    "name": "Đồng Nai",
+    "filename": "dong-nai.json",
+    "commune_count": 282
+  },
+  {
+    "name": "Lâm Đồng",
+    "filename": "lam-dong.json",
+    "commune_count": 345
+  },
+  {
+    "name": "Cần Thơ",
+    "filename": "can-tho.json",
+    "commune_count": 270
+  },
+  {
+    "name": "Cao Bằng",
+    "filename": "cao-bang.json",
+    "commune_count": 199
+  },
+  {
+    "name": "Đà Nẵng",
+    "filename": "da-nang.json",
+    "commune_count": 300
+  },
+  {
+    "name": "Đắk Lắk",
+    "filename": "dak-lak.json",
+    "commune_count": 296
+  },
+  {
+    "name": "Điện Biên",
+    "filename": "dien-bien.json",
+    "commune_count": 130
+  },
+  {
+    "name": "Đồng Tháp",
+    "filename": "dong-thap.json",
+    "commune_count": 317
+  },
+  {
+    "name": "Tuyên Quang",
+    "filename": "tuyen-quang.json",
+    "commune_count": 336
+  },
+  {
+    "name": "Ninh Bình",
+    "filename": "ninh-binh.json",
+    "commune_count": 490
+  },
+  {
+    "name": "Hà Nội",
+    "filename": "ha-noi.json",
+    "commune_count": 584
+  },
+  {
+    "name": "Hà Tĩnh",
+    "filename": "ha-tinh.json",
+    "commune_count": 262
+  },
+  {
+    "name": "Hải Phòng",
+    "filename": "hai-phong.json",
+    "commune_count": 489
+  },
+  {
+    "name": "Phú Thọ",
+    "filename": "phu-tho.json",
+    "commune_count": 624
+  },
+  {
+    "name": "Hưng Yên",
+    "filename": "hung-yen.json",
+    "commune_count": 447
+  },
+  {
+    "name": "Khánh Hòa",
+    "filename": "khanh-hoa.json",
+    "commune_count": 202
+  },
+  {
+    "name": "Quảng Ngãi",
+    "filename": "quang-ngai.json",
+    "commune_count": 286
+  },
+  {
+    "name": "Lai Châu",
+    "filename": "lai-chau.json",
+    "commune_count": 108
+  },
+  {
+    "name": "Lạng Sơn",
+    "filename": "lang-son.json",
+    "commune_count": 226
+  },
+  {
+    "name": "Lào Cai",
+    "filename": "lao-cai.json",
+    "commune_count": 344
+  },
+  {
+    "name": "Tây Ninh",
+    "filename": "tay-ninh.json",
+    "commune_count": 287
+  },
+  {
+    "name": "Nghệ An",
+    "filename": "nghe-an.json",
+    "commune_count": 480
+  },
+  {
+    "name": "Quảng Trị",
+    "filename": "quang-tri.json",
+    "commune_count": 301
+  },
+  {
+    "name": "Quảng Ninh",
+    "filename": "quang-ninh.json",
+    "commune_count": 186
+  },
+  {
+    "name": "Sơn La",
+    "filename": "son-la.json",
+    "commune_count": 204
+  },
+  {
+    "name": "Thanh Hóa",
+    "filename": "thanh-hoa.json",
+    "commune_count": 635
+  },
+  {
+    "name": "Huế",
+    "filename": "hue.json",
+    "commune_count": 152
+  }
+]

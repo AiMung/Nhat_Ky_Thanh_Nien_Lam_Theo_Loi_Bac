@@ -14,6 +14,22 @@ export default defineConfig({
     }),
     react()
   ],
+  vite: {
+    optimizeDeps: {
+      include: [
+        'highcharts',
+        'highcharts/highmaps',
+        'highcharts/modules/drilldown',
+        'highcharts-react-official'
+      ]
+    },
+    resolve: {
+      alias: {
+        'highcharts/highmaps': 'highcharts/highmaps.js',
+        'highcharts/modules/drilldown': 'highcharts/modules/drilldown.js'
+      }
+    }
+  },
   output: 'static'
 });
 
