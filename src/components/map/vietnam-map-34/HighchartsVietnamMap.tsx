@@ -1,24 +1,8 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react';
-import Highcharts from 'highcharts';
+import Highcharts from 'highcharts/highmaps';
 import HighchartsReact from 'highcharts-react-official';
-import mapModule from 'highcharts/modules/map';
 import vnMapData from './core/assets/vn-all.geo.json';
 import { PROVINCE_MAPPING, normalizeName } from './core/provinceMapping';
-
-// Khởi tạo map module cho Highcharts một cách an toàn
-if (typeof window !== 'undefined' && typeof Highcharts === 'object') {
-  try {
-    if (!(Highcharts as any).seriesTypes?.map) {
-      if (typeof mapModule === 'function') {
-        (mapModule as any)(Highcharts);
-      } else if (typeof (mapModule as any)?.default === 'function') {
-        (mapModule as any).default(Highcharts);
-      }
-    }
-  } catch (e) {
-    console.warn('Lỗi khởi tạo Highcharts map module:', e);
-  }
-}
 
 export interface ProvinceData {
   name: string;

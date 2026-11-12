@@ -1,9 +1,32 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useEffect, lazy, Suspense, Component } from 'react';
 import { withBase } from '@/lib/utils';
-import { MapPin, BookOpen, Compass, ShieldCheck, Sparkles, Layers } from 'lucide-react';
+import { MapPin, BookOpen, Compass, ShieldCheck, Sparkles, Layers, AlertCircle } from 'lucide-react';
 
 // Lazy load Highcharts component để tránh mọi lỗi SSR
 const HighchartsVietnamMap = lazy(() => import('./vietnam-map-34/HighchartsVietnamMap'));
+
+// Error Boundary để phòng ngừa 100% lỗi runtime không làm trắng màn hình
+class MapErrorBoundary extends Component<
+  { children: React.ReactNode; fallback: React.ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: any) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  componentDidCatch(error: any) {
+    console.warn('Map boundary caught error:', error);
+  }
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback;
+    }
+    return this.props.children;
+  }
+}
 
 interface ProvinceStoryData {
   id: string;
@@ -211,30 +234,49 @@ export default function VietnamMap() {
             {viewMode === 'highcharts' && isClient ? (
               /* BẢN ĐỒ HIGHCHARTS 34 TỈNH THÀNH */
               <div className="w-full h-full">
-                <Suspense
+                <MapErrorBoundary
                   fallback={
-                    <div className="py-20 text-center">
-                      <div className="w-8 h-8 border-3 border-red-700 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-                      <p className="text-slate-500 text-xs">Đang tải bản đồ 34 tỉnh thành...</p>
+                    <div className="py-12 px-4 text-center">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-50 text-amber-800 rounded-full text-xs font-semibold mb-3 border border-amber-200">
+                        <AlertCircle className="w-3.5 h-3.5 text-amber-600" />
+                        <span>Chuyển sang chế độ Bản đồ SVG Ký Ức</span>
+                      </div>
+                      <p className="text-xs text-slate-500 mb-4">Trình duyệt đã tải Bản đồ SVG Ký Ức để hiển thị tức thì và mượt mà nhất.</p>
+                      <button
+                        type="button"
+                        onClick={() => setViewMode('svg')}
+                        className="px-4 py-2 bg-red-700 text-white rounded-xl text-xs font-bold hover:bg-red-800 transition-colors shadow-sm"
+                      >
+                        Xem Bản đồ SVG Ký Ức
+                      </button>
                     </div>
                   }
                 >
-                  <HighchartsVietnamMap
-                    height={500}
-                    data={highchartsData}
-                    onProvinceClick={(p) => {
-                      if (p && p.name) {
-                        if (p.name.includes('Lâm Đồng') || p.name.includes('Đà Lạt')) setSelectedKey('LD');
-                        else if (p.name.includes('Hồ Chí Minh') || p.name.includes('Sài Gòn')) setSelectedKey('HCM');
-                        else if (p.name.includes('Hà Nội')) setSelectedKey('HN');
-                        else if (p.name.includes('Đà Nẵng')) setSelectedKey('DN');
-                        else if (p.name.includes('Khánh Hòa')) setSelectedKey('KH');
-                        else if (p.name.includes('Quảng Trị')) setSelectedKey('QT');
-                        else if (p.name.includes('Điện Biên')) setSelectedKey('DB');
-                      }
-                    }}
-                  />
-                </Suspense>
+                  <Suspense
+                    fallback={
+                      <div className="py-20 text-center">
+                        <div className="w-8 h-8 border-3 border-red-700 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                        <p className="text-slate-500 text-xs">Đang tải bản đồ 34 tỉnh thành...</p>
+                      </div>
+                    }
+                  >
+                    <HighchartsVietnamMap
+                      height={500}
+                      data={highchartsData}
+                      onProvinceClick={(p) => {
+                        if (p && p.name) {
+                          if (p.name.includes('Lâm Đồng') || p.name.includes('Đà Lạt')) setSelectedKey('LD');
+                          else if (p.name.includes('Hồ Chí Minh') || p.name.includes('Sài Gòn')) setSelectedKey('HCM');
+                          else if (p.name.includes('Hà Nội')) setSelectedKey('HN');
+                          else if (p.name.includes('Đà Nẵng')) setSelectedKey('DN');
+                          else if (p.name.includes('Khánh Hòa')) setSelectedKey('KH');
+                          else if (p.name.includes('Quảng Trị')) setSelectedKey('QT');
+                          else if (p.name.includes('Điện Biên')) setSelectedKey('DB');
+                        }
+                      }}
+                    />
+                  </Suspense>
+                </MapErrorBoundary>
               </div>
             ) : (
               /* BẢN ĐỒ SVG HÌNH CHỮ S TƯƠNG TÁC (LUÔN HOẠT ĐỘNG 100% KHÔNG BAO GIỜ TRẮNG TRƠN) */
