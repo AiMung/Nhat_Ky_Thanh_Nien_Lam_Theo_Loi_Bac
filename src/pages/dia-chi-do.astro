@@ -1,0 +1,189 @@
+---
+import RootLayout from '@/layouts/RootLayout.astro';
+import { withBase } from '@/lib/utils';
+
+const RELICS = [
+  {
+    id: 'nha-lao-thieu-nhi',
+    name: 'Nhà lao Thiếu nhi Đà Lạt',
+    subname: 'Trung tâm Cải huấn Thiếu nhi Đà Lạt (1971 - 1973)',
+    category: 'Di tích Lịch sử Quốc gia',
+    address: 'Đường Mai Anh Đào, Phường 8 (Liên kết truyền thống P. Xuân Hương)',
+    year: '1971',
+    image: '/images/thoi-hoa-lua/story-1.jpg',
+    highlight: 'Biểu tượng bất khuất của hơn 600 chiến sĩ nhỏ tuổi',
+    description: 'Nơi chính quyền Sài Gòn giam giữ hơn 600 thiếu nhi yêu nước tuổi từ 12-17. Dưới sự lãnh đạo của Chi bộ ngầm và Đoàn Thanh niên, các dũng sĩ nhí đã bất khuất đấu tranh, lập nên bản tráng ca rực rỡ "Tuổi nhỏ chí lớn" bằng những cuộc tuyệt thực và mổ bụng phản đối đòn roi tra tấn.',
+    significance: 'Di tích Lịch sử Quốc gia giáo dục truyền thống kiên trung, dũng cảm cho thế hệ trẻ thanh thiếu nhi.'
+  },
+  {
+    id: 'khu-pho-anh-sang',
+    name: 'Khu phố Ánh Sáng — Phường Xuân Hương',
+    subname: 'Căn cứ kháng chiến lòng dân nội đô lịch sử',
+    category: 'Địa chỉ Đỏ Phường Xuân Hương',
+    address: 'Tổ dân phố Ánh Sáng, Phường Xuân Hương — Đà Lạt',
+    year: '1968 - 1975',
+    image: '/images/thoi-hoa-lua/story-2.jpg',
+    highlight: 'Hậu phương vững chắc của phong trào thanh niên nội thành',
+    description: 'Nằm ngay trung tâm Phường Xuân Hương sát bờ hồ, Khu phố Ánh Sáng từng là mạng lưới bí mật nuôi giấu cán bộ cách mạng, điểm in ấn và phát tán hàng ngàn tờ truyền đơn kêu gọi thanh niên, học sinh bãi khóa, xuống đường đòi hòa bình độc lập.',
+    significance: 'Chiến công thầm lặng của nhân dân và thanh niên Phường Xuân Hương trong sự nghiệp thống nhất non sông.'
+  },
+  {
+    id: 'truong-cdsp-da-lat',
+    name: 'Trường Cao đẳng Sư phạm Đà Lạt',
+    subname: 'Nguyên Grand Lycée Yersin (1927)',
+    category: 'Di tích Kiến trúc Lịch sử Quốc gia',
+    address: 'Đường Yersin, Phường Xuân Hương — Đà Lạt',
+    year: '1927',
+    image: '/images/thoi-hoa-lua/story-3.jpg',
+    highlight: 'Cái nôi đấu tranh của phong trào học sinh - sinh viên',
+    description: 'Công trình kiến trúc độc đáo hình cánh cung uốn lượn được thế giới công nhận. Trong hai cuộc kháng chiến, nơi đây là cái nôi rực lửa của các phong trào học sinh, giáo chức Đà Lạt bãi khóa, phản đối chiến tranh phi nghĩa và hướng về Mặt trận Dân tộc Giải phóng.',
+    significance: 'Biểu tượng văn hóa, giáo dục và lòng yêu nước của trí thức trẻ Phường Xuân Hương.'
+  },
+  {
+    id: 'ho-xuan-huong-thuy-ta',
+    name: 'Hồ Xuân Hương & Thủy Tạ',
+    subname: 'Trái tim thắng cảnh & Điểm hẹn lịch sử 3/4/1975',
+    category: 'Danh lam Thắng cảnh & Lịch sử Quốc gia',
+    address: 'Trung tâm Phường Xuân Hương — Đà Lạt',
+    year: '1975',
+    image: '/images/thoi-hoa-lua/cat-khang-chien.jpg',
+    highlight: 'Cờ Giải phóng tung bay rực rỡ ngày non sông sum họp',
+    description: 'Ngày 3/4/1975, đoàn quân giải phóng cùng các cánh quân thanh niên xung kích tiến vào trung tâm Phường Xuân Hương. Lá cờ Mặt trận Dân tộc Giải phóng miền Nam Việt Nam tung bay kiêu hãnh trên mặt hồ biếc xanh, đánh dấu ngày Đà Lạt hoàn toàn giải phóng.',
+    significance: 'Địa danh lịch sử gắn liền với tên gọi thiêng liêng của Phường Xuân Hương.'
+  },
+  {
+    id: 'ga-da-lat',
+    name: 'Ga xe lửa Đà Lạt',
+    subname: 'Tuyến đường sắt răng cưa Tháp Chàm — Đà Lạt',
+    category: 'Di tích Kiến trúc Lịch sử',
+    address: 'Đường Quang Trung, Phường Xuân Hương — Đà Lạt',
+    year: '1938',
+    image: '/images/thoi-hoa-lua/vede-m03.jpg',
+    highlight: 'Khí phách công nhân hỏa xa ủng hộ tiền tuyến',
+    description: 'Một trong những nhà ga cổ kính nhất Đông Dương với 3 mái chóp tượng trưng cho đỉnh núi Langbiang. Trong kháng chiến, nơi đây ghi dấu phong trào công nhân hỏa xa đình công, bãi công, bí mật vận chuyển lương thực, muối và đạn dược cho bộ đội trên chiến khu.',
+    significance: 'Di sản giao thông và lịch sử cách mạng hào hùng của giai cấp công nhân Đà Lạt.'
+  },
+  {
+    id: 'nghia-trang-liet-si',
+    name: 'Đài Tưởng niệm & Nghĩa trang Liệt sĩ',
+    subname: 'Nơi yên nghỉ của các anh hùng liệt sĩ quê hương',
+    category: 'Công trình Tri ân Đền ơn Đáp nghĩa',
+    address: 'Đồi Tiền Kiệm (Gần TDP Prenn & Ba Tháng Tư, P. Xuân Hương)',
+    year: '1979',
+    image: '/images/thoi-hoa-lua/story-me-tien-con-ra-tran.jpg',
+    highlight: 'Hàng ngàn ngọn nến tri ân sáng mãi cùng non sông',
+    description: 'Nơi yên nghỉ của hàng ngàn người con ưu tú đã ngã xuống trong các chiến dịch giải phóng cao nguyên Lâm Viên. Hàng năm vào ngày 27/7 và 26/3, tuổi trẻ 37 Tổ dân phố Phường Xuân Hương đều tề tựu thắp nến tri ân, dâng hương tưởng niệm các anh hùng liệt sĩ.',
+    significance: 'Địa chỉ Đỏ linh thiêng hun đúc lý tưởng sống cao đẹp và lòng biết ơn của tuổi trẻ.'
+  }
+];
+---
+
+<RootLayout title="Địa chỉ Đỏ & Di tích Lịch sử Phường Xuân Hương — Đà Lạt">
+  
+  <!-- Hero Banner Địa chỉ Đỏ hào hùng phong cách Thời Hoa Lửa -->
+  <section 
+    class="relative text-white py-16 sm:py-24 px-4 border-b-4 border-amber-500 overflow-hidden shadow-hero"
+    style="background-image: linear-gradient(to bottom, rgba(30, 20, 15, 0.8), rgba(20, 15, 10, 0.94)), url('/images/thoi-hoa-lua-banner-ref.jpg'); background-size: cover; background-position: center;"
+  >
+    <div class="max-w-5xl mx-auto text-center relative z-10">
+      <div class="inline-flex items-center gap-2 text-xs font-bold text-amber-300 bg-black/60 px-4 py-1.5 rounded-full border border-amber-400/50 mb-4 shadow-lg">
+        <a href={withBase('/')} class="hover:text-white transition-colors">Trang chủ</a>
+        <span>/</span>
+        <span class="text-amber-400 uppercase tracking-wider">Phường Xuân Hương — Đà Lạt</span>
+      </div>
+
+      <h1 class="font-serif font-black text-3xl sm:text-5xl text-white tracking-tight leading-tight mb-4 drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)]">
+        ĐỊA CHỈ ĐỎ & DI TÍCH LỊCH SỬ ĐÀ LẠT
+      </h1>
+      <p class="text-sm sm:text-lg text-amber-100 max-w-3xl mx-auto leading-relaxed drop-shadow font-medium">
+        Hành trình về nguồn khám phá những mốc son bất khuất như <strong>Nhà lao Thiếu nhi Đà Lạt</strong>, Khu phố Ánh Sáng, Trường CĐ Sư phạm và trái tim lịch sử Hồ Xuân Hương.
+      </p>
+    </div>
+  </section>
+
+  <!-- Danh sách các Địa chỉ Đỏ (Thẻ dựng đứng trang trọng) -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {RELICS.map((relic) => (
+        <article class="bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group hover:-translate-y-1">
+          
+          {/* Ảnh di tích dựng đứng (aspect-[4/3] sang aspect-[3/4] portrait) */}
+          <div class="relative aspect-[4/3] overflow-hidden bg-slate-900">
+            <img 
+              src={withBase(relic.image)} 
+              alt={relic.name}
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 filter brightness-95" 
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent"></div>
+            
+            <div class="absolute top-3 left-3 bg-red-700/95 text-amber-200 border border-amber-300/40 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow">
+              {relic.category}
+            </div>
+
+            <div class="absolute bottom-3 left-4 right-4">
+              <span class="text-xs font-semibold text-amber-300 flex items-center gap-1">
+                <span>📍</span>
+                <span class="truncate">{relic.address}</span>
+              </span>
+            </div>
+          </div>
+
+          {/* Nội dung chi tiết di tích */}
+          <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+            <div>
+              <h2 class="font-serif font-black text-xl text-slate-900 group-hover:text-red-700 transition-colors">
+                {relic.name}
+              </h2>
+              <p class="text-xs font-bold text-amber-800 bg-amber-50 px-2.5 py-1 rounded-lg mt-2 inline-block border border-amber-200/60">
+                ★ {relic.highlight}
+              </p>
+              <p class="text-xs sm:text-sm text-slate-600 mt-3 line-clamp-4 leading-relaxed">
+                {relic.description}
+              </p>
+            </div>
+
+            <div class="pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+              <span class="text-slate-400 font-medium">Khởi lập: {relic.year}</span>
+              <a 
+                href={withBase(`/thu-vien?q=${encodeURIComponent(relic.name)}`)}
+                class="font-bold text-red-700 hover:text-red-800 flex items-center gap-1 group/link"
+              >
+                <span>Xem chuyện liên quan</span>
+                <span class="group-hover/link:translate-x-1 transition-transform">→</span>
+              </a>
+            </div>
+          </div>
+
+        </article>
+      ))}
+    </div>
+
+    <!-- Khung thông điệp giáo dục truyền thống Phường Xuân Hương -->
+    <div class="mt-14 p-8 rounded-3xl bg-gradient-to-r from-red-900 via-red-800 to-amber-900 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-4">
+        <img
+          src={withBase('/images/thoi-hoa-lua/logo-doan.webp')}
+          alt="Huy hiệu Đoàn"
+          class="w-14 h-14 object-contain drop-shadow-md shrink-0"
+        />
+        <div>
+          <h3 class="font-serif font-black text-xl text-amber-200">
+            Hành Trình Về Nguồn — Tuổi Trẻ Phường Xuân Hương
+          </h3>
+          <p class="text-xs sm:text-sm text-amber-100/90 mt-1 max-w-2xl leading-relaxed">
+            Mỗi di tích là một trang sử sống động, nhắc nhở đoàn viên thanh niên 37 Tổ dân phố luôn khắc sâu lòng biết ơn và tiếp nối truyền thống anh hùng của quê hương Đà Lạt.
+          </p>
+        </div>
+      </div>
+      <a
+        href={withBase('/thu-vien')}
+        class="px-6 py-3 rounded-2xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs sm:text-sm shadow-lg transition-transform hover:scale-105 shrink-0"
+      >
+        📖 Đọc các bài viết lịch sử
+      </a>
+    </div>
+
+  </div>
+
+</RootLayout>

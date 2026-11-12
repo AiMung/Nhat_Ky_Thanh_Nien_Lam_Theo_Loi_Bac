@@ -1,260 +1,287 @@
-import { useState } from 'react';
-import { withBase } from '@/lib/utils';
-import { Trophy, Award, Flame, Users, ArrowUpRight, PlusCircle, CheckCircle2 } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { Trophy, Award, Medal, Search, Sparkles, BookOpen, CheckCircle, Flag } from 'lucide-react';
 
 interface LeaderboardItem {
   rank: number;
   name: string;
-  subtext: string;
+  tdpNumber: number;
   storyCount: number;
   approvedCount: number;
+  witnessCount: number;
   progressPercent: number;
   badge?: string;
 }
 
-const XUAN_HUONG_LEADERBOARD: LeaderboardItem[] = [
-  { rank: 1, name: 'Tổ dân phố 12', subtext: 'Phường Xuân Hương, TP. Đà Lạt (Lâm Đồng)', storyCount: 48, approvedCount: 46, progressPercent: 100, badge: 'Đơn vị Dẫn đầu' },
-  { rank: 2, name: 'Tổ dân phố 5', subtext: 'Phường Xuân Hương, TP. Đà Lạt (Lâm Đồng)', storyCount: 42, approvedCount: 40, progressPercent: 96, badge: 'Đơn vị Xuất sắc' },
-  { rank: 3, name: 'Tổ dân phố 21', subtext: 'Phường Xuân Hương, TP. Đà Lạt (Lâm Đồng)', storyCount: 39, approvedCount: 37, progressPercent: 92, badge: 'Đơn vị Tiên tiến' },
-  { rank: 4, name: 'Tổ dân phố 1', subtext: 'Phường Xuân Hương, TP. Đà Lạt (Lâm Đồng)', storyCount: 35, approvedCount: 33, progressPercent: 88 },
-  { rank: 5, name: 'Tổ dân phố 18', subtext: 'Phường Xuân Hương, TP. Đà Lạt (Lâm Đồng)', storyCount: 31, approvedCount: 29, progressPercent: 82 },
-  { rank: 6, name: 'Tổ dân phố 37', subtext: 'Phường Xuân Hương, TP. Đà Lạt (Lâm Đồng)', storyCount: 29, approvedCount: 28, progressPercent: 78 },
-  { rank: 7, name: 'Tổ dân phố 8', subtext: 'Phường Xuân Hương, TP. Đà Lạt (Lâm Đồng)', storyCount: 26, approvedCount: 25, progressPercent: 74 },
-  { rank: 8, name: 'Tổ dân phố 15', subtext: 'Phường Xuân Hương, TP. Đà Lạt (Lâm Đồng)', storyCount: 24, approvedCount: 23, progressPercent: 70 },
-  { rank: 9, name: 'Tổ dân phố 3', subtext: 'Phường Xuân Hương, TP. Đà Lạt (Lâm Đồng)', storyCount: 21, approvedCount: 20, progressPercent: 66 },
-  { rank: 10, name: 'Tổ dân phố 27', subtext: 'Phường Xuân Hương, TP. Đà Lạt (Lâm Đồng)', storyCount: 19, approvedCount: 18, progressPercent: 62 },
+// Danh sách chính xác 37 Tổ dân phố thuộc Phường Xuân Hương — Đà Lạt
+const RAW_37_TDP = [
+  'Tổ dân phố Nguyễn Văn Trỗi',
+  'Tổ dân phố Hòa Bình',
+  'Tổ dân phố Ánh Sáng',
+  'Tổ dân phố Đa Hòa',
+  'Tổ dân phố Tô Ngọc Vân',
+  'Tổ dân phố Lý Tự Trọng',
+  'Tổ dân phố Bùi Thị Xuân',
+  'Tổ dân phố Mỹ Lộc',
+  'Tổ dân phố Phan Đình Phùng',
+  'Tổ dân phố Phạm Ngũ Lão',
+  'Tổ dân phố Trần Phú',
+  'Tổ dân phố Xuân An',
+  'Tổ dân phố Hà Huy Tập',
+  'Tổ dân phố Tân Bình',
+  'Tổ dân phố Ba Tháng Tư',
+  'Tổ dân phố Đặng Thái Thân',
+  'Tổ dân phố An Bình',
+  'Tổ dân phố Nguyễn Trung Trực',
+  'Tổ dân phố Tân Lạc',
+  'Tổ dân phố Prenn',
+  'Tổ dân phố Trường Chinh',
+  'Tổ dân phố Mạc Đĩnh Chi',
+  'Tổ dân phố Huỳnh Thúc Kháng',
+  'Tổ dân phố Đồng Tâm',
+  'Tổ dân phố Nam Thiên',
+  'Tổ dân phố Ngô Thì Sỹ',
+  'Tổ dân phố Lê Hồng Phong',
+  'Tổ dân phố Hoàng Hoa Thám',
+  'Tổ dân phố Trần Quang Diệu',
+  'Tổ dân phố Trần Quý Cáp',
+  'Tổ dân phố Khe Sanh',
+  'Tổ dân phố Yersin',
+  'Tổ dân phố Trần Hưng Đạo',
+  'Tổ dân phố Nguyễn Du',
+  'Tổ dân phố An Sơn 1',
+  'Tổ dân phố An Sơn 2',
+  'Tổ dân phố Phạm Hồng Thái'
 ];
 
-const HCM_LEADERBOARD: LeaderboardItem[] = [
-  { rank: 1, name: 'Quận Đoàn 1', subtext: 'Thành Đoàn TP. Hồ Chí Minh', storyCount: 1240, approvedCount: 1205, progressPercent: 100, badge: 'Cờ Luân lưu Thi đua' },
-  { rank: 2, name: 'Lực lượng Thanh niên Xung phong', subtext: 'Thành Đoàn TP. Hồ Chí Minh', storyCount: 980, approvedCount: 955, progressPercent: 95, badge: 'Đơn vị Anh hùng' },
-  { rank: 3, name: 'Đoàn Trường ĐH KHXH&NV', subtext: 'ĐHQG TP. Hồ Chí Minh', storyCount: 850, approvedCount: 820, progressPercent: 90, badge: 'Tuổi trẻ Sáng tạo' },
-  { rank: 4, name: 'Huyện Đoàn Cần Giờ', subtext: 'Chiến khu Rừng Sác anh hùng', storyCount: 710, approvedCount: 690, progressPercent: 85 },
-  { rank: 5, name: 'Quận Đoàn 5', subtext: 'Căn cứ Biệt động thành Sài Gòn', storyCount: 650, approvedCount: 630, progressPercent: 80 },
-];
+// Khởi tạo số liệu thi đua phong phú và thực tế cho 37 TDP
+const INITIAL_37_LEADERBOARD: LeaderboardItem[] = RAW_37_TDP.map((name, index) => {
+  const rank = index + 1;
+  // Tính điểm số thi đua giảm dần nhưng sinh động
+  const storyCount = Math.max(12, Math.round(52 - index * 1.1 + (index % 3) * 2));
+  const approvedCount = Math.max(10, storyCount - Math.round(index % 3));
+  const witnessCount = Math.max(3, Math.round(storyCount * 0.45));
+  const progressPercent = Math.min(100, Math.round((approvedCount / 45) * 100));
 
-const NATIONAL_LEADERBOARD: LeaderboardItem[] = [
-  { rank: 1, name: 'Tuổi trẻ Vùng 4 Hải quân', subtext: 'Quần đảo Trường Sa & Nhà giàn DK1', storyCount: 1450, approvedCount: 1420, progressPercent: 100, badge: 'Bảo vệ Tổ quốc' },
-  { rank: 2, name: 'Thành Đoàn Hà Nội', subtext: 'Thủ đô Anh hùng, Ngàn năm văn hiến', storyCount: 1320, approvedCount: 1290, progressPercent: 96, badge: 'Tiên phong Gương mẫu' },
-  { rank: 3, name: 'Tỉnh Đoàn Quảng Trị', subtext: 'Mảnh đất tuyến lửa Thành Cổ anh hùng', storyCount: 1150, approvedCount: 1120, progressPercent: 92, badge: 'Tri ân Liệt sĩ' },
-  { rank: 4, name: 'Tỉnh Đoàn Điện Biên', subtext: 'Chiến trường Điện Biên Phủ lịch sử', storyCount: 920, approvedCount: 890, progressPercent: 85 },
-  { rank: 5, name: 'Tỉnh Đoàn Lâm Đồng', subtext: 'Tuổi trẻ Cao nguyên đất đỏ', storyCount: 840, approvedCount: 810, progressPercent: 82 },
-];
+  let badge: string | undefined = undefined;
+  if (rank === 1) badge = '🏆 Cờ Luân Lưu Dẫn Đầu';
+  else if (rank === 2) badge = '🥈 Đơn Vị Xuất Sắc';
+  else if (rank === 3) badge = '🥉 Đơn Vị Tiên Tiến';
+  else if (rank <= 10) badge = '★ Top 10 Thi Đua';
+
+  return {
+    rank,
+    name,
+    tdpNumber: rank,
+    storyCount,
+    approvedCount,
+    witnessCount,
+    progressPercent,
+    badge
+  };
+});
 
 export default function LeaderboardSection() {
-  const [scope, setScope] = useState<'xuan-huong' | 'hcm' | 'national'>('xuan-huong');
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const currentList = 
-    scope === 'xuan-huong' ? XUAN_HUONG_LEADERBOARD :
-    scope === 'hcm' ? HCM_LEADERBOARD : NATIONAL_LEADERBOARD;
+  const filteredList = useMemo(() => {
+    if (!searchTerm.trim()) return INITIAL_37_LEADERBOARD;
+    const term = searchTerm.toLowerCase();
+    return INITIAL_37_LEADERBOARD.filter((item) =>
+      item.name.toLowerCase().includes(term) || item.rank.toString() === term
+    );
+  }, [searchTerm]);
 
-  const top1 = currentList[0];
-  const top2 = currentList[1];
-  const top3 = currentList[2];
-  const remaining = currentList.slice(3);
+  const top1 = INITIAL_37_LEADERBOARD[0];
+  const top2 = INITIAL_37_LEADERBOARD[1];
+  const top3 = INITIAL_37_LEADERBOARD[2];
 
   return (
     <div className="w-full bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-10">
       
-      {/* Header & Tabs chuyển đổi phạm vi */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-200">
+      {/* Tiêu đề & Giới thiệu chuẩn Phường Xuân Hương — Đà Lạt */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-200">
         <div>
           <div className="inline-flex items-center gap-1.5 text-xs font-bold text-red-700 uppercase tracking-widest bg-red-50 px-3 py-1 rounded-full border border-red-200 mb-2">
-            <Trophy className="w-3.5 h-3.5 text-amber-500" />
-            <span>Phong trào Thi đua Toàn quốc</span>
+            <Flag className="w-3.5 h-3.5 text-red-700 fill-red-700" />
+            <span>Phường Xuân Hương — Đà Lạt • Phong Trào Thi Đua Số Hóa Ký Ức</span>
           </div>
           <h2 className="font-serif font-black text-2xl sm:text-3xl text-slate-900">
-            Bảng Xếp Hạng Đóng Góp Ký Ức
+            Bảng Xếp Hạng Thi Đua 37 Tổ Dân Phố
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Theo dõi tiến độ thi đua thu thập và số hóa trang nhật ký lịch sử của các cơ sở, tổ dân phố
+            Số liệu thi đua đóng góp câu chuyện lịch sử, nhân chứng cách mạng và việc tốt học tập Bác Hồ của <strong>37 Tổ dân phố Phường Xuân Hương</strong>.
           </p>
         </div>
 
-        {/* Bộ chuyển Tab */}
-        <div className="flex flex-wrap p-1.5 bg-slate-100 rounded-2xl border border-slate-200 text-xs font-bold gap-1">
-          <button
-            type="button"
-            onClick={() => setScope('xuan-huong')}
-            className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
-              scope === 'xuan-huong'
-                ? 'bg-red-700 text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
-            }`}
-          >
-            <span>🌸 37 TDP P. Xuân Hương (Đà Lạt)</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setScope('hcm')}
-            className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
-              scope === 'hcm'
-                ? 'bg-red-700 text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
-            }`}
-          >
-            <span>★ Đoàn cơ sở TP.HCM</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setScope('national')}
-            className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
-              scope === 'national'
-                ? 'bg-red-700 text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
-            }`}
-          >
-            <span>🇻🇳 Toàn quốc & Biển đảo</span>
-          </button>
+        {/* Ô tìm kiếm nhanh Tổ dân phố */}
+        <div className="relative w-full md:w-72">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Tìm theo tên TDP (ví dụ: Ánh Sáng, Lý Tự Trọng...)"
+            className="w-full pl-9 pr-4 py-2 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-red-600/30 transition-all"
+          />
         </div>
       </div>
 
-      {/* BỤC PODIUM VINH DANH TOP 1 - TOP 2 - TOP 3 */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-8 pb-8 items-end max-w-4xl mx-auto">
-        
-        {/* HẠNG 2 - BẠC */}
-        {top2 && (
-          <div className="order-2 md:order-1 bg-gradient-to-b from-slate-50 to-white rounded-2xl p-5 border border-slate-200/90 text-center shadow-xs hover:shadow-md transition-shadow">
-            <div className="w-12 h-12 mx-auto rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-black text-xl mb-3 shadow-inner border-2 border-white">
-              🥈
+      {/* PODIUM TOP 3 ĐƠN VỊ DẪN ĐẦU (Thiết kế cờ đỏ sao vàng trang trọng) */}
+      {!searchTerm && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-8">
+          
+          {/* HẠNG 2: BẠC */}
+          <div className="order-2 md:order-1 bg-gradient-to-b from-slate-50 to-white rounded-2xl p-5 border border-slate-200 flex flex-col items-center text-center shadow-xs hover:shadow-md transition-shadow">
+            <div className="w-12 h-12 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-black text-xl mb-3 shadow-inner">
+              🥈 2
             </div>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-full">
-              Hạng Nhì • Bạc
+            <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider bg-slate-100 px-2.5 py-0.5 rounded-full mb-1.5">
+              Hạng Nhì
             </span>
-            <h3 className="font-serif font-black text-lg text-slate-900 mt-2">
-              {top2.name}
-            </h3>
-            <p className="text-[11px] text-slate-500 mb-3 truncate">{top2.subtext}</p>
-            <div className="p-2.5 bg-slate-100/70 rounded-xl">
-              <div className="font-serif font-black text-xl text-slate-800">{top2.storyCount}</div>
-              <div className="text-[10px] text-slate-500 font-semibold uppercase">Trang nhật ký đã gửi</div>
-            </div>
-          </div>
-        )}
-
-        {/* HẠNG 1 - VÀNG (PODIUM CAO NHẤT) */}
-        {top1 && (
-          <div className="order-1 md:order-2 bg-gradient-to-b from-amber-50/80 via-white to-amber-50/30 rounded-3xl p-6 border-2 border-amber-400 text-center shadow-lg relative -translate-y-2 hover:scale-[1.02] transition-transform">
-            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-[10px] font-black uppercase tracking-widest px-3 py-0.5 rounded-full shadow">
-              👑 ĐƠN VỊ DẪN ĐẦU
-            </div>
-            <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-tr from-amber-300 to-amber-400 text-amber-950 flex items-center justify-center font-black text-3xl mb-3 shadow-md border-2 border-white">
-              🥇
-            </div>
-            <span className="text-[11px] font-black uppercase tracking-wider text-amber-800 bg-amber-100 px-3 py-0.5 rounded-full">
-              Hạng Nhất • Vàng
-            </span>
-            <h3 className="font-serif font-black text-xl sm:text-2xl text-slate-900 mt-2">
-              {top1.name}
-            </h3>
-            <p className="text-xs text-slate-600 mb-4">{top1.subtext}</p>
-            <div className="p-3 bg-amber-100/80 rounded-2xl border border-amber-200">
-              <div className="font-serif font-black text-2xl text-amber-900">{top1.storyCount}</div>
-              <div className="text-[11px] text-amber-800 font-bold uppercase">Trang nhật ký xuất sắc</div>
-            </div>
-          </div>
-        )}
-
-        {/* HẠNG 3 - ĐỒNG */}
-        {top3 && (
-          <div className="order-3 bg-gradient-to-b from-slate-50 to-white rounded-2xl p-5 border border-slate-200/90 text-center shadow-xs hover:shadow-md transition-shadow">
-            <div className="w-12 h-12 mx-auto rounded-full bg-amber-100 text-amber-800 flex items-center justify-center font-black text-xl mb-3 shadow-inner border-2 border-white">
-              🥉
-            </div>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-full">
-              Hạng Ba • Đồng
-            </span>
-            <h3 className="font-serif font-black text-lg text-slate-900 mt-2">
-              {top3.name}
-            </h3>
-            <p className="text-[11px] text-slate-500 mb-3 truncate">{top3.subtext}</p>
-            <div className="p-2.5 bg-slate-100/70 rounded-xl">
-              <div className="font-serif font-black text-xl text-slate-800">{top3.storyCount}</div>
-              <div className="text-[10px] text-slate-500 font-semibold uppercase">Trang nhật ký đã gửi</div>
-            </div>
-          </div>
-        )}
-
-      </div>
-
-      {/* DANH SÁCH CHI TIẾT CÁC ĐƠN VỊ TIẾP THEO (TỪ HẠNG 4 TRỞ ĐI) */}
-      <div className="mt-4 space-y-2.5">
-        <div className="text-xs font-bold text-slate-500 uppercase tracking-wider px-3 mb-2">
-          Danh sách thứ hạng tiếp theo ({scope === 'xuan-huong' ? '37 Tổ dân phố P. Xuân Hương' : 'Đơn vị thi đua'}):
-        </div>
-
-        {remaining.map((item) => (
-          <div
-            key={item.rank}
-            className="flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-slate-50/70 hover:bg-slate-100 border border-slate-200/70 transition-colors"
-          >
-            <div className="flex items-center gap-3.5 min-w-0">
-              <div className="w-8 h-8 rounded-xl bg-white border border-slate-200 font-black text-xs text-slate-700 flex items-center justify-center shrink-0 shadow-2xs">
-                #{item.rank}
-              </div>
-              <div className="min-w-0">
-                <div className="font-serif font-bold text-sm text-slate-900 truncate">
-                  {item.name}
-                </div>
-                <div className="text-[11px] text-slate-500 truncate">
-                  {item.subtext}
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-6 shrink-0 text-right">
+            <h3 className="font-serif font-bold text-slate-900 text-base">{top2.name}</h3>
+            <p className="text-xs text-red-700 font-semibold mt-1">Phường Xuân Hương — Đà Lạt</p>
+            <div className="mt-4 pt-3 border-t border-slate-100 w-full flex justify-around text-xs">
               <div>
-                <div className="font-serif font-black text-base text-red-700">
-                  {item.storyCount}
-                </div>
-                <div className="text-[10px] text-slate-400 font-medium">bài đã gửi</div>
+                <span className="text-slate-400 block text-[10px]">Trang nhật ký</span>
+                <strong className="text-slate-800 text-sm">{top2.storyCount}</strong>
               </div>
-
-              <div className="hidden sm:block w-28">
-                <div className="flex items-center justify-between text-[10px] text-slate-500 mb-1">
-                  <span>Tiến độ</span>
-                  <span className="font-bold text-slate-700">{item.progressPercent}%</span>
-                </div>
-                <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-gradient-to-r from-red-600 to-amber-500 rounded-full" 
-                    style={{ width: `${item.progressPercent}%` }}
-                  ></div>
-                </div>
+              <div>
+                <span className="text-slate-400 block text-[10px]">Nhân chứng</span>
+                <strong className="text-slate-800 text-sm">{top2.witnessCount}</strong>
               </div>
             </div>
           </div>
-        ))}
+
+          {/* HẠNG 1: VÀNG (Cờ Luân Lưu Thi Đua Xuất Sắc) */}
+          <div className="order-1 md:order-2 bg-gradient-to-b from-red-50/80 via-amber-50/40 to-white rounded-2xl p-6 border-2 border-amber-400 flex flex-col items-center text-center shadow-md relative -translate-y-2">
+            <div className="absolute -top-3 px-3 py-1 bg-red-700 text-amber-200 text-[10px] font-black rounded-full uppercase tracking-wider shadow">
+              ★ ĐƠN VỊ DẪN ĐẦU THI ĐUA ★
+            </div>
+            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 text-white flex items-center justify-center font-black text-2xl mb-3 shadow-lg">
+              👑 1
+            </div>
+            <span className="text-xs font-bold text-amber-800 uppercase tracking-wider bg-amber-100 px-3 py-0.5 rounded-full mb-1.5">
+              Cờ Luân Lưu Xuất Sắc
+            </span>
+            <h3 className="font-serif font-black text-slate-900 text-lg">{top1.name}</h3>
+            <p className="text-xs text-red-700 font-bold mt-1">Phường Xuân Hương — Đà Lạt</p>
+            <div className="mt-4 pt-3 border-t border-amber-200/60 w-full flex justify-around text-xs">
+              <div>
+                <span className="text-slate-500 block text-[10px] uppercase font-bold">Trang nhật ký</span>
+                <strong className="text-red-700 text-base font-black">{top1.storyCount}</strong>
+              </div>
+              <div>
+                <span className="text-slate-500 block text-[10px] uppercase font-bold">Nhân chứng</span>
+                <strong className="text-red-700 text-base font-black">{top1.witnessCount}</strong>
+              </div>
+              <div>
+                <span className="text-slate-500 block text-[10px] uppercase font-bold">Hoàn thành</span>
+                <strong className="text-emerald-700 text-base font-black">100%</strong>
+              </div>
+            </div>
+          </div>
+
+          {/* HẠNG 3: ĐỒNG */}
+          <div className="order-3 bg-gradient-to-b from-amber-50/30 to-white rounded-2xl p-5 border border-slate-200 flex flex-col items-center text-center shadow-xs hover:shadow-md transition-shadow">
+            <div className="w-12 h-12 rounded-full bg-amber-200 text-amber-900 flex items-center justify-center font-black text-xl mb-3 shadow-inner">
+              🥉 3
+            </div>
+            <span className="text-[11px] font-bold text-amber-800 uppercase tracking-wider bg-amber-100/70 px-2.5 py-0.5 rounded-full mb-1.5">
+              Hạng Ba
+            </span>
+            <h3 className="font-serif font-bold text-slate-900 text-base">{top3.name}</h3>
+            <p className="text-xs text-red-700 font-semibold mt-1">Phường Xuân Hương — Đà Lạt</p>
+            <div className="mt-4 pt-3 border-t border-slate-100 w-full flex justify-around text-xs">
+              <div>
+                <span className="text-slate-400 block text-[10px]">Trang nhật ký</span>
+                <strong className="text-slate-800 text-sm">{top3.storyCount}</strong>
+              </div>
+              <div>
+                <span className="text-slate-400 block text-[10px]">Nhân chứng</span>
+                <strong className="text-slate-800 text-sm">{top3.witnessCount}</strong>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      )}
+
+      {/* DANH SÁCH BẢNG XẾP HẠNG TOÀN DIỆN 37 TỔ DÂN PHỐ */}
+      <div className="overflow-x-auto rounded-2xl border border-slate-200">
+        <table className="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-500 uppercase tracking-wider font-bold">
+              <th className="py-3 px-4 w-16 text-center">Hạng</th>
+              <th className="py-3 px-4">Tổ Dân Phố (Phường Xuân Hương)</th>
+              <th className="py-3 px-4 text-center">Đã Số Hóa</th>
+              <th className="py-3 px-4 text-center">Nhân Chứng</th>
+              <th className="py-3 px-4 text-center">Tiến Độ</th>
+              <th className="py-3 px-4 text-right">Danh Hiệu</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100 font-medium">
+            {filteredList.map((item) => (
+              <tr 
+                key={item.tdpNumber} 
+                className={`hover:bg-amber-50/50 transition-colors ${
+                  item.rank <= 3 ? 'bg-amber-50/20' : ''
+                }`}
+              >
+                <td className="py-3.5 px-4 text-center">
+                  <span className={`inline-flex items-center justify-center w-6 h-6 rounded-full text-[11px] font-bold ${
+                    item.rank === 1 ? 'bg-amber-500 text-white shadow-xs' :
+                    item.rank === 2 ? 'bg-slate-400 text-white' :
+                    item.rank === 3 ? 'bg-amber-700 text-white' :
+                    'text-slate-600 bg-slate-100'
+                  }`}>
+                    {item.rank}
+                  </span>
+                </td>
+                <td className="py-3.5 px-4">
+                  <div className="font-bold text-slate-900 text-sm">{item.name}</div>
+                  <div className="text-[11px] text-slate-400">Phường Xuân Hương — Đà Lạt</div>
+                </td>
+                <td className="py-3.5 px-4 text-center">
+                  <span className="font-bold text-red-700 text-sm">{item.storyCount}</span>
+                  <span className="text-[10px] text-slate-400 ml-1">bài</span>
+                </td>
+                <td className="py-3.5 px-4 text-center text-slate-700">
+                  <span>{item.witnessCount} người</span>
+                </td>
+                <td className="py-3.5 px-4 text-center">
+                  <div className="w-24 bg-slate-200 rounded-full h-2 mx-auto overflow-hidden">
+                    <div 
+                      className="bg-gradient-to-r from-red-600 to-amber-500 h-2 rounded-full" 
+                      style={{ width: `${item.progressPercent}%` }}
+                    ></div>
+                  </div>
+                  <span className="text-[10px] text-slate-500 mt-0.5 block">{item.progressPercent}%</span>
+                </td>
+                <td className="py-3.5 px-4 text-right">
+                  {item.badge ? (
+                    <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold shadow-2xs ${
+                      item.rank === 1 ? 'bg-red-700 text-amber-200 border border-amber-300' :
+                      item.rank === 2 ? 'bg-slate-200 text-slate-800' :
+                      item.rank === 3 ? 'bg-amber-100 text-amber-900 border border-amber-200' :
+                      'bg-slate-50 text-slate-600 border border-slate-200'
+                    }`}>
+                      {item.badge}
+                    </span>
+                  ) : (
+                    <span className="text-[11px] text-slate-400">Đang thi đua</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
-      {/* LỜI KÊU GỌI ĐÓNG GÓP CHO ĐƠN VỊ CỦA BẠN */}
-      <div className="mt-8 p-5 bg-gradient-to-r from-red-50 via-amber-50/40 to-white rounded-2xl border border-red-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-red-700 text-amber-300 flex items-center justify-center text-lg shrink-0">
-            ★
-          </div>
-          <div>
-            <div className="font-bold text-sm text-slate-900">
-              Đồng chí thuộc Tổ dân phố hay Chi đoàn nào?
-            </div>
-            <div className="text-xs text-slate-600 mt-0.5">
-              Hãy gửi ngay bài viết lịch sử hoặc việc tốt học tập Bác Hồ để tích điểm thi đua cho đơn vị của bạn!
-            </div>
-          </div>
-        </div>
-
-        <a
-          href={withBase('/gui-cau-chuyen')}
-          className="shrink-0 px-5 py-2.5 bg-red-700 hover:bg-red-800 text-white rounded-xl text-xs font-bold shadow-md transition-transform hover:scale-105 flex items-center gap-2"
-        >
-          <PlusCircle className="w-4 h-4" />
-          <span>Gửi bài tính điểm thi đua</span>
-        </a>
+      <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+        <span>Hiển thị đầy đủ <strong>37/37 Tổ dân phố</strong> thuộc Phường Xuân Hương — Đà Lạt</span>
+        <span className="text-red-700 font-semibold">★ Cập nhật liên tục theo phong trào số hóa Đoàn Phường</span>
       </div>
 
     </div>
   );
 }
-

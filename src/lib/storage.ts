@@ -1,6 +1,6 @@
 /**
  * Module quản lý Dữ liệu và Trạng thái cho Dự án:
- * "NHẬT KÝ THANH NIÊN LÀM THEO LỜI BÁC" - Thành Đoàn TP. Hồ Chí Minh
+ * "NHẬT KÝ THANH NIÊN LÀM THEO LỜI BÁC" — Đoàn TNCS Hồ Chí Minh Phường Xuân Hương — Đà Lạt
  * Lưu trữ đồng bộ LocalStorage đảm bảo 100% chức năng Thêm - Xóa - Sửa - Cập nhật hoạt động tức thì.
  */
 
@@ -221,7 +221,7 @@ export const SEED_STORIES: Story[] = [
     slug: 'chiec-vong-bac-bai-hoc-ve-chu-tin',
     title: 'Chiếc vòng bạc của Bác Hồ: Bài học bất hủ về chữ Tín và danh dự người cán bộ',
     narrator_name: 'Bác Vũ Kỳ (Thư ký riêng của Chủ tịch Hồ Chí Minh)',
-    contributor_name: 'Đoàn TNCS Hồ Chí Minh Phường Xuân Hương — TP. Đà Lạt',
+    contributor_name: 'Đoàn TNCS Hồ Chí Minh Phường Xuân Hương — Đà Lạt',
     contributor_unit: '37 Tổ Dân Phố Phường Xuân Hương',
     summary: 'Lời hứa với một em bé người Nùng nơi núi rừng Pác Bó được Bác ghi nhớ suốt hơn hai năm công tác gian khổ, trở thành bài học đạo đức cách mạng sâu sắc về việc giữ trọn chữ Tín trước nhân dân.',
     body: `### Lời hứa bên suối Lênin năm 1941\n\nHồi ở Pác Bó (Cao Bằng), mỗi lần Bác Hồ đi công tác về, các em thiếu nhi trong vùng lại ùa ra đón Bác. Trong số đó có một em bé gái người Nùng quấn quýt Bác nhất. Một hôm, trước lúc Bác lên đường công tác xa, em bé nắm tay Bác nũng nịu dặn: "Bác ơi, Bác đi về nhớ mua cho cháu một chiếc vòng bạc nhé!". Bác ân cần xoa đầu em và cười hiền hậu: "Được rồi, Bác hứa sẽ mua cho cháu!".\n\nHai năm sau, khi tình hình cách mạng có nhiều chuyển biến, Bác trở về hang Pác Bó sau muôn vàn gian nan, nguy hiểm. Đồng bào và các cháu thiếu nhi lại hân hoan chạy ra đón Bác. Mọi người đều mừng rỡ khi thấy Bác mạnh khỏe. Sau bao biến cố và bận trăm công nghìn việc của quốc gia đại sự, không ai còn nhớ đến lời dặn của em bé năm xưa.\n\n### Món quà thiêng liêng sau hai năm xa cách\n\nThế nhưng, vừa bước vào nhà sàn, sau khi chào hỏi các cụ già và đồng bào, Bác Hồ mở bọc tay nải và lấy ra một chiếc vòng bạc mới toanh, sáng lấp lánh trao tận tay cho em bé gái. Em bé và cha mẹ sững sờ, cảm động đến ứa nước mắt không nói nên lời.\n\nCác đồng chí đi cùng Bác ai nấy đều bàng hoàng xúc động. Có người hỏi Bác: "Thưa Bác, hai năm qua bận rộn biết bao việc lớn của cách mạng, sao Bác vẫn nhớ mua vòng bạc cho cháu?".\n\nBác Hồ nhìn mọi người bằng ánh mắt ấm áp, trầm ngâm nói:\n\n> "Cháu nó nhờ mua tức là nó thích lắm. Mình đã hứa thì dù có khó khăn đến mấy cũng phải tìm mua bằng được cho cháu. Làm người cán bộ cách mạng, điều cốt lõi nhất là phải giữ chữ Tín. Nói thì phải làm, đã hứa trước nhân dân thì dù việc nhỏ nhất cũng không bao giờ được lãng quên. Nếu không giữ được lời hứa với một đứa trẻ thơ, thì làm sao giữ được niềm tin cậy của cả một dân tộc?"\n\n### Bài học sâu sắc cho tuổi trẻ hôm nay\n\nCâu chuyện chiếc vòng bạc là minh chứng hùng hồn cho phong cách sống trung thực, giản dị, trọng chữ Tín của Bác Hồ. Đối với thế hệ đoàn viên, thanh niên hôm nay, việc giữ chữ Tín trong công việc, trong cuộc sống và trong lời thề trước lá cờ Đoàn chính là phẩm chất đạo đức quan trọng nhất để xây dựng niềm tin của nhân dân đối với thế hệ trẻ.`,
@@ -243,7 +243,7 @@ export const SEED_STORIES: Story[] = [
     slug: 'doi-dep-cao-su-bieu-tuong-can-kiem',
     title: 'Đôi dép cao su của Bác Hồ: Biểu tượng thanh bạch và đức tính Cần Kiệm Liêm Chính',
     narrator_name: 'Đồng chí Cần (Chiến sĩ cảnh vệ Phủ Chủ tịch)',
-    contributor_name: 'Đoàn TNCS Hồ Chí Minh Phường Xuân Hương — TP. Đà Lạt',
+    contributor_name: 'Đoàn TNCS Hồ Chí Minh Phường Xuân Hương — Đà Lạt',
     contributor_unit: '37 Tổ Dân Phố Phường Xuân Hương',
     summary: 'Đôi dép cao su mộc mạc làm từ lốp ô tô quân sự theo Bác suốt hơn 20 năm kháng chiến và kiến quốc, bài học cao quý về đức tính giản dị, tiết kiệm từng đồng xu của nhân dân.',
     body: `### Đôi dép huyền thoại sinh ra từ khói lửa kháng chiến\n\nĐôi dép của Bác Hồ ra đời vào năm 1947, được chế tạo từ một chiếc lốp ô tô quân sự của thực dân Pháp bị bộ đội ta phục kích thu được tại chiến trường Việt Bắc. Đôi dép cắt không dày lắm, quai trước to bản, quai sau nhỏ vừa vặn với cổ chân của Bác.\n\nSuốt những năm tháng kháng chiến trường kỳ gian khổ, đôi dép cao su ấy đã cùng Bác lội suối, trèo đèo, băng rừng đến thăm các đơn vị bộ đội, dân công hỏa tuyến. Khi hòa bình lập lại, về Thủ đô Hà Nội, Bác vẫn sử dụng đôi dép ấy hàng ngày. Bác đi dép khi làm việc trong Phủ Chủ tịch, khi đi thăm các nhà máy, hợp tác xã, trường học và thậm chí cả trong các chuyến công du nước ngoài tiếp kiến nguyên thủ quốc gia.\n\n### "Tiết kiệm là vì dân, vì nước"\n\nNhiều lần các đồng chí cảnh vệ thấy đôi dép mòn vẹt đế, quai đã tụt đóng đinh mấy lần, liền tha thiết xin phép mua đôi dép mới để Bác đi cho êm chân. Nhưng Bác đều cười bảo:\n\n> "Dép của Bác quai chỉ hơi giãn một tí, đóng lại đinh vẫn còn đi tốt lắm. Nhân dân và bộ đội ta còn nhiều khó khăn, thiếu thốn. Tiền của là mồ hôi nước mắt của đồng bào, ta phải biết chắt chiu, tiết kiệm từng đồng từng hào. Khi nào dép mòn hẳn không sửa được nữa thì hẵng thay."\n\nCó lần sang thăm Ấn Độ, khi Bác chuẩn bị bước lên máy bay, các phóng viên quốc tế ngạc nhiên khi thấy vị Chủ tịch nước Việt Nam mang đôi dép cao su mộc mạc. Bác mỉm cười nói: "Đây là đôi hài vạn dặm của tôi đấy! Nhờ nó mà tôi đã cùng bộ đội và nhân dân vượt qua bao gian khổ để giành lại độc lập cho Tổ quốc".\n\n### Giá trị trường tồn đối với thanh niên thời đại số\n\nHọc tập Bác Hồ từ đôi dép cao su không phải là sống khổ hạnh, mà là rèn luyện lối sống văn minh, không xa hoa lãng phí, biết quý trọng sức lao động và tài nguyên của đất nước. Tinh thần cần kiệm, liêm chính của Bác là kim chỉ nam để mỗi bạn trẻ không sa ngã trước cám dỗ vật chất, luôn hướng về lý tưởng cống hiến cho quê hương.`,
@@ -265,7 +265,7 @@ export const SEED_STORIES: Story[] = [
     slug: 'hai-ban-tay-ra-di-tim-duong-cuu-nuoc',
     title: 'Hai bàn tay ra đi tìm đường cứu nước: Ý chí tự lực tự cường và khát vọng non sông',
     narrator_name: 'Cụ Mai Văn Lương (Nhân chứng lịch sử Bến Nhà Rồng)',
-    contributor_name: 'Ban Tuyên giáo Đoàn Phường Xuân Hương — TP. Đà Lạt',
+    contributor_name: 'Ban Tuyên giáo Đoàn Phường Xuân Hương — Đà Lạt',
     contributor_unit: '37 Tổ Dân Phố Phường Xuân Hương',
     summary: 'Năm 1911 tại Sài Gòn, với hai bàn tay trắng và một trái tim yêu nước nồng nàn, người thanh niên Nguyễn Tất Thành đã bước lên con tàu Amiral Latouche-Tréville mở đầu cuộc hành trình cứu nước vĩ đại.',
     body: `### Cuộc trò chuyện lịch sử trên đất Sài Gòn năm 1911\n\nTrước khi ra đi tìm đường cứu nước vào tháng 6 năm 1911, người thanh niên Nguyễn Tất Thành (khi đó mang tên Văn Ba) ở tại Sài Gòn. Anh có một người bạn thân tên là Lê. Một hôm, anh Ba rủ anh Lê đi dạo quanh thành phố và thân mật hỏi:\n\n— "Anh Lê, anh có yêu nước không?"\nAnh Lê ngạc nhiên trả lời:\n— "Tất nhiên là có chứ!"\nAnh Ba tiếp tục hỏi:\n— "Anh có thể giữ bí mật được không?"\n— "Được chứ!"\n— "Tôi muốn ra nước ngoài, sang nước Pháp và các nước khác. Sau khi xem xét họ làm như thế nào, tôi sẽ trở về giúp đồng bào chúng ta. Nhưng đi một mình thì thật là mạo hiểm, ví như khi ốm đau... Tôi muốn rủ anh cùng đi với tôi."\n\n### "Tiền đây! Chúng ta sẽ làm việc để sống và để đi!"\n\nAnh Lê thoáng ngần ngại và lo lắng hỏi:\n— "Nhưng chúng ta lấy đâu ra tiền mà đi hỡi anh?"\n\nAnh Ba giơ hai bàn tay rắn rỏi của mình lên, kiên quyết và khẳng khái nói:\n\n> "Đây, tiền đây! Chúng ta sẽ làm bất cứ việc gì để sống và để đi! Chúng ta có hai bàn tay, có sức khỏe, có nhiệt huyết của tuổi trẻ. Chỉ cần có quyết tâm, việc gì ta cũng làm được!"\n\nBị cuốn hút bởi lòng nhiệt tình của anh Ba, anh Lê nhận lời nhưng sau đó vì hoàn cảnh gia đình khó khăn nên không thể tham gia chuyến đi. Ngày 5 tháng 6 năm 1911, từ Bến Nhà Rồng, anh thanh niên Nguyễn Tất Thành với tên gọi Văn Ba đã một mình bước lên con tàu Amiral Latouche-Tréville làm phụ bếp, nhận những công việc nặng nhọc nhất dưới hầm tàu ngột ngạt để bắt đầu cuộc hành trình 30 năm bôn ba tìm chân lý tự do cho dân tộc.\n\n### Ngọn lửa tự lực cánh sinh cho thanh niên thế hệ mới\n\nHành trang ra đi của Bác thuở ấy chỉ là lòng yêu nước và đôi bàn tay lao động. Bài học đó nhắc nhở tuổi trẻ hôm nay: Đừng bao giờ ỷ lại, sợ khó, sợ khổ. Khát vọng vươn lên, tinh thần dấn thân và nghị lực tự thân chính là chìa khóa mở ra mọi thành công và cống hiến cho Tổ quốc.`,
@@ -287,7 +287,7 @@ export const SEED_STORIES: Story[] = [
     slug: 'loi-can-dan-tai-den-hung',
     title: 'Lời căn dặn thiêng liêng tại Đền Hùng: "Các Vua Hùng đã có công dựng nước..."',
     narrator_name: 'Trung tướng Song Hào (Nguyên Chính ủy Đại đoàn Quân Tiên Phong)',
-    contributor_name: 'Đoàn TNCS Hồ Chí Minh Phường Xuân Hương — TP. Đà Lạt',
+    contributor_name: 'Đoàn TNCS Hồ Chí Minh Phường Xuân Hương — Đà Lạt',
     contributor_unit: '37 Tổ Dân Phố Phường Xuân Hương',
     summary: 'Ngày 19/9/1954 trước ngày về tiếp quản Thủ đô, Bác Hồ đã có buổi gặp gỡ lịch sử tại Đền Hùng và để lại lời căn dặn thiêng liêng tạc vào non sông gấm vóc.',
     body: `### Buổi gặp mặt dưới bóng cây cổ thụ Đền Giếng\n\nSau chiến thắng lịch sử Điện Biên Phủ "Lừng lẫy năm châu, chấn động địa cầu", Hiệp định Giơ-ne-vơ được ký kết, miền Bắc hoàn toàn giải phóng. Đại đoàn 308 (Đại đoàn Quân Tiên Phong) được vinh dự giao nhiệm vụ trở về tiếp quản Thủ đô Hà Nội.\n\nSáng ngày 19 tháng 9 năm 1954, tại Đền Giếng thuộc Khu di tích lịch sử Đền Hùng (Phú Thọ), cán bộ, chiến sĩ Đại đoàn 308 vô cùng xúc động và bất ngờ khi được đón Bác Hồ đến thăm và nói chuyện.\n\nBác mặc bộ quần áo nâu giản dị, đi đôi dép cao su quen thuộc, bước đi nhanh nhẹn. Bác ngồi trò chuyện thân mật với các chiến sĩ ngay trên thềm cửa Đền Giếng, ấm áp như người cha dặn dò các con trước chuyến đi xa.\n\n### Lời dặn khắc cốt ghi tâm của vị Cha già dân tộc\n\nBác ân cần phân tích tình hình cách mạng, chỉ rõ những vinh dự to lớn nhưng cũng đầy thử thách phức tạp khi bộ đội vào thành phố tiếp quản. Bác căn dặn các chiến sĩ phải luôn giữ vững bản chất của người lính Cụ Hồ, không được kiêu ngạo, sa ngã trước lối sống phồn hoa cám dỗ.\n\nVà tại mảnh đất cội nguồn thiêng liêng của dân tộc, Bác đã đúc kết chân lý lịch sử ngàn năm của non sông bằng một câu nói bất hủ:\n\n> "Các Vua Hùng đã có công dựng nước, Bác cháu ta phải cùng nhau giữ lấy nước!"\n\nLời dạy ngắn gọn, súc tích mà hàm chứa ý nghĩa lịch sử sâu sắc, kết nối cội nguồn ngàn năm văn hiến với trách nhiệm thiêng liêng của thế hệ hôm nay trong sự nghiệp bảo vệ Tổ quốc.\n\n### Sứ mệnh giữ nước và phát triển đất nước của thanh niên\n\nNăm xưa, "giữ lấy nước" là cầm súng đánh đuổi quân xâm lược giành độc lập, tự do. Ngày nay, đối với đoàn viên thanh niên Phường Xuân Hương - TP. Đà Lạt và tuổi trẻ cả nước, "giữ nước" còn là giữ gìn chủ quyền biển đảo thiêng liêng Hoàng Sa - Trường Sa, giữ gìn bản sắc văn hóa dân tộc, bảo vệ môi trường sinh thái và nỗ lực xây dựng Việt Nam hùng cường, sánh vai với các cường quốc năm châu.`,
@@ -309,7 +309,7 @@ export const SEED_STORIES: Story[] = [
     slug: 'nuoc-nong-nuoc-nguoi-bai-hoc-ung-xu',
     title: 'Nước nóng, nước nguội: Bài học sâu sắc về làm chủ cảm xúc và văn hóa ứng xử của Bác Hồ',
     narrator_name: 'Cựu cán bộ Trung đoàn Pháo binh Nguyễn Văn Nam',
-    contributor_name: 'Đoàn TNCS Hồ Chí Minh Phường Xuân Hương — TP. Đà Lạt',
+    contributor_name: 'Đoàn TNCS Hồ Chí Minh Phường Xuân Hương — Đà Lạt',
     contributor_unit: '37 Tổ Dân Phố Phường Xuân Hương',
     summary: 'Chỉ với hai cốc nước giản dị, Bác Hồ đã cảm hóa và giáo dục một đồng chí chỉ huy hay nóng nảy, để lại bài học đắt giá về sự điềm tĩnh và nhân văn trong công tác lãnh đạo.',
     body: `### Hai cốc nước trên bàn làm việc của Bác\n\nTrong thời kỳ kháng chiến chống thực dân Pháp, có một đồng chí Trung đoàn trưởng tài ba, dũng cảm nhưng lại có nhược điểm là rất nóng tính. Mỗi lần bộ đội hay cấp dưới phạm lỗi, đồng chí thường quát tháo ầm ĩ, có lúc còn dùng những lời lẽ nặng nề khiến anh em chiến sĩ hoang mang, nội bộ có phần e ngại.\n\nBiết chuyện, Bác Hồ liền cho gọi đồng chí ấy lên gặp Bác tại căn lán đơn sơ ở chiến khu Việt Bắc.\n\nĐến giờ hẹn, đồng chí cán bộ đi bộ một quãng đường rừng dài dưới trời trưa nắng gắt. Khi đến nơi, mồ hôi nhễ nhại, thở không ra hơi. Bác Hồ tươi cười đón đồng chí vào lán và bảo ngồi nghỉ. Trên bàn, Bác đã đặt sẵn hai cốc nước: một cốc nước sôi bốc khói nghi ngút và một cốc nước nguội trong veo, mát lành.\n\n### Bài học giản dị mà lay động lòng người\n\nBác chỉ vào cốc nước sôi và nói:\n— "Chú đi đường nắng nóng mệt rồi, chú uống đi!"\nĐồng chí cán bộ vội vàng cầm cốc nước lên nhưng rụt tay lại ngay vì cốc quá nóng, không thể nào uống được. Bác Hồ bèn đẩy cốc nước nguội sang và bảo:\n— "Thế chú uống cốc nước này đi."\nĐồng chí cán bộ đón lấy cốc nước nguội, uống một hơi hết sạch, cảm thấy sảng khoái và tỉnh táo hẳn người.\n\nLúc bấy giờ, Bác Hồ mới ân cần, ôn tồn bảo:\n\n> "Nước nóng thì chú không uống được. Nhưng nước nguội thì chú uống ngon lành. Bản tính con người cũng như vậy đấy chú ạ! Khi chú nóng giận, quát tháo anh em chiến sĩ thì lời nói của chú cũng gay gắt và bỏng rát như cốc nước sôi kia vậy, người nghe không thể tiếp thu được, chỉ thấy đau đớn và xa lánh. Khi bình tĩnh, hòa nhã như cốc nước mát thì lời nói mới đi vào lòng người, anh em mới thấm thía mà sửa đổi khuyết điểm."\n\nNghe Bác dạy, đồng chí Trung đoàn trưởng bàng hoàng nhận ra sai lầm của mình, nghẹn ngào xin lỗi Bác và hứa từ nay sẽ rèn luyện tính kiềm chế, đối xử nhân ái, bao dung với đồng chí, đồng đội.\n\n### Nghệ thuật ứng xử văn minh của cán bộ Đoàn\n\nCâu chuyện dạy cho mỗi cán bộ Đoàn và đoàn viên thanh niên bài học lớn về sự lắng nghe, tôn trọng và làm chủ cảm xúc. Nóng nảy là bản năng, nhưng bình tĩnh là bản lĩnh. Lấy tình thương yêu và sự thuyết phục chân thành để cảm hóa lòng người chính là phong cách Hồ Chí Minh cao đẹp nhất.`,
@@ -329,16 +329,16 @@ export const SEED_STORIES: Story[] = [
   {
     id: 'story-14',
     slug: 'tuoi-tre-phuong-xuan-huong-da-lat-hoc-loi-bac',
-    title: 'Tuổi trẻ Phường Xuân Hương — TP. Đà Lạt thi đua số hóa ký ức và học tập lời Bác',
+    title: 'Tuổi trẻ Phường Xuân Hương — Đà Lạt thi đua số hóa ký ức và học tập lời Bác',
     narrator_name: 'Đồng chí Bí thư Đoàn Phường Xuân Hương',
-    contributor_name: 'Đoàn TNCS Hồ Chí Minh Phường Xuân Hương',
-    contributor_unit: '37 Tổ Dân Phố Phường Xuân Hương — TP. Đà Lạt',
-    summary: '37 Tổ Dân Phố Phường Xuân Hương, thành phố ngàn hoa Đà Lạt chung tay thực hiện công trình thanh niên số hóa tư liệu lịch sử, chăm sóc Mẹ Việt Nam Anh hùng và phụng dưỡng cựu chiến binh.',
-    body: `### Sức trẻ trên thành phố ngàn hoa anh hùng\n\nPhường Xuân Hương tọa lạc giữa trung tâm thành phố Đà Lạt mộng mơ - mảnh đất giàu truyền thống cách mạng của tỉnh Lâm Đồng. Thực hiện phong trào "Tuổi trẻ học tập và làm theo tư tưởng, đạo đức, phong cách Hồ Chí Minh", Đoàn Thanh niên Phường Xuân Hương đã phát động đợt thi đua cao điểm trong toàn bộ 37 Tổ Dân Phố.\n\nHàng trăm đoàn viên, thanh niên sinh viên đã trực tiếp đến từng gia đình cựu chiến binh, cựu cán bộ Đoàn, gia đình có công với cách mạng để ghi âm, ghi hình, phỏng vấn và số hóa hàng ngàn trang tư liệu, bức ảnh và kỷ vật quý giá của một thời hoa lửa.\n\n> "Mỗi trang nhật ký số hóa là một ngọn nến tri ân, giúp thế hệ trẻ hôm nay khắc sâu lòng biết ơn vô hạn đối với Bác Hồ kính yêu và các thế hệ cha anh đã hy sinh vì độc lập dân tộc."\n\n### Những công trình thanh niên thiết thực vì cộng đồng\n\nBên cạnh công trình số hóa lịch sử, tuổi trẻ 37 Tổ Dân Phố còn duy trì các hoạt động tình nguyện ý nghĩa:\n- Định kỳ thăm hỏi, phụng dưỡng các Mẹ Việt Nam Anh hùng và thương bệnh binh nặng.\n- Ra quân "Ngày Chủ nhật Xanh" bảo vệ môi trường thắng cảnh hồ Xuân Hương, xây dựng các tuyến đường hoa thanh niên văn minh đô thị.\n- Tổ chức các buổi sinh hoạt chuyên đề giáo dục chủ quyền biển đảo Hoàng Sa - Trường Sa cho thanh thiếu nhi.\n\nBằng những hành động cụ thể, tuổi trẻ Phường Xuân Hương tiếp tục viết tiếp những trang nhật ký vẻ vang, xứng đáng với lời căn dặn của Bác Hồ muôn vàn kính yêu.`,
+    contributor_name: 'Đoàn TNCS Hồ Chí Minh Phường Xuân Hương — Đà Lạt',
+    contributor_unit: '37 Tổ Dân Phố Phường Xuân Hương — Đà Lạt',
+    summary: '37 Tổ Dân Phố Phường Xuân Hương — Đà Lạt chung tay thực hiện công trình thanh niên số hóa tư liệu lịch sử, chăm sóc Mẹ Việt Nam Anh hùng và phụng dưỡng cựu chiến binh.',
+    body: `### Sức trẻ trên mảnh đất cách mạng kiên trung\n\nPhường Xuân Hương tọa lạc giữa trung tâm Đà Lạt mộng mơ - mảnh đất giàu truyền thống cách mạng của tỉnh Lâm Đồng. Thực hiện phong trào "Tuổi trẻ học tập và làm theo tư tưởng, đạo đức, phong cách Hồ Chí Minh", Đoàn Thanh niên Phường Xuân Hương đã phát động đợt thi đua cao điểm trong toàn bộ 37 Tổ Dân Phố.\n\nHàng trăm đoàn viên, thanh niên sinh viên đã trực tiếp đến từng gia đình cựu chiến binh, cựu cán bộ Đoàn, gia đình có công với cách mạng để ghi âm, ghi hình, phỏng vấn và số hóa hàng ngàn trang tư liệu, bức ảnh và kỷ vật quý giá của một thời hoa lửa.\n\n> "Mỗi trang nhật ký số hóa là một ngọn nến tri ân, giúp thế hệ trẻ hôm nay khắc sâu lòng biết ơn vô hạn đối với Bác Hồ kính yêu và các thế hệ cha anh đã hy sinh vì độc lập dân tộc."\n\n### Những công trình thanh niên thiết thực vì cộng đồng\n\nBên cạnh công trình số hóa lịch sử, tuổi trẻ 37 Tổ Dân Phố còn duy trì các hoạt động tình nguyện ý nghĩa:\n- Định kỳ thăm hỏi, phụng dưỡng các Mẹ Việt Nam Anh hùng và thương bệnh binh nặng.\n- Ra quân "Ngày Chủ nhật Xanh" bảo vệ môi trường thắng cảnh hồ Xuân Hương, xây dựng các tuyến đường hoa thanh niên văn minh đô thị.\n- Tổ chức các buổi sinh hoạt chuyên đề giáo dục chủ quyền biển đảo Hoàng Sa - Trường Sa cho thanh thiếu nhi.\n\nBằng những hành động cụ thể, tuổi trẻ Phường Xuân Hương tiếp tục viết tiếp những trang nhật ký vẻ vang, xứng đáng với lời căn dặn của Bác Hồ muôn vàn kính yêu.`,
     category_id: 'phong-trao-doan',
     category_name: 'Tuổi trẻ Phường Xuân Hương',
     province_code: 'LD',
-    province_name: 'Lâm Đồng (TP. Đà Lạt)',
+    province_name: 'Phường Xuân Hương — Đà Lạt',
     event_year: 2026,
     period: '1989-nay',
     status: 'approved',
@@ -347,12 +347,144 @@ export const SEED_STORIES: Story[] = [
     published_at: '2026-03-26T08:00:00Z',
     created_at: '2026-03-20T08:00:00Z',
     likes_count: 2890
+  },
+  {
+    id: 'story-15',
+    slug: 'khuc-trang-ca-nha-lao-thieu-nhi-da-lat',
+    title: 'Khúc tráng ca Nhà lao Thiếu nhi Đà Lạt: Tuổi nhỏ chí lớn của 600 dũng sĩ nhí',
+    narrator_name: 'Bác Mai Hoài Điều (Cựu tù thiếu nhi Nhà lao Đà Lạt)',
+    contributor_name: 'Đoàn TNCS Hồ Chí Minh Phường Xuân Hương — Đà Lạt',
+    contributor_unit: 'Ban Tuyên giáo Đoàn Phường Xuân Hương',
+    summary: 'Ký ức bất khuất của hơn 600 thiếu nhi yêu nước bị giam cầm tại Đà Lạt, những cuộc tuyệt thực và mổ bụng phản đối tra tấn, khẳng định dũng khí không lùi bước của tuổi trẻ Việt Nam.',
+    body: `### "Trung tâm cải huấn" khét tiếng giữa rừng thông Đà Lạt\n\nĐầu năm 1971, chính quyền Sài Gòn thành lập "Trung tâm Cải huấn Thiếu nhi Đà Lạt" (nay là Di tích Lịch sử Quốc gia Nhà lao Thiếu nhi Đà Lạt) nhằm cách ly và tẩy não hơn 600 thiếu niên từ 12 đến 17 tuổi có tinh thần yêu nước, tham gia giao liên, tiếp tế hoặc du kích mật tại các tỉnh miền Trung và miền Nam.\n\nĐịch áp dụng chế độ hà khắc: tra tấn dã man bằng dùi cui, roi điện, biệt giam trong các xà lim tối tăm, cắt khẩu phần ăn hòng khuất phục ý chí của các em. Nhưng chúng không ngờ, chính nơi địa ngục trần gian ấy lại trở thành trường học cách mạng kiên cường.\n\n### Thành lập Chi bộ ngầm và khúc tráng ca mổ bụng đấu tranh\n\nDù tuổi đời còn rất nhỏ, các chiến sĩ thiếu nhi đã bí mật thành lập Chi bộ Đảng mang tên Anh hùng Lê Văn Tám và Đoàn Thanh niên nhân dân cách mạng. Các em truyền tay nhau từng mẩu giấy học lời Bác Hồ dạy: *"Không có gì quý hơn độc lập, tự do"*.\n\nĐỉnh điểm của cuộc đấu tranh diễn ra vào đầu năm 1973 khi địch bắt chào cờ ba que và đàn áp dã man. Trước sự chứng kiến của giám thị và lính gác, các thiếu nhi kiên quyết từ chối. Trong khoảnh khắc sinh tử, người chiến sĩ thiếu niên Mai Hoài Điều và các đồng đội đã dũng cảm rạch bụng để phản đối chế độ lao tù hà khắc, đòi quyền sống và đòi thả tù chính trị.\n\n> "Chúng tôi còn nhỏ tuổi, nhưng tình yêu Tổ quốc và lòng trung thành với Bác Hồ thì không kẻ thù nào có thể bẻ gãy được!"\n\nHành động quả cảm làm rúng động dư luận trong nước và quốc tế, buộc địch phải nhượng bộ và giải tán nhà lao vào giữa năm 1973.\n\n### Bài học ngàn đời cho thanh thiếu nhi Phường Xuân Hương\n\nNhà lao Thiếu nhi Đà Lạt là biểu tượng sáng ngời cho tinh thần "Tuổi nhỏ chí lớn". Tuổi trẻ Phường Xuân Hương — Đà Lạt hôm nay luôn khắc ghi sự hy sinh anh dũng ấy để ra sức học tập, rèn đức luyện tài, xứng đáng với truyền thống kiên trung của cha anh.`,
+    category_id: 'dia-chi-do',
+    category_name: 'Địa chỉ Đỏ Đà Lạt',
+    province_code: 'LD',
+    province_name: 'Phường Xuân Hương — Đà Lạt',
+    event_year: 1971,
+    period: '1955-1975',
+    status: 'approved',
+    cover_url: '/images/thoi-hoa-lua/story-1.jpg',
+    read_minutes: 5,
+    published_at: '2026-04-30T08:00:00Z',
+    created_at: '2026-04-20T09:00:00Z',
+    likes_count: 3200
+  },
+  {
+    id: 'story-16',
+    slug: 'bat-che-xe-doi-giua-mua-dong-chien-khu',
+    title: 'Bát chè xẻ đôi: Tình đồng chí ấm áp và sự sẻ chia bình đẳng của Bác Hồ',
+    narrator_name: 'Đồng chí Vũ Kỳ (Thư ký Chủ tịch Hồ Chí Minh)',
+    contributor_name: 'Đoàn TNCS Hồ Chí Minh Phường Xuân Hương — Đà Lạt',
+    contributor_unit: '37 Tổ Dân Phố Phường Xuân Hương',
+    summary: 'Giữa đêm đông lạnh giá ở chiến khu Việt Bắc, Bác Hồ được đồng bào biếu một bát chè nóng. Bác liền chia đôi bát chè với đồng chí liên lạc, để lại bài học thiêng liêng về tình đồng chí đồng đội.',
+    body: `### Đêm đông buốt giá nơi núi rừng Việt Bắc\n\nMùa đông năm 1949 tại chiến khu Định Hóa (Thái Nguyên), gió mùa đông bắc tràn về từng đợt lạnh thấu xương. Bác Hồ vẫn thức khuya làm việc bên ngọn đèn dầu đơn sơ trong lán tre.\n\nĐêm ấy, một đồng bào địa phương mang biếu Bác một bát chè sắn nóng hổi nấu với mật mía và gừng tươi. Thấy Bác thức khuya vất vả, đồng chí liên lạc bưng bát chè vào mời Bác ăn cho ấm bụng.\n\nBác nhìn bát chè bốc khói thơm lừng, rồi ngước nhìn đồng chí liên lạc trẻ tuổi đang đứng co ro vì lạnh, đôi bàn tay tím tái áo chấn thủ mỏng manh.\n\n### "Bác một nửa, chú một nửa!"\n\nBác mỉm cười hiền từ, lấy một chiếc thìa khác và một chiếc bát nhỏ, cẩn thận múc chia đúng một nửa bát chè sang chiếc bát thứ hai. Đoạn Bác đưa cho người chiến sĩ và ân cần bảo:\n\n— "Này chú, trời lạnh lắm, Bác một nửa, chú một nửa, cùng ăn cho ấm nhé!"\n\nNgười chiến sĩ bàng hoàng, nghẹn ngào rụt tay lại thưa:\n— "Dạ thưa Bác, đồng bào biếu Bác, Bác thức khuya mệt, Bác ăn hết đi ạ, cháu không dám!"\n\nBác đặt thìa xuống, nhìn thẳng vào mắt người chiến sĩ với ánh mắt trìu mến vô bờ:\n\n> "Kháng chiến gian nan, Bác cháu ta cùng chịu đói, chịu rét như nhau. Chú có no ấm thì mới bảo vệ Bác tốt được, mới đi liên lạc truyền tin được. Trong cách mạng, cán bộ và chiến sĩ bình đẳng như ruột thịt. Chia ngọt sẻ bùi chính là đạo lý lớn nhất của người cộng sản."\n\nNghe lời Bác, người chiến sĩ trẻ xúc động ứa nước mắt, đón lấy nửa bát chè từ tay Người. Bát chè sắn ngọt ngào vị mật gừng sưởi ấm không chỉ thể xác mà thắp sáng cả tâm hồn người chiến sĩ trong suốt chặng đường chiến đấu sau này.\n\n### Bài học cho tuổi trẻ thời đại số\n\nHọc Bác từ bát chè xẻ đôi là học đức tính sẻ chia, yêu thương đồng chí đồng bào, không phân biệt chức vụ sang hèn, luôn biết nghĩ cho người khác trước khi nghĩ đến bản thân mình.`,
+    category_id: 'hoc-tap-bac',
+    category_name: 'Học tập & Làm theo lời Bác',
+    province_code: 'HN',
+    province_name: 'Chiến khu Việt Bắc',
+    event_year: 1949,
+    period: '1945-1954',
+    status: 'approved',
+    cover_url: '/images/thoi-hoa-lua/story-2.jpg',
+    read_minutes: 4,
+    published_at: '2026-05-19T09:30:00Z',
+    created_at: '2026-05-18T10:30:00Z',
+    likes_count: 2450
+  },
+  {
+    id: 'story-17',
+    slug: 'thoi-gian-quy-bau-lam-bai-hoc-dung-gio',
+    title: 'Thời gian quý báu lắm: Bài học về đức tính đúng giờ và tác phong khoa học của Bác',
+    narrator_name: 'Đại tướng Chu Văn Tấn',
+    contributor_name: 'Đoàn TNCS Hồ Chí Minh Phường Xuân Hương — Đà Lạt',
+    contributor_unit: '37 Tổ Dân Phố Phường Xuân Hương',
+    summary: 'Bác Hồ dạy: "Một người chậm 10 phút, cả hội trường một trăm người phải chờ, tức là chú đã lãng phí cả ngàn phút quý báu của đồng bào!". Bài học kỷ luật sâu sắc cho người cán bộ trẻ.',
+    body: `### Cơn mưa rừng và sự chờ đợi của một trăm cán bộ\n\nNăm 1953 tại chiến khu, Ban Tổ chức mở lớp bồi dưỡng lý luận chính trị cho cán bộ các cấp. Giờ khai mạc được ấn định đúng 7 giờ 30 phút sáng. Bác Hồ nhận lời đến nói chuyện với lớp học.\n\nSáng hôm ấy, trời đổ mưa tầm tã, đường rừng lầy lội trơn trượt. Các học viên nghĩ Bác sẽ hoãn hoặc đến muộn. Nhưng đúng 7 giờ 25 phút, chiếc áo mưa giản dị xuất hiện nơi cửa ngõ, Bác Hồ xắn quần lội bùn bước vào lán trước sự ngỡ ngàng thán phục của toàn thể hội trường.\n\nTrong khi đó, có một đồng chí cán bộ phụ trách lớp vì chủ quan thời tiết mưa gió nên đến chậm 10 phút so với giờ khai mạc.\n\n### Phép tính thời gian kinh điển của Bác\n\nSau khi đồng chí cán bộ xin lỗi vì lý do trời mưa to, Bác Hồ tươi cười mời đồng chí ngồi xuống rồi ôn tồn nói:\n\n— "Chú đến chậm 10 phút. Chú tính xem, hội trường này có 100 người. Một người chậm 10 phút tức là chú đã lấy đi của 100 đồng chí ở đây 1.000 phút. 1.000 phút ấy bà con và bộ đội có thể làm được biết bao nhiêu việc ích quốc lợi dân!"\n\nBác phân tích tiếp:\n\n> "Thời gian là vàng bạc. Đúng giờ không chỉ là tác phong làm việc khoa học, mà còn là sự tôn trọng đối với người khác và kỷ luật của người cán bộ cách mạng. Đã hứa giờ nào thì dù mưa bão, khó khăn mấy cũng phải chủ động khắc phục để đến đúng giờ!"\n\nCả hội trường im phăng phắc, ai nấy đều thấm thía lời dạy thâm thúy mà chuẩn xác tuyệt đối của Người.\n\n### Giá trị đối với thanh niên hiện đại\n\nTrong kỷ nguyên số hóa hôm nay, đúng giờ và kỷ luật thời gian là nền tảng số 1 tạo nên sự chuyên nghiệp và chữ Tín. Thanh niên Phường Xuân Hương — Đà Lạt học tập Bác bắt đầu từ việc đúng giờ trong công tác, không lãng phí thời gian vào những điều vô bổ.`,
+    category_id: 'hoc-tap-bac',
+    category_name: 'Học tập & Làm theo lời Bác',
+    province_code: 'HN',
+    province_name: 'Thủ đô Hà Nội & Chiến khu',
+    event_year: 1953,
+    period: '1945-1954',
+    status: 'approved',
+    cover_url: '/images/thoi-hoa-lua/story-3.jpg',
+    read_minutes: 4,
+    published_at: '2026-05-19T10:00:00Z',
+    created_at: '2026-05-18T11:00:00Z',
+    likes_count: 2780
+  },
+  {
+    id: 'story-18',
+    slug: 'chu-nga-co-dau-khong-tinh-thuong-cua-bac',
+    title: 'Chú ngã có đau không: Tình thương bao la của Bác dành cho chiến sĩ cảnh vệ',
+    narrator_name: 'Đồng chí Tạ Quang Chiến (Nguyên chiến sĩ bảo vệ Bác Hồ)',
+    contributor_name: 'Đoàn TNCS Hồ Chí Minh Phường Xuân Hương — Đà Lạt',
+    contributor_unit: '37 Tổ Dân Phố Phường Xuân Hương',
+    summary: 'Trong chuyến hành quân đêm trơn trượt trên đèo dốc hiểm trở, người chiến sĩ trượt chân ngã. Bác không trách mắng mà vội đỡ dậy và ân cần hỏi: "Chú ngã có đau không?".',
+    body: `### Cú trượt chân trên dốc núi cheo leo\n\nNăm 1948, trong một chuyến đi công tác bí mật qua đèo Cao Muôn hiểm trở, đoàn của Bác phải đi bộ ban đêm để tránh máy bay địch nhòm ngó. Trời tối như mực, sương mù dày đặc, đường dốc đá trơn trượt như đổ mỡ.\n\nĐồng chí Chiến đi phía trước mang vác ba lô tài liệu nặng. Do sơ ý vấp phải rễ cây mục, đồng chí trượt chân ngã nhào xuống sườn dốc đá, tài liệu văng tung tóe. Đồng chí hốt hoảng sợ làm kinh động xung quanh và làm chậm hành trình của Bác.\n\n### Bàn tay ấm áp nâng dậy giữa đêm sương\n\nChưa kịp định thần để bò dậy, đồng chí Chiến đã thấy một bóng người nhanh nhẹn bước tới. Đó chính là Bác Hồ. Bác cúi xuống, hai bàn tay gầy gò mà ấm áp nâng người chiến sĩ dậy, phủi sạch đất cát bám trên đầu gối áo quần rồi ân cần hỏi dồn:\n\n— "Chú ngã có đau lắm không? Có bị trật khớp hay gãy xương ở đâu không?"\n\nNgười chiến sĩ nghẹn ngào thưa:\n— "Dạ thưa Bác, cháu chỉ bị trầy da một chút thôi ạ, cháu không sao. Cháu làm chậm bước của Bác, cháu xin Bác tha lỗi!"\n\nBác đỡ ba lô lên lưng cho đồng chí rồi nhẹ nhàng căn dặn:\n\n> "Người không sao là tốt rồi! Đường trơn dốc tối, phải bước từng bước cho vững. Việc quan trọng mấy cũng không quý bằng tính mạng và sức khỏe của các chú. Hãy thương yêu giúp đỡ nhau như anh em ruột thịt!"\n\nCử chỉ ấm áp của vị Chủ tịch nước đã trở thành nguồn động lực vô biên theo người chiến sĩ suốt cả cuộc đời binh nghiệp.\n\n### Tình người bao la của Bác soi rọi tuổi trẻ\n\nPhong cách Hồ Chí Minh là phong cách của tình thương yêu con người bao la, nhân văn và cụ thể trong từng hành động nhỏ nhất. Đó là bài học quý giá cho mỗi cán bộ Đoàn khi tiếp xúc, lắng nghe và chia sẻ với các bạn thanh thiếu nhi.`,
+    category_id: 'hoc-tap-bac',
+    category_name: 'Học tập & Làm theo lời Bác',
+    province_code: 'HN',
+    province_name: 'Chiến khu Việt Bắc',
+    event_year: 1948,
+    period: '1945-1954',
+    status: 'approved',
+    cover_url: '/images/thoi-hoa-lua/cat-khang-chien.jpg',
+    read_minutes: 4,
+    published_at: '2026-05-19T10:30:00Z',
+    created_at: '2026-05-18T11:30:00Z',
+    likes_count: 2310
+  },
+  {
+    id: 'story-19',
+    slug: 'khi-phach-khu-pho-anh-sang-phuong-xuan-huong',
+    title: 'Khí phách Khu phố Ánh Sáng: Căn cứ lòng dân và ngọn đuốc giải phóng Đà Lạt 1975',
+    narrator_name: 'Bác Nguyễn Văn Thành (Cựu cán bộ Thành ủy Đà Lạt)',
+    contributor_name: 'Tổ dân phố Ánh Sáng — Phường Xuân Hương',
+    contributor_unit: 'Đoàn TNCS Hồ Chí Minh Phường Xuân Hương',
+    summary: 'Hồi ức những ngày tháng gian khổ nuôi giấu cán bộ, in truyền đơn và dẫn đường cho cánh quân giải phóng tiến vào trung tâm Hồ Xuân Hương rạng sáng ngày 3/4/1975.',
+    body: `### Căn cứ cách mạng giữa lòng đô thị Đà Lạt\n\nKhu phố Ánh Sáng nằm uốn lượn dưới chân đồi ngay trung tâm Phường Xuân Hương, tiếp giáp thắng cảnh Hồ Xuân Hương. Trong suốt thời kỳ kháng chiến chống Mỹ cứu nước, nơi đây được ví như "vùng lõi lòng dân" kiên cường của Thành ủy Đà Lạt.\n\nNhân dân lao động, thanh niên, tiểu thương Khu phố Ánh Sáng ngày ngày cần lao kiếm sống, nhưng đêm xuống là nơi hội họp bí mật của tổ chức Đảng và Đoàn thanh niên. Dưới các căn hầm bí mật đào sâu trong lòng đất, ngọn đèn dầu le lói soi sáng từng bản in truyền đơn kêu gọi thanh niên Đà Lạt đứng lên khởi nghĩa.\n\n### Rạng sáng 3/4/1975 — Cờ giải phóng rực đỏ trên Hồ Xuân Hương\n\nĐêm mùng 2 rạng sáng ngày 3 tháng 4 năm 1975, nhận được lệnh tổng khởi nghĩa, thanh niên Khu phố Ánh Sáng đã phối hợp với các lực lượng vũ trang tiến đánh chiếm giữ các vị trí xung yếu. Các chiến sĩ trẻ dẫn đường cho xe tăng và bộ đội chủ lực tiến vào tiếp quản Tòa Thị chính và Dinh Tỉnh trưởng.\n\nSáng ngày 3/4/1975, hàng ngàn nhân dân và thanh niên Phường Xuân Hương ùa ra đường hân hoan vẫy cờ hoa đón chào đoàn quân giải phóng. Đà Lạt hoàn toàn giải phóng mà không chịu sự tàn phá của bom đạn, giữ trọn vẹn cảnh sắc ngàn hoa tươi đẹp.\n\n> "Khí phách của nhân dân và tuổi trẻ Khu phố Ánh Sáng — Phường Xuân Hương là minh chứng bất diệt cho chân lý: Lòng dân là pháo đài vững chắc nhất của cách mạng!"\n\n### Tiếp nối truyền thống xây dựng đô thị văn minh\n\nHôm nay, bước trên con đường hoa khang trang của Khu phố Ánh Sáng, tuổi trẻ Phường Xuân Hương luôn tự hào về trang sử vàng của quê hương, thi đua giữ gìn vệ sinh môi trường Hồ Xuân Hương và xung kích trong các phong trào tình nguyện vì cộng đồng.`,
+    category_id: 'dia-chi-do',
+    category_name: 'Địa chỉ Đỏ Đà Lạt',
+    province_code: 'LD',
+    province_name: 'Phường Xuân Hương — Đà Lạt',
+    event_year: 1975,
+    period: '1955-1975',
+    status: 'approved',
+    cover_url: '/images/thoi-hoa-lua/story-me-va-nhung-la-thu.jpg',
+    read_minutes: 5,
+    published_at: '2026-04-03T07:00:00Z',
+    created_at: '2026-03-28T08:00:00Z',
+    likes_count: 3410
+  },
+  {
+    id: 'story-20',
+    slug: 'bac-ho-voi-thieu-nhi-va-thanh-nien',
+    title: 'Bác Hồ với thiếu nhi và thanh niên: Lời dặn ân cần gửi gắm tương lai non sông',
+    narrator_name: 'Nhà giáo Nhân dân Lê Hải Triều',
+    contributor_name: 'Đoàn TNCS Hồ Chí Minh Phường Xuân Hương — Đà Lạt',
+    contributor_unit: '37 Tổ Dân Phố Phường Xuân Hương',
+    summary: '"Non sông Việt Nam có trở nên tươi đẹp hay không, dân tộc Việt Nam có bước tới đài vinh quang để sánh vai với các cường quốc năm châu được hay không, chính là nhờ một phần lớn ở công học tập của các em".',
+    body: `### Bức thư khai trường mùa thu độc lập đầu tiên (1945)\n\nTháng 9 năm 1945, chỉ vài ngày sau khi đọc bản Tuyên ngôn Độc lập khai sinh ra nước Việt Nam Dân chủ Cộng hòa, Bác Hồ đã dành trọn thời gian quý báu để viết thư gửi các em học sinh nhân ngày khai trường đầu tiên của nước Việt Nam mới.\n\nTrong bức thư chan chứa tình yêu thương và kỳ vọng lớn lao, Bác viết:\n\n> "Non sông Việt Nam có trở nên tươi đẹp hay không, dân tộc Việt Nam có bước tới đài vinh quang để sánh vai với các cường quốc năm châu được hay không, chính là nhờ một phần lớn ở công học tập của các em."\n\nLời căn dặn lịch sử ấy đã trở thành kim chỉ nam cho sự nghiệp giáo dục và rèn luyện của biết bao thế hệ thanh thiếu nhi Việt Nam.\n\n### 5 điều Bác Hồ dạy — Ngọn đuốc soi đường của tuổi trẻ\n\nNăm 1961, nhân dịp kỷ niệm 20 năm thành lập Đội Thiếu niên Tiền phong, Bác Hồ đã gửi gắm 5 điều dạy thiêng liêng:\n1. Yêu Tổ quốc, yêu đồng bào\n2. Học tập tốt, lao động tốt\n3. Đoàn kết tốt, kỷ luật tốt\n4. Giữ gìn vệ sinh thật tốt\n5. Khiêm tốn, thật thà, dũng cảm\n\nNăm điều Bác dạy giản dị mà sâu sắc vô cùng, từ việc yêu quê hương đất nước đến những thói quen giữ gìn vệ sinh cá nhân, đức tính trung thực và dũng khí dám nhận khuyết điểm.\n\n### Hành động của tuổi trẻ Phường Xuân Hương hôm nay\n\nThế hệ trẻ 37 Tổ dân phố Phường Xuân Hương — Đà Lạt nguyện suốt đời học tập và làm theo lời Bác dạy, biến niềm tự hào thành hành động cụ thể trong học tập, lao động sáng tạo và cống hiến cho quê hương Đà Lạt ngày càng giàu đẹp, văn minh.`,
+    category_id: 'hoc-tap-bac',
+    category_name: 'Học tập & Làm theo lời Bác',
+    province_code: 'HN',
+    province_name: 'Thủ đô Hà Nội',
+    event_year: 1945,
+    period: '1945-truoc',
+    status: 'approved',
+    cover_url: '/images/thoi-hoa-lua/story-den-hung.jpg',
+    read_minutes: 5,
+    published_at: '2026-05-19T07:00:00Z',
+    created_at: '2026-05-15T08:00:00Z',
+    likes_count: 3890
   }
 ];
 
-const STORAGE_KEY_STORIES = 'dtn_hcm_stories_v4'; // Bump version to refresh with authentic Uncle Ho & Phường Xuân Hương stories
-const STORAGE_KEY_USER = 'dtn_hcm_current_user_v4';
-const STORAGE_KEY_FAVS = 'dtn_hcm_favorites_v4';
+const STORAGE_KEY_STORIES = 'dtn_hcm_stories_v5'; // Bump version to refresh all 20 rich stories
+const STORAGE_KEY_USER = 'dtn_hcm_current_user_v5';
+const STORAGE_KEY_FAVS = 'dtn_hcm_favorites_v5';
 
 // 1. LẤY DANH SÁCH BÀI VIẾT (Tự động kết hợp Seed Data và bài do người dùng tạo)
 export function getAllStories(): Story[] {
@@ -542,7 +674,7 @@ export function switchUserRole(role: 'guest' | 'member' | 'admin'): UserSession 
     id: 'admin-1',
     name: 'Đ/c Trần Quốc Tuấn',
     email: 'bientap@thanhdoan.tphcm.gov.vn',
-    unit: 'Ban Tuyên giáo Thành Đoàn TP.HCM',
+    unit: 'Đoàn TNCS Hồ Chí Minh Phường Xuân Hương — Đà Lạt',
     role: 'admin',
     avatar: '/images/thoi-hoa-lua/logo-doan.webp'
   } : role === 'member' ? {
@@ -578,6 +710,7 @@ export function getFavoriteIds(): string[] {
     return [];
   }
 }
+export const getFavoriteStoryIds = getFavoriteIds;
 
 export function toggleFavorite(storyId: string): boolean {
   const favs = getFavoriteIds();

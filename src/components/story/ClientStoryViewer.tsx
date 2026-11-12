@@ -204,15 +204,17 @@ export default function ClientStoryViewer({ initialSlug }: Props) {
       </div>
 
       {/* Xác thực tư liệu */}
-      <div className="mt-12 p-6 rounded-2xl bg-gradient-to-r from-red-50 to-white border border-red-200 flex items-start gap-4 shadow-sm">
-        <div className="w-10 h-10 rounded-xl bg-red-700 text-amber-300 flex items-center justify-center font-bold text-lg shrink-0">
-          ★
-        </div>
-        <div className="text-xs text-slate-600 leading-relaxed">
-          <strong className="text-red-950 font-bold block mb-1">
-            XÁC THỰC BỞI BAN BIÊN TẬP ĐỀ ÁN SỐ HÓA KÝ ỨC - THÀNH ĐOÀN TP. HỒ CHÍ MINH
+      <div className="mt-12 p-6 rounded-2xl bg-gradient-to-r from-red-50/70 via-amber-50/40 to-white border border-red-200/80 flex items-start gap-4 shadow-sm">
+        <img
+          src={withBase('/images/thoi-hoa-lua/logo-doan.webp')}
+          alt="Huy hiệu Đoàn"
+          className="w-12 h-12 object-contain drop-shadow shrink-0"
+        />
+        <div className="text-xs text-slate-700 leading-relaxed">
+          <strong className="text-red-950 font-bold block mb-1 text-sm">
+            XÁC THỰC BỞI ĐOÀN TNCS HỒ CHÍ MINH PHƯỜNG XUÂN HƯƠNG — ĐÀ LẠT
           </strong>
-          Tư liệu trên đã được tiếp nhận, đối chiếu cẩn trọng nhằm giáo dục truyền thống cách mạng và truyền lửa nhiệt huyết cho thế hệ trẻ.
+          Tư liệu trên đã được tiếp nhận, đối chiếu cẩn trọng nhằm giáo dục truyền thống cách mạng và truyền lửa nhiệt huyết cho thế hệ trẻ 37 Tổ dân phố Phường Xuân Hương và tuổi trẻ cả nước học tập, làm theo tư tưởng, đạo đức, phong cách Hồ Chí Minh.
         </div>
       </div>
 

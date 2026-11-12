@@ -17,7 +17,7 @@ import UserAuthNav from '@/components/common/UserAuthNav';
 
         <div class="shrink-0">
           <div class="text-[10px] font-bold text-red-700 uppercase tracking-wider leading-none">
-            ĐOÀN PHƯỜNG XUÂN HƯƠNG — TP. ĐÀ LẠT
+            ĐOÀN PHƯỜNG XUÂN HƯƠNG — ĐÀ LẠT
           </div>
           <div class="font-bold text-slate-900 text-sm sm:text-base tracking-tight mt-1 group-hover:text-red-700 transition-colors whitespace-nowrap">
             NHẬT KÝ THANH NIÊN LÀM THEO LỜI BÁC
@@ -25,25 +25,22 @@ import UserAuthNav from '@/components/common/UserAuthNav';
         </div>
       </a>
 
-      <!-- Menu Điều hướng chính trên Desktop (Chuẩn Enterprise: Rõ ràng, không bị co chữ) -->
+      <!-- Menu Điều hướng chính cho Độc giả -->
       <nav class="hidden xl:flex items-center gap-1 text-sm font-medium text-slate-600">
         <a href={withBase('/')} class="px-3.5 py-2 rounded-lg hover:text-red-700 hover:bg-slate-50 transition-colors whitespace-nowrap">
           Trang chủ
         </a>
         <a href={withBase('/thu-vien')} class="px-3.5 py-2 rounded-lg hover:text-red-700 hover:bg-slate-50 transition-colors whitespace-nowrap">
-          Thư viện
+          Thư viện bài đọc
         </a>
-        <a href={withBase('/ban-do')} class="px-3.5 py-2 rounded-lg hover:text-red-700 hover:bg-slate-50 transition-colors whitespace-nowrap">
-          Bản đồ Địa chỉ Đỏ
+        <a href={withBase('/dia-chi-do')} class="px-3.5 py-2 rounded-lg hover:text-red-700 hover:bg-slate-50 transition-colors whitespace-nowrap">
+          Địa chỉ Đỏ Đà Lạt
         </a>
         <a href={withBase('/dong-thoi-gian')} class="px-3.5 py-2 rounded-lg hover:text-red-700 hover:bg-slate-50 transition-colors whitespace-nowrap">
           Dòng thời gian
         </a>
         <a href={withBase('/ve-de-an')} class="px-3.5 py-2 rounded-lg hover:text-red-700 hover:bg-slate-50 transition-colors whitespace-nowrap">
           Về đề án
-        </a>
-        <a href={withBase('/tai-khoan/truyen-cua-toi')} class="px-3.5 py-2 rounded-lg hover:text-red-700 hover:bg-slate-50 transition-colors whitespace-nowrap">
-          Truyện của tôi
         </a>
       </nav>
 
@@ -73,22 +70,16 @@ import UserAuthNav from '@/components/common/UserAuthNav';
       Trang chủ
     </a>
     <a href={withBase('/thu-vien')} class="block px-3 py-2 rounded-lg font-semibold text-slate-800 hover:bg-slate-50 hover:text-red-700">
-      Thư viện nhật ký
+      Thư viện bài đọc
     </a>
-    <a href={withBase('/ban-do')} class="block px-3 py-2 rounded-lg font-semibold text-slate-800 hover:bg-slate-50 hover:text-red-700">
-      Bản đồ Địa chỉ Đỏ
+    <a href={withBase('/dia-chi-do')} class="block px-3 py-2 rounded-lg font-semibold text-slate-800 hover:bg-slate-50 hover:text-red-700">
+      Địa chỉ Đỏ Đà Lạt
     </a>
     <a href={withBase('/dong-thoi-gian')} class="block px-3 py-2 rounded-lg font-semibold text-slate-800 hover:bg-slate-50 hover:text-red-700">
       Dòng thời gian
     </a>
     <a href={withBase('/ve-de-an')} class="block px-3 py-2 rounded-lg font-semibold text-slate-800 hover:bg-slate-50 hover:text-red-700">
       Về đề án
-    </a>
-    <a href={withBase('/tai-khoan/truyen-cua-toi')} class="block px-3 py-2 rounded-lg font-semibold text-slate-800 hover:bg-slate-50 hover:text-red-700">
-      Truyện của tôi
-    </a>
-    <a href={withBase('/quan-tri/duyet-bai')} class="block px-3 py-2 rounded-lg font-semibold text-red-700 bg-red-50">
-      Hàng đợi Kiểm duyệt
     </a>
   </div>
 </header>

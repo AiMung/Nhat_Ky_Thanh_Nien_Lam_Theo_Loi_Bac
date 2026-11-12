@@ -10,58 +10,54 @@ interface Props {
 const { story, featured = false } = Astro.props;
 ---
 
-<article class={`bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col group ${featured ? 'lg:grid lg:grid-cols-12 lg:gap-6 border-slate-300' : ''}`}>
+<article class={`bg-white rounded-3xl border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col group ${featured ? 'lg:grid lg:grid-cols-12 lg:gap-6 border-amber-300/60 ring-1 ring-amber-200/40' : ''}`}>
   
-  <!-- Hình ảnh câu chuyện sắc nét kèm nhãn danh mục chuẩn Enterprise -->
-  <div class={`relative overflow-hidden ${featured ? 'lg:col-span-7 h-72 lg:h-full' : 'h-52'} bg-slate-100`}>
+  <!-- Hình ảnh câu chuyện theo tỷ lệ hình chữ nhật dựng đứng (Portrait Book/Card Cover) -->
+  <div class={`relative overflow-hidden ${featured ? 'lg:col-span-7 aspect-[4/3] lg:aspect-auto lg:h-full' : 'aspect-[4/3] sm:aspect-[3/4]'} bg-slate-900`}>
     <img 
       src={story.cover_url} 
       alt={story.title} 
       loading="lazy" 
-      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+      class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out filter brightness-95"
     />
     
-    <!-- Lớp phủ bóng mờ nhẹ nhàng ở đáy ảnh -->
-    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent"></div>
+    <!-- Lớp phủ bóng mờ cổ kính -->
+    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent"></div>
 
-    <!-- Huy hiệu Địa phương & Năm sự kiện (Frosted Glass tinh tế) -->
+    <!-- Huy hiệu Cờ đỏ & Năm sự kiện -->
     <div class="absolute top-3 left-3 flex items-center gap-1.5 flex-wrap">
-      <span class="bg-slate-950/70 backdrop-blur-md text-white text-[11px] font-medium px-2.5 py-0.5 rounded-full shadow-sm">
-        📍 {story.province_name}
+      <span class="bg-red-700/95 text-amber-200 border border-amber-300/40 text-[10px] font-bold px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1">
+        <span>★</span>
+        <span>{story.province_name.replace('TP. ', '')}</span>
       </span>
       {story.event_year && (
-        <span class="bg-slate-950/70 backdrop-blur-md text-white text-[11px] font-medium px-2 py-0.5 rounded-full shadow-sm">
+        <span class="bg-slate-950/80 backdrop-blur-md text-amber-100 text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">
           {story.event_year}
-        </span>
-      )}
-      {story.images && story.images.length > 1 && (
-        <span class="bg-slate-950/70 backdrop-blur-md text-amber-300 text-[11px] font-semibold px-2 py-0.5 rounded-full shadow-sm flex items-center gap-1">
-          📷 {story.images.length}
         </span>
       )}
     </div>
 
     <!-- Tên chủ đề & thời gian đọc nổi bật trên ảnh -->
     <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
-      <span class="font-bold text-[11px] text-red-800 bg-white/95 backdrop-blur px-2.5 py-0.5 rounded-md shadow-xs uppercase tracking-wider">
+      <span class="font-bold text-[10px] text-amber-200 bg-red-950/90 border border-amber-400/30 px-2.5 py-1 rounded-lg uppercase tracking-wider shadow">
         {story.category_name}
       </span>
-      <span class="text-[11px] text-white/90 font-medium drop-shadow">
+      <span class="text-[11px] text-amber-100/90 font-medium drop-shadow flex items-center gap-1">
         ⏱️ {story.read_minutes} phút đọc
       </span>
     </div>
   </div>
 
-  <!-- Phần Nội dung & Metadata nhất quán chuẩn Enterprise -->
-  <div class={`p-5 flex-1 flex flex-col justify-between ${featured ? 'lg:col-span-5 lg:py-6 lg:pr-6 lg:pl-0' : ''}`}>
+  <!-- Phần Nội dung & Metadata trang nhã -->
+  <div class={`p-5 sm:p-6 flex-1 flex flex-col justify-between ${featured ? 'lg:col-span-5 lg:py-8 lg:pr-8 lg:pl-0' : ''}`}>
     <div>
-      <div class="flex items-center gap-2 text-xs text-slate-400 mb-2 font-medium">
+      <div class="flex items-center gap-2 text-[11px] text-slate-400 mb-2 font-medium">
         <span>{formatDate(story.published_at || story.created_at)}</span>
         <span>•</span>
-        <span class="text-slate-500">{story.period === '1989-nay' ? 'Thời kỳ đổi mới' : 'Thời kỳ lịch sử'}</span>
+        <span class="text-amber-800 font-semibold">{story.period === '1989-nay' ? 'Thời kỳ đổi mới' : 'Thời kỳ lịch sử'}</span>
       </div>
 
-      <h3 class={`font-serif font-bold text-slate-900 leading-snug group-hover:text-red-700 transition-colors mb-2 line-clamp-2 ${featured ? 'text-xl lg:text-2xl' : 'text-base sm:text-lg'}`}>
+      <h3 class={`font-serif font-black text-slate-900 leading-snug group-hover:text-red-700 transition-colors mb-2.5 line-clamp-2 ${featured ? 'text-xl lg:text-2xl' : 'text-base sm:text-lg'}`}>
         <a href={withBase(`/truyen/chi-tiet?slug=${story.slug}`)}>
           {story.title}
         </a>
@@ -72,25 +68,18 @@ const { story, featured = false } = Astro.props;
       </p>
     </div>
 
-    <!-- Thông tin Người kể và Đơn vị ghi chép riêng biệt -->
+    <!-- Thông tin Người kể và Nút đọc ngay -->
     <div class="pt-3.5 border-t border-slate-100 flex items-center justify-between gap-3 text-xs">
       <div class="truncate">
-        <div class="text-slate-800 font-semibold truncate">
-          Kể: <span class="text-slate-900">{story.narrator_name}</span>
-        </div>
-        <div class="text-slate-400 text-[11px] truncate mt-0.5" title={story.contributor_unit || story.contributor_name}>
-          {story.contributor_unit || story.contributor_name}
-        </div>
+        <span class="text-[11px] text-slate-400 block font-bold uppercase tracking-wider">Người kể:</span>
+        <span class="text-slate-900 font-bold truncate block">{story.narrator_name}</span>
       </div>
-
-      <a 
-        href={withBase(`/truyen/chi-tiet?slug=${story.slug}`)} 
-        class="shrink-0 font-semibold text-red-700 hover:text-red-800 flex items-center gap-1 group/link bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors"
+      <a
+        href={withBase(`/truyen/chi-tiet?slug=${story.slug}`)}
+        class="shrink-0 px-3.5 py-1.5 rounded-xl bg-red-700 hover:bg-red-800 text-white font-bold text-xs shadow-xs hover:shadow transition-colors"
       >
-        <span>Đọc tiếp</span>
-        <span class="group-hover/link:translate-x-0.5 transition-transform">→</span>
+        Đọc tiếp →
       </a>
     </div>
-
   </div>
 </article>

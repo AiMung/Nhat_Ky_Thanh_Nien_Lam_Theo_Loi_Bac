@@ -2,9 +2,7 @@
 import RootLayout from '@/layouts/RootLayout.astro';
 import StoryCard from '@/components/story/StoryCard.astro';
 import SearchBar from '@/components/search/SearchBar';
-import VietnamMap from '@/components/map/VietnamMap';
 import EmberSparks from '@/components/common/EmberSparks';
-import SocialPostBar from '@/components/story/SocialPostBar';
 import InteractiveTimelineGsap from '@/components/home/InteractiveTimelineGsap';
 import LeaderboardSection from '@/components/home/LeaderboardSection';
 import { getAllStories } from '@/lib/storage';
@@ -19,62 +17,51 @@ const recentStories = approvedStories.slice(1, 4);
 // 6 Chủ đề trọng tâm công tác Đoàn & Thanh niên làm theo lời Bác (100% hình ảnh Thời Hoa Lửa)
 const CATEGORIES = [
   { 
+    id: 'hoc-tap-bac',
+    name: 'Học tập & Làm theo lời Bác', 
+    count: '4,630', 
+    img: '/images/thoi-hoa-lua/story-chiec-vong-bac.jpg',
+    desc: 'Những mẩu chuyện cảm động về phong cách, đạo đức và tấm gương Bác Hồ'
+  },
+  { 
+    id: 'dia-chi-do',
+    name: 'Địa chỉ Đỏ & Di tích Đà Lạt', 
+    count: '1,280', 
+    img: '/images/thoi-hoa-lua/story-1.jpg',
+    desc: 'Nhà lao Thiếu nhi Đà Lạt, Khu phố Ánh Sáng và phong trào tuổi trẻ yêu nước'
+  },
+  { 
     id: 'phong-trao-doan',
-    name: 'Ký ức Thành Đoàn & Kháng chiến', 
+    name: 'Tuổi trẻ Phường Xuân Hương', 
     count: '3,450', 
-    img: '/images/thoi-hoa-lua/cat-khang-chien.jpg',
-    desc: 'Phong trào HSSV Sài Gòn - Gia Định và ngọn lửa đấu tranh giải phóng'
+    img: '/images/thoi-hoa-lua/sk-tin1.jpg',
+    desc: 'Phong trào thi đua số hóa ký ức lịch sử của 37 Tổ dân phố P. Xuân Hương'
   },
   { 
     id: 'thanh-nien-xung-phong',
-    name: 'Thanh niên Xung phong kiên cường', 
+    name: 'Thanh niên Xung phong & Tiên phong', 
     count: '2,890', 
     img: '/images/thoi-hoa-lua/cat-bien-gioi.jpg',
-    desc: 'Mở đường Trường Sơn, hồi sinh Rừng Sác Cần Giờ'
+    desc: 'Mở đường Trường Sơn, khai hoang và xung kích trên các mặt trận gian khổ'
   },
   { 
     id: 'tinh-nguyen',
     name: 'Những lá thư thời hoa lửa', 
     count: '5,120', 
     img: '/images/thoi-hoa-lua/story-me-va-nhung-la-thu.jpg',
-    desc: 'Bút tích hào hùng nơi chiến hào và tình yêu non sông son sắt'
+    desc: 'Bút tích thiêng liêng nơi chiến hào và tình yêu non sông son sắt của cha anh'
   },
   { 
     id: 'bien-dao',
-    name: 'Bảo vệ chủ quyền Biển đảo', 
+    name: 'Chủ quyền Hoàng Sa & Trường Sa', 
     count: '1,780', 
-    img: '/images/thoi-hoa-lua/cat-bien-dao.jpg',
-    desc: 'Tuổi trẻ vì Trường Sa, Hoàng Sa & Nhà giàn DK1 thiêng liêng'
+    img: '/images/truong-sa-chu-quyen.jpg',
+    desc: 'Tuổi trẻ kiên trung bảo vệ chủ quyền biển đảo thiêng liêng và Nhà giàn DK1'
   },
-  { 
-    id: 'hoc-tap-bac',
-    name: 'Học tập & Làm theo lời Bác', 
-    count: '4,630', 
-    img: '/images/thoi-hoa-lua/vna-potal-chan-dung-dai-tuong-vo-nguyen-giap-184218511-16-3-52.jpg',
-    desc: 'Noi gương Bác Hồ vĩ đại và Đại tướng Tổng tư lệnh của Nhân dân'
-  },
-  { 
-    id: 'me-viet-nam-anh-hung',
-    name: 'Mẹ Việt Nam Anh hùng & Hậu phương', 
-    count: '2,100', 
-    img: '/images/thoi-hoa-lua/cat-me-vnah.jpg',
-    desc: 'Đất thép nở hoa, tri ân những người Mẹ hy sinh thầm lặng vì Tổ quốc'
-  },
-];
-
-// Dòng thời gian các mốc son
-const TIMELINE_MILESTONES = [
-  { year: '1931', title: 'Thành lập Đoàn TNCS Đông Dương (Đoàn TNCS Hồ Chí Minh)', period: '1945-truoc' },
-  { year: '1954', title: 'Chiến thắng Điện Biên Phủ "Lừng lẫy năm châu"', period: '1945-1954' },
-  { year: '1968', title: 'Phong trào HSSV và Biệt động Sài Gòn trong Tết Mậu Thân', period: '1955-1975' },
-  { year: '1972', title: 'Hà Nội 12 ngày đêm Điện Biên Phủ trên không quật khởi', period: '1955-1975' },
-  { year: '1975', title: 'Đại thắng mùa Xuân - Tuổi trẻ tiếp quản và dựng xây Thành phố', period: '1955-1975' },
-  { year: '1988', title: 'Gạc Ma - Khúc bi tráng vòng tròn bất tử bảo vệ Trường Sa', period: '1975-1988' },
-  { year: 'Nay', title: 'Tuổi trẻ TP.HCM tiên phong chuyển đổi số và hội nhập quốc tế', period: '1989-nay' },
 ];
 ---
 
-<RootLayout title="Nhật Ký Thanh Niên Làm Theo Lời Bác - Thành Đoàn TP. Hồ Chí Minh">
+<RootLayout title="Nhật Ký Thanh Niên Làm Theo Lời Bác — Phường Xuân Hương, Đà Lạt">
   
   <!-- HERO BANNER TRANG TRỌNG & RỰC RỠ SẮC MÀU THỜI HOA LỬA (HÌNH ẢNH HÀO HÙNG CHUẨN ĐỒNG BỘ 100%) -->
   <section class="relative text-white py-12 sm:py-16 px-4 overflow-hidden border-b-4 border-amber-500 shadow-hero min-h-[560px] lg:min-h-[600px] flex items-center">
@@ -100,7 +87,7 @@ const TIMELINE_MILESTONES = [
         <div class="lg:col-span-5 text-center lg:text-left">
           <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-amber-400/60 text-amber-300 text-xs font-bold mb-4 shadow-xl">
             <span class="text-amber-400">★</span>
-            <span class="tracking-wide">ĐOÀN PHƯỜNG XUÂN HƯƠNG — TP. ĐÀ LẠT</span>
+            <span class="tracking-wide">ĐOÀN PHƯỜNG XUÂN HƯƠNG — ĐÀ LẠT</span>
             <span class="text-amber-400">★</span>
           </div>
 
@@ -110,21 +97,21 @@ const TIMELINE_MILESTONES = [
           </h1>
 
           <p class="text-xs sm:text-sm text-amber-100/90 font-medium leading-relaxed mt-4 max-w-lg mx-auto lg:mx-0 drop-shadow-sm">
-            Nền tảng số hóa những trang ký ức hào hùng của các thế hệ cha anh và phong trào thi đua học tập, làm theo lời Bác của cán bộ, đoàn viên thanh niên 37 Tổ Dân Phố Phường Xuân Hương, TP. Đà Lạt.
+            Nền tảng số hóa những mẩu chuyện cảm động về Bác Hồ, di tích lịch sử và phong trào thi đua học tập, làm theo lời Bác của cán bộ, đoàn viên thanh niên 37 Tổ Dân Phố Phường Xuân Hương — Đà Lạt.
           </p>
 
           <div class="mt-6 flex flex-wrap items-center justify-center lg:justify-start gap-3">
             <a 
-              href={withBase('/gui-cau-chuyen')} 
+              href={withBase('/thu-vien')} 
               class="inline-flex items-center gap-2 bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-amber-100 px-5 py-3 rounded-2xl text-xs sm:text-sm font-bold shadow-lg transition-transform hover:scale-105"
             >
-              <span>✍️ Viết nhật ký gửi ngay</span>
+              <span>📖 Đọc Câu Chuyện Về Bác</span>
             </a>
             <a 
-              href={withBase('/thu-vien')} 
+              href={withBase('/dia-chi-do')} 
               class="inline-flex items-center gap-2 bg-white/15 hover:bg-white/25 border border-white/30 text-white px-5 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-colors backdrop-blur shadow-md"
             >
-              <span>📖 Khám phá Thư viện</span>
+              <span>📍 Địa Chỉ Đỏ Đà Lạt</span>
             </a>
           </div>
         </div>
@@ -207,60 +194,70 @@ const TIMELINE_MILESTONES = [
           <span>📖 Khám phá Thư viện</span>
         </a>
         <a
-          href={withBase('/ban-do')}
-          class="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs sm:text-sm border border-slate-300 shadow-xs transition-colors"
+          href={withBase('/dia-chi-do')}
+          class="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs sm:text-sm border border-slate-300 shadow-xs transition-colors flex items-center gap-1.5"
         >
-          <span>🗺️ Bản đồ Địa chỉ Đỏ</span>
+          <span>📍 Địa chỉ Đỏ Đà Lạt</span>
         </a>
       </div>
     </div>
   </section>
 
-  <!-- 6 CHỦ ĐỀ CHUYÊN ĐỀ THANH NIÊN LÀM THEO LỜI BÁC -->
+  <!-- 6 CHUYÊN ĐỀ HÌNH CHỮ NHẬT DỰNG ĐỨNG (CHUẨN PORTRAIT ASPECT-[3/4] THỜI HOA LỬA) -->
   <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
     <div class="text-center max-w-3xl mx-auto mb-12">
-      <span class="text-xs font-bold text-doan-800 uppercase tracking-widest bg-doan-50 px-3 py-1 rounded-full border border-doan-200">
-        Chuyên đề rèn luyện
+      <span class="text-xs font-bold text-red-700 uppercase tracking-widest bg-red-50 px-3.5 py-1 rounded-full border border-red-200">
+        ★ Các chuyên đề rèn luyện & học tập
       </span>
       <h2 class="font-serif font-black text-2xl sm:text-3xl text-slate-900 mt-2.5">
-        Các chuyên đề Nhật ký Ký ức
+        Chuyên Đề Nhật Ký Làm Theo Lời Bác
       </h2>
       <p class="text-sm text-slate-600 mt-2">
-        Học tập và làm theo tư tưởng, đạo đức, phong cách Hồ Chí Minh qua từng trang sử vẻ vang của dân tộc
+        Học tập và làm theo tư tưởng, đạo đức, phong cách Hồ Chí Minh qua từng trang sử hào hùng của dân tộc và tuổi trẻ Phường Xuân Hương — Đà Lạt
       </p>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Lưới 6 thẻ hình chữ nhật dựng đứng chuẩn portrait -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6">
       {CATEGORIES.map((cat) => (
         <a 
           href={withBase(`/thu-vien?cat=${cat.id}`)} 
-          class="group youth-card rounded-2xl overflow-hidden flex flex-col bg-white border border-slate-200 shadow-sm hover:shadow-card-hover transition-all"
+          class="group rounded-3xl overflow-hidden flex flex-col bg-white border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300"
         >
-          <div class="relative h-48 overflow-hidden bg-slate-100">
+          {/* Ảnh hình chữ nhật dựng đứng */}
+          <div class="relative aspect-[3/4] overflow-hidden bg-slate-900">
             <img 
               src={cat.img} 
               alt={cat.name} 
               loading="lazy" 
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 filter brightness-95" 
             />
-            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent"></div>
-            <div class="absolute bottom-3 left-4 right-4">
-              <span class="text-[11px] font-bold text-gold-300 uppercase tracking-wider bg-doan-900/90 backdrop-blur px-2.5 py-0.5 rounded">
-                {cat.count} bài viết
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+            
+            {/* Huy hiệu Cờ đỏ ở góc trên */}
+            <div class="absolute top-2.5 left-2.5">
+              <span class="w-6 h-6 rounded-full bg-red-700/90 text-amber-300 flex items-center justify-center text-xs font-black shadow border border-amber-300/40">
+                ★
               </span>
             </div>
-          </div>
-          <div class="p-5 flex-1 flex flex-col justify-between">
-            <div>
-              <h3 class="font-serif font-bold text-lg text-slate-900 group-hover:text-doan-800 transition-colors mb-1">
+
+            {/* Tên chuyên mục & Số lượng ở đáy ảnh dựng đứng */}
+            <div class="absolute bottom-3 left-3 right-3 text-white">
+              <span class="text-[10px] font-bold text-amber-300 uppercase tracking-wider block mb-1 drop-shadow">
+                {cat.count} bài đọc
+              </span>
+              <h3 class="font-serif font-black text-sm text-white leading-tight group-hover:text-amber-200 transition-colors drop-shadow">
                 {cat.name}
               </h3>
-              <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed">
-                {cat.desc}
-              </p>
             </div>
-            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-doan-700 font-bold group-hover:text-redflag-700">
-              <span>Khám phá chuyên mục</span>
+          </div>
+          
+          <div class="p-3 bg-white flex-1 flex flex-col justify-between">
+            <p class="text-[11px] text-slate-500 line-clamp-2 leading-relaxed">
+              {cat.desc}
+            </p>
+            <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-red-700">
+              <span>Đọc ngay</span>
               <span class="group-hover:translate-x-1 transition-transform">→</span>
             </div>
           </div>
@@ -269,36 +266,169 @@ const TIMELINE_MILESTONES = [
     </div>
   </section>
 
-  <!-- BẢN ĐỒ KÝ ỨC & ĐỊA CHỈ ĐỎ CÓ HOÀNG SA - TRƯỜNG SA -->
-  <section class="bg-slate-100/70 border-y border-slate-200 py-16">
+  <!-- ĐỊA CHỈ ĐỎ & DI TÍCH LỊCH SỬ ĐÀ LẠT (THAY THẾ MAP BẰNG CÁC ĐỊA DANH LỊCH SỬ ĐÀ LẠT) -->
+  <section class="bg-gradient-to-b from-slate-100/80 via-white to-slate-50 border-y border-slate-200 py-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center max-w-3xl mx-auto mb-10">
-        <span class="text-xs font-bold text-redflag-800 uppercase tracking-widest bg-redflag-50 px-3 py-1 rounded-full border border-redflag-200">
-          Chủ quyền thiêng liêng
-        </span>
-        <h2 class="font-serif font-black text-2xl sm:text-3xl text-slate-900 mt-2.5">
-          Bản đồ Ký ức Lịch sử & Địa chỉ Đỏ
-        </h2>
-        <p class="text-sm text-slate-600 mt-2">
-          Theo chân những chiến sĩ trẻ và cựu cán bộ Đoàn trên khắp mọi miền Tổ quốc, khẳng định chủ quyền toàn vẹn Hoàng Sa và Trường Sa
-        </p>
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+        <div>
+          <span class="text-xs font-bold text-red-700 uppercase tracking-widest bg-red-50 px-3.5 py-1 rounded-full border border-red-200">
+            ★ Dấu ấn lịch sử quê hương
+          </span>
+          <h2 class="font-serif font-black text-2xl sm:text-3xl text-slate-900 mt-2.5">
+            Địa Chỉ Đỏ & Di Tích Lịch Sử Đà Lạt
+          </h2>
+          <p class="text-sm text-slate-600 mt-1">
+            Khám phá những địa danh cách mạng kiên trung gắn liền với tuổi trẻ Phường Xuân Hương và mảnh đất Đà Lạt anh hùng
+          </p>
+        </div>
+
+        <a 
+          href={withBase('/dia-chi-do')} 
+          class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-700 hover:bg-red-800 text-white text-xs font-bold shadow-xs hover:shadow transition-colors shrink-0"
+        >
+          <span>Xem tất cả di tích</span>
+          <span>→</span>
+        </a>
       </div>
 
-      <VietnamMap client:load />
+      <!-- 4 THẺ DI TÍCH DỰNG ĐỨNG ĐẶC SẮC (NHÀ LAO THIẾU NHI, KHU PHỐ ÁNH SÁNG, TRƯỜNG CĐSP, HỒ XUÂN HƯƠNG) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        {/* Di tích 1: Nhà lao Thiếu nhi Đà Lạt */}
+        <article class="bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col group">
+          <div class="relative aspect-[3/4] overflow-hidden bg-slate-900">
+            <img 
+              src="/images/thoi-hoa-lua/story-1.jpg" 
+              alt="Nhà lao Thiếu nhi Đà Lạt"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 filter brightness-95" 
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+            <div class="absolute top-3 left-3 bg-red-700 text-amber-200 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase">
+              Di tích Quốc gia
+            </div>
+            <div class="absolute bottom-3 left-3 right-3 text-white">
+              <span class="text-[10px] text-amber-300 font-semibold block mb-0.5">Khởi lập 1971</span>
+              <h3 class="font-serif font-black text-base text-white group-hover:text-amber-200 transition-colors">
+                Nhà lao Thiếu nhi Đà Lạt
+              </h3>
+            </div>
+          </div>
+          <div class="p-4 flex-1 flex flex-col justify-between">
+            <p class="text-xs text-slate-600 line-clamp-3 leading-relaxed">
+              Biểu tượng kiên trung của hơn 600 dũng sĩ nhỏ tuổi, bản anh hùng ca mổ bụng đấu tranh đòi dân sinh, độc lập và hòa bình.
+            </p>
+            <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-red-700">
+              <span>Đọc truyện ký</span>
+              <span class="group-hover:translate-x-1 transition-transform">→</span>
+            </div>
+          </div>
+        </article>
+
+        {/* Di tích 2: Khu phố Ánh Sáng */}
+        <article class="bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col group">
+          <div class="relative aspect-[3/4] overflow-hidden bg-slate-900">
+            <img 
+              src="/images/thoi-hoa-lua/story-me-va-nhung-la-thu.jpg" 
+              alt="Khu phố Ánh Sáng"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 filter brightness-95" 
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+            <div class="absolute top-3 left-3 bg-red-700 text-amber-200 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase">
+              P. Xuân Hương
+            </div>
+            <div class="absolute bottom-3 left-3 right-3 text-white">
+              <span class="text-[10px] text-amber-300 font-semibold block mb-0.5">TDP Ánh Sáng</span>
+              <h3 class="font-serif font-black text-base text-white group-hover:text-amber-200 transition-colors">
+                Khu phố Ánh Sáng
+              </h3>
+            </div>
+          </div>
+          <div class="p-4 flex-1 flex flex-col justify-between">
+            <p class="text-xs text-slate-600 line-clamp-3 leading-relaxed">
+              Căn cứ lòng dân nội đô lịch sử ngay cạnh Hồ Xuân Hương, điểm in ấn truyền đơn và nuôi giấu cán bộ cách mạng.
+            </p>
+            <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-red-700">
+              <span>Đọc truyện ký</span>
+              <span class="group-hover:translate-x-1 transition-transform">→</span>
+            </div>
+          </div>
+        </article>
+
+        {/* Di tích 3: Trường CĐ Sư phạm Đà Lạt */}
+        <article class="bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col group">
+          <div class="relative aspect-[3/4] overflow-hidden bg-slate-900">
+            <img 
+              src="/images/thoi-hoa-lua/story-3.jpg" 
+              alt="Trường Cao đẳng Sư phạm Đà Lạt"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 filter brightness-95" 
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+            <div class="absolute top-3 left-3 bg-red-700 text-amber-200 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase">
+              Di tích Kiến trúc
+            </div>
+            <div class="absolute bottom-3 left-3 right-3 text-white">
+              <span class="text-[10px] text-amber-300 font-semibold block mb-0.5">Lycée Yersin</span>
+              <h3 class="font-serif font-black text-base text-white group-hover:text-amber-200 transition-colors">
+                Trường CĐ Sư phạm
+              </h3>
+            </div>
+          </div>
+          <div class="p-4 flex-1 flex flex-col justify-between">
+            <p class="text-xs text-slate-600 line-clamp-3 leading-relaxed">
+              Cái nôi đấu tranh của phong trào học sinh sinh viên Đà Lạt, kiên quyết bãi khóa đòi hòa bình và thống nhất đất nước.
+            </p>
+            <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-red-700">
+              <span>Đọc truyện ký</span>
+              <span class="group-hover:translate-x-1 transition-transform">→</span>
+            </div>
+          </div>
+        </article>
+
+        {/* Di tích 4: Hồ Xuân Hương & Thủy Tạ */}
+        <article class="bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col group">
+          <div class="relative aspect-[3/4] overflow-hidden bg-slate-900">
+            <img 
+              src="/images/thoi-hoa-lua/cat-khang-chien.jpg" 
+              alt="Hồ Xuân Hương & Thủy Tạ"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 filter brightness-95" 
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+            <div class="absolute top-3 left-3 bg-red-700 text-amber-200 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase">
+              Thắng cảnh Lịch sử
+            </div>
+            <div class="absolute bottom-3 left-3 right-3 text-white">
+              <span class="text-[10px] text-amber-300 font-semibold block mb-0.5">3/4/1975</span>
+              <h3 class="font-serif font-black text-base text-white group-hover:text-amber-200 transition-colors">
+                Hồ Xuân Hương
+              </h3>
+            </div>
+          </div>
+          <div class="p-4 flex-1 flex flex-col justify-between">
+            <p class="text-xs text-slate-600 line-clamp-3 leading-relaxed">
+              Nơi cờ giải phóng rực đỏ tung bay vào rạng sáng 3/4/1975, đón đoàn quân giải phóng và tuổi trẻ tiếp quản thành phố.
+            </p>
+            <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-red-700">
+              <span>Đọc truyện ký</span>
+              <span class="group-hover:translate-x-1 transition-transform">→</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
     </div>
   </section>
 
-  <!-- DÒNG THỜI GIAN MỐC SON CỦA ĐOÀN VÀ TUỔI TRẺ (HIỆU ỨNG GSAP-STYLE INTERACTIVE CHUYÊN NGHIỆP) -->
+  <!-- DÒNG THỜI GIAN MỐC SON LỊCH SỬ (HIỆU ỨNG TƯƠNG TÁC CHUYÊN NGHIỆP) -->
   <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
     <div class="text-center max-w-3xl mx-auto mb-10">
       <span class="text-xs font-bold text-red-700 uppercase tracking-widest bg-red-50 px-3 py-1 rounded-full border border-red-200">
-        Biên niên sử vàng hào hùng
+        ★ Biên niên sử vàng hào hùng
       </span>
       <h2 class="font-serif font-black text-2xl sm:text-3xl text-slate-900 mt-2.5">
         Những Mốc Son Lịch Sử Hào Hùng Của Dân Tộc
       </h2>
       <p class="text-sm text-slate-600 mt-2">
-        Hành trình hơn 90 năm rèn luyện, chiến đấu và dựng xây non sông vẻ vang của các thế hệ thanh niên dưới ngọn cờ của Đảng và Bác Hồ
+        Hành trình cách mạng vĩ đại của Đảng, Bác Hồ và các thế hệ thanh niên Việt Nam cùng tuổi trẻ Phường Xuân Hương — Đà Lạt
       </p>
     </div>
 
@@ -306,28 +436,28 @@ const TIMELINE_MILESTONES = [
     <InteractiveTimelineGsap client:load />
   </section>
 
-  <!-- BẢNG XẾP HẠNG THI ĐUA ĐÓNG GÓP KÝ ỨC (37 TỔ DÂN PHỐ P. XUÂN HƯƠNG - ĐÀ LẠT & ĐOÀN CƠ SỞ) -->
+  <!-- BẢNG XẾP HẠNG THI ĐUA 37 TỔ DÂN PHỐ PHƯỜNG XUÂN HƯƠNG — ĐÀ LẠT -->
   <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <LeaderboardSection client:load />
   </section>
 
-  <!-- TRUYỆN NỔI BẬT & MỚI NHẤT (DÒNG BÀI NEWSFEED) -->
+  <!-- TRUYỆN NỔI BẬT & MỚI NHẤT (DÒNG BÀI NEWSFEED - THẺ DỰNG ĐỨNG) -->
   <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-slate-200">
     <div class="flex items-center justify-between mb-10">
       <div>
-        <span class="text-xs font-bold text-redflag-800 uppercase tracking-widest bg-redflag-50 px-3 py-1 rounded-full border border-redflag-200">
-          Trang nhật ký mới
+        <span class="text-xs font-bold text-red-700 uppercase tracking-widest bg-red-50 px-3 py-1 rounded-full border border-red-200">
+          ★ Trang nhật ký mới nhất
         </span>
         <h2 class="font-serif font-black text-2xl sm:text-3xl text-slate-900 mt-2.5">
-          Những câu chuyện lay động trái tim
+          Những Câu Chuyện Lay Động Trái Tim
         </h2>
       </div>
 
       <a 
         href={withBase('/thu-vien')} 
-        class="text-xs sm:text-sm font-bold text-doan-800 hover:text-redflag-700 flex items-center gap-1 group bg-doan-50 px-4 py-2 rounded-xl transition-colors"
+        class="text-xs sm:text-sm font-bold text-red-700 hover:text-red-800 flex items-center gap-1 group bg-red-50 px-4 py-2 rounded-xl transition-colors"
       >
-        <span>Xem toàn bộ thư viện</span>
+        <span>Xem toàn bộ {allStories.length} câu chuyện</span>
         <span class="group-hover:translate-x-1 transition-transform">→</span>
       </a>
     </div>
@@ -339,50 +469,49 @@ const TIMELINE_MILESTONES = [
       </div>
     )}
 
-    <!-- Danh sách 3 bài viết kế tiếp -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Danh sách các bài viết dựng đứng kế tiếp -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
       {recentStories.map((story) => (
         <StoryCard story={story} />
       ))}
     </div>
   </section>
 
-  <!-- CALL TO ACTION: ĐOÀN VIÊN VIẾT NHẬT KÝ (HÌNH NỀN THỜI HOA LỬA CHÂN THỰC) -->
+  <!-- CALL TO ACTION CHO ĐỘC GIẢ: ĐỌC VÀ HỌC TẬP LỜI BÁC -->
   <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-    <div class="relative rounded-3xl p-8 sm:p-14 text-white text-center shadow-2xl overflow-hidden border-2 border-gold-500/40">
+    <div class="relative rounded-3xl p-8 sm:p-14 text-white text-center shadow-2xl overflow-hidden border-2 border-amber-500/40">
       <div class="absolute inset-0 z-0">
         <img
           src="/images/thoi-hoa-lua/cta-bg.jpg"
-          alt="Lời kêu gọi viết nhật ký"
+          alt="Học tập và làm theo lời Bác"
           class="w-full h-full object-cover filter brightness-50 contrast-125"
         />
-        <div class="absolute inset-0 bg-gradient-to-r from-redflag-950/90 via-doan-950/80 to-redflag-950/90"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-red-950/95 via-red-900/85 to-amber-950/95"></div>
       </div>
 
       <div class="relative z-10 max-w-3xl mx-auto">
-        <span class="inline-block px-4 py-1.5 rounded-full bg-gold-400/20 backdrop-blur text-gold-300 text-xs font-bold uppercase tracking-wider mb-4 border border-gold-400/40">
-          Phát động phong trào toàn Thành phố
+        <span class="inline-block px-4 py-1.5 rounded-full bg-amber-400/20 backdrop-blur text-amber-300 text-xs font-bold uppercase tracking-wider mb-4 border border-amber-400/40">
+          ★ Đoàn TNCS Hồ Chí Minh Phường Xuân Hương — Đà Lạt ★
         </span>
         <h3 class="font-serif font-black text-2xl sm:text-4xl text-white mb-4 leading-tight">
-          Mỗi đoàn viên một việc tốt, <br />
-          Mỗi chi đoàn một công trình dâng Bác
+          Học Tập & Làm Theo Tư Tưởng, Đạo Đức, <br />
+          Phong Cách Hồ Chí Minh
         </h3>
-        <p class="text-sm sm:text-base text-gold-100 leading-relaxed mb-8 max-w-2xl mx-auto">
-          Hãy chia sẻ những câu chuyện về tấm gương Bác Hồ bạn đã học tập, hồi ức của thế hệ đi trước hoặc việc làm ý nghĩa của chính chi đoàn bạn.
+        <p class="text-sm sm:text-base text-amber-100/90 leading-relaxed mb-8 max-w-2xl mx-auto">
+          Mời bạn đọc, cán bộ và đoàn viên thanh niên 37 Tổ dân phố cùng lan tỏa những câu chuyện lay động trái tim và biến lời dạy của Bác thành hành động thiết thực xây dựng quê hương Đà Lạt ngày càng giàu đẹp.
         </p>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
           <a 
-            href={withBase('/gui-cau-chuyen')} 
-            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gold-400 hover:bg-gold-500 text-slate-950 font-serif font-black px-8 py-4 rounded-xl shadow-lg transition-transform hover:scale-105"
+            href={withBase('/thu-vien')} 
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-serif font-black px-8 py-4 rounded-2xl shadow-xl transition-transform hover:scale-105"
           >
-            <span>Viết nhật ký gửi ngay</span>
-            <span>✍️</span>
+            <span>📖 Khám Phá Thư Viện ({allStories.length} Bài Viết)</span>
           </a>
           <a 
-            href={withBase('/thu-vien')} 
-            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-bold px-6 py-4 rounded-xl transition-colors backdrop-blur"
+            href={withBase('/dia-chi-do')} 
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-bold px-6 py-4 rounded-2xl transition-colors backdrop-blur"
           >
-            <span>Tra cứu tư liệu</span>
+            <span>📍 Khám Phá Địa Chỉ Đỏ Đà Lạt</span>
           </a>
         </div>
       </div>

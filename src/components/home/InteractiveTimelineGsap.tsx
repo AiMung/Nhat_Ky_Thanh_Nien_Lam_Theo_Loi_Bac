@@ -82,15 +82,15 @@ const MILESTONES: Milestone[] = [
     storySlug: 'la-thu-gui-tu-nha-gian-dk1-va-tinh-yeu-bien-dao'
   },
   {
-    year: 'Nay',
+    year: '1975 - Nay',
     badge: 'Khát vọng Tương lai',
-    title: 'Mùa Hè Xanh & Tuổi trẻ TP.HCM chuyển đổi số',
-    subtitle: 'Nối tiếp ngọn lửa truyền thống - Tiên phong hội nhập',
-    desc: 'Kế thừa tinh thần Thanh niên xung phong giải phóng Rừng Sác Cần Giờ, phong trào Tình nguyện Mùa Hè Xanh và Đề án Số hóa 100 Địa chỉ Đỏ của Thành Đoàn đang lan tỏa mạnh mẽ, ứng dụng công nghệ số phụng sự cộng đồng.',
+    title: 'Giải phóng Đà Lạt & Tuổi trẻ Phường Xuân Hương',
+    subtitle: 'Nối tiếp ngọn lửa truyền thống — Tiên phong số hóa và hội nhập',
+    desc: 'Từ ngày 3/4/1975 khi cờ giải phóng bay trên đỉnh Hồ Xuân Hương đến công trình thanh niên số hóa 37 Tổ dân phố hôm nay, thế hệ trẻ Phường Xuân Hương — Đà Lạt luôn ghi sâu lời dạy của Bác Hồ, xung kích dựng xây quê hương ngày càng giàu đẹp.',
     quote: 'Đâu cần thanh niên có, việc gì khó có thanh niên',
     period: '1989-nay',
     img: '/images/thoi-hoa-lua/story-me-va-nhung-la-thu.jpg',
-    storySlug: 'chuyen-nhung-chiec-ao-xanh-rung-sac-can-gio'
+    storySlug: 'tuoi-tre-phuong-xuan-huong-da-lat-hoc-loi-bac'
   }
 ];
 
