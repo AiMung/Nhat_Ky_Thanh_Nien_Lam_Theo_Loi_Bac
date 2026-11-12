@@ -18,8 +18,10 @@
     "@types/dompurify": "^3.0.5",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
+    "@xdev-asia/vietnam-map-34-provinces": "^2.1.0",
     "canvas-confetti": "^1.9.4",
     "dompurify": "^3.1.7",
+    "highcharts": "^11.4.9",
     "lucide-react": "^0.454.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -30,4 +32,3 @@
     "@types/canvas-confetti": "^1.9.0"
   }
 }
-
