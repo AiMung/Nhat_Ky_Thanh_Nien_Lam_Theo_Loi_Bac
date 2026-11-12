@@ -74,18 +74,18 @@ const TIMELINE_MILESTONES = [
 
 <RootLayout title="Nhật Ký Thanh Niên Làm Theo Lời Bác - Thành Đoàn TP. Hồ Chí Minh">
   
-  <!-- HERO BANNER TRANG TRỌNG & RỰC RỠ SẮC MÀU THỜI HOA LỬA (HÌNH ẢNH CHÂN THỰC 100%) -->
-  <section class="relative text-white py-14 sm:py-20 px-4 overflow-hidden border-b-4 border-gold-500 shadow-hero min-h-[580px] lg:min-h-[620px] flex items-center">
+  <!-- HERO BANNER TRANG TRỌNG & RỰC RỠ SẮC MÀU THỜI HOA LỬA (HÌNH ẢNH HÀO HÙNG CHUẨN ĐỒNG BỘ 100%) -->
+  <section class="relative text-white py-12 sm:py-16 px-4 overflow-hidden border-b-4 border-amber-500 shadow-hero min-h-[560px] lg:min-h-[600px] flex items-center">
     
-    <!-- HÌNH NỀN GỐC THỜI HOA LỬA SẮC NÉT (Bác Hồ, Đại tướng Giáp, Mẹ VNAH ở góc trái) -->
+    <!-- HÌNH NỀN HÀO HÙNG CHÍNH THỨC (Cờ đỏ sao vàng rực rỡ, Bác Hồ, Đại tướng Võ Nguyên Giáp, Mẹ VNAH, Đoàn viên thanh niên) -->
     <div class="absolute inset-0 z-0">
       <img
-        src="/images/thoi-hoa-lua-hero.jpg"
-        alt="Thời hoa lửa - Tuổi trẻ Việt Nam làm theo lời Bác"
-        class="w-full h-full object-cover object-left sm:object-center filter brightness-90 contrast-105"
+        src="/images/hero-official.jpg"
+        alt="Nhật ký thanh niên làm theo lời Bác - Thành Đoàn TP. Hồ Chí Minh"
+        class="w-full h-full object-cover object-center filter brightness-95 contrast-105"
       />
-      <!-- Lớp phủ chuyển màu bảo đảm đọc chữ rõ nét trên mọi màn hình nhưng vẫn giữ trọn hình tượng Bác Hồ và cờ Tổ quốc -->
-      <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-redflag-950/40 lg:bg-gradient-to-r lg:from-slate-950/70 lg:via-slate-950/50 lg:to-slate-950/85"></div>
+      <!-- Lớp phủ chuyển màu tinh tế: Giữ nguyên cờ đỏ rực rỡ ở phía trên & bên phải, chỉ phủ mờ nhẹ bên trái để đọc chữ sắc nét -->
+      <div class="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/30 to-black/20 lg:bg-gradient-to-r lg:from-slate-950/85 lg:via-slate-950/45 lg:to-transparent"></div>
     </div>
 
     <!-- Hiệu ứng tàn lửa hoa lửa bập bùng (Ember Sparks) -->
@@ -96,31 +96,31 @@ const TIMELINE_MILESTONES = [
         
         <!-- Cột trái: Tôn vinh danh xưng Thành Đoàn & Khẩu hiệu hành động -->
         <div class="lg:col-span-5 text-center lg:text-left">
-          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-gold-400/60 text-gold-300 text-xs font-bold mb-4 shadow-xl">
-            <span class="text-gold-400">★</span>
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-amber-400/60 text-amber-300 text-xs font-bold mb-4 shadow-xl">
+            <span class="text-amber-400">★</span>
             <span class="tracking-wide">ĐOÀN TNCS HỒ CHÍ MINH TP. HỒ CHÍ MINH</span>
-            <span class="text-gold-400">★</span>
+            <span class="text-amber-400">★</span>
           </div>
 
           <h1 class="font-serif font-black text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-tight drop-shadow-lg">
             NHẬT KÝ THANH NIÊN <br />
-            <span class="text-gold-400 drop-shadow-[0_4px_16px_rgba(234,179,8,0.5)]">LÀM THEO LỜI BÁC</span>
+            <span class="text-amber-300 drop-shadow-[0_4px_16px_rgba(234,179,8,0.5)]">LÀM THEO LỜI BÁC</span>
           </h1>
 
-          <p class="text-xs sm:text-sm text-gold-100/90 font-medium leading-relaxed mt-4 max-w-lg mx-auto lg:mx-0">
+          <p class="text-xs sm:text-sm text-amber-100/90 font-medium leading-relaxed mt-4 max-w-lg mx-auto lg:mx-0 drop-shadow-sm">
             Nền tảng số hóa những trang ký ức hào hùng của các thế hệ thanh niên thành phố mang tên Bác — nơi mỗi việc làm bình dị đều thắp sáng ngọn lửa yêu nước.
           </p>
 
           <div class="mt-6 flex flex-wrap items-center justify-center lg:justify-start gap-3">
             <a 
               href={withBase('/gui-cau-chuyen')} 
-              class="inline-flex items-center gap-2 bg-gradient-to-r from-redflag-700 to-redflag-800 hover:from-redflag-800 hover:to-redflag-900 text-gold-200 px-5 py-3 rounded-2xl text-xs sm:text-sm font-bold shadow-lg transition-transform hover:scale-105"
+              class="inline-flex items-center gap-2 bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-amber-100 px-5 py-3 rounded-2xl text-xs sm:text-sm font-bold shadow-lg transition-transform hover:scale-105"
             >
               <span>✍️ Viết nhật ký gửi ngay</span>
             </a>
             <a 
               href={withBase('/thu-vien')} 
-              class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/30 text-white px-5 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-colors backdrop-blur"
+              class="inline-flex items-center gap-2 bg-white/15 hover:bg-white/25 border border-white/30 text-white px-5 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-colors backdrop-blur shadow-md"
             >
               <span>📖 Khám phá Thư viện</span>
             </a>
@@ -130,44 +130,46 @@ const TIMELINE_MILESTONES = [
         <!-- Cột phải: Hộp trích dẫn Bác Hồ, Thanh tìm kiếm & Chỉ số thống kê -->
         <div class="lg:col-span-7 space-y-4">
           
-          <!-- Hộp Trích dẫn bất hủ của Bác Hồ -->
-          <div class="p-5 rounded-3xl bg-slate-950/70 backdrop-blur-md border border-gold-500/40 text-gold-100 shadow-2xl">
+          <!-- Hộp Trích dẫn bất hủ của Bác Hồ: Thiết kế chuẩn Enterprise Ruby sang trọng -->
+          <div class="p-4 sm:p-5 rounded-2xl bg-red-950/60 backdrop-blur-md border border-amber-400/40 text-amber-100 shadow-2xl">
             <div class="flex items-start gap-3">
-              <span class="text-2xl text-gold-400 leading-none">“</span>
+              <span class="text-3xl text-amber-300 leading-none select-none">“</span>
               <div class="flex-1">
-                <p class="font-serif italic text-base sm:text-lg text-gold-200 leading-relaxed">
+                <p class="font-serif italic text-base sm:text-lg text-amber-200 leading-relaxed font-semibold">
                   Không có việc gì khó, chỉ sợ lòng không bền<br class="hidden sm:inline" />
                   Đào núi và lấp biển, quyết chí ắt làm nên.
                 </p>
-                <div class="text-[11px] sm:text-xs text-gold-400 font-bold uppercase tracking-widest mt-2">
-                  — Lời Bác Hồ tặng Đội Thanh niên xung phong (1951) —
+                <div class="text-[11px] sm:text-xs text-amber-300 font-bold uppercase tracking-wider mt-2 flex items-center gap-1.5">
+                  <span>★</span>
+                  <span>Lời Bác Hồ tặng Đội Thanh niên xung phong (1951)</span>
+                  <span>★</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Thanh tìm kiếm không dấu thời gian thực -->
-          <div class="bg-slate-950/60 backdrop-blur-md p-2 rounded-2xl border border-white/15 shadow-xl">
+          <!-- Thanh tìm kiếm không dấu thời gian thực: Container z-30 để dropdown hiển thị đè lên trên -->
+          <div class="relative z-30 bg-white/95 backdrop-blur-md p-1.5 rounded-2xl shadow-2xl border border-white/30">
             <SearchBar client:load />
           </div>
 
-          <!-- Bốn con số ấn tượng khẳng định sức sống phong trào -->
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-2">
-            <div class="p-3 rounded-2xl bg-slate-950/70 backdrop-blur border border-white/10 text-center">
-              <div class="font-serif font-black text-xl sm:text-2xl text-gold-400">20,000+</div>
-              <div class="text-[10px] text-slate-300 uppercase tracking-wider font-semibold mt-0.5">Trang nhật ký</div>
+          <!-- Bốn con số ấn tượng chuẩn Enterprise: Mờ kính sang trọng, không u ám -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1">
+            <div class="p-3 rounded-2xl bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/20 text-center transition-colors shadow-sm">
+              <div class="font-serif font-black text-xl sm:text-2xl text-amber-300 drop-shadow-xs">20,000+</div>
+              <div class="text-[10px] text-white/90 uppercase tracking-wider font-bold mt-0.5">Trang nhật ký</div>
             </div>
-            <div class="p-3 rounded-2xl bg-slate-950/70 backdrop-blur border border-white/10 text-center">
-              <div class="font-serif font-black text-xl sm:text-2xl text-gold-400">800+</div>
-              <div class="text-[10px] text-slate-300 uppercase tracking-wider font-semibold mt-0.5">Cơ sở Đoàn</div>
+            <div class="p-3 rounded-2xl bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/20 text-center transition-colors shadow-sm">
+              <div class="font-serif font-black text-xl sm:text-2xl text-amber-300 drop-shadow-xs">800+</div>
+              <div class="text-[10px] text-white/90 uppercase tracking-wider font-bold mt-0.5">Cơ sở Đoàn</div>
             </div>
-            <div class="p-3 rounded-2xl bg-slate-950/70 backdrop-blur border border-white/10 text-center">
-              <div class="font-serif font-black text-xl sm:text-2xl text-gold-400">100</div>
-              <div class="text-[10px] text-slate-300 uppercase tracking-wider font-semibold mt-0.5">Địa chỉ Đỏ 3D</div>
+            <div class="p-3 rounded-2xl bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/20 text-center transition-colors shadow-sm">
+              <div class="font-serif font-black text-xl sm:text-2xl text-amber-300 drop-shadow-xs">100</div>
+              <div class="text-[10px] text-white/90 uppercase tracking-wider font-bold mt-0.5">Địa chỉ Đỏ 3D</div>
             </div>
-            <div class="p-3 rounded-2xl bg-slate-950/70 backdrop-blur border border-white/10 text-center">
-              <div class="font-serif font-black text-xl sm:text-2xl text-gold-400">100%</div>
-              <div class="text-[10px] text-slate-300 uppercase tracking-wider font-semibold mt-0.5">Xác minh chuẩn</div>
+            <div class="p-3 rounded-2xl bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/20 text-center transition-colors shadow-sm">
+              <div class="font-serif font-black text-xl sm:text-2xl text-amber-300 drop-shadow-xs">100%</div>
+              <div class="text-[10px] text-white/90 uppercase tracking-wider font-bold mt-0.5">Xác minh chuẩn</div>
             </div>
           </div>
 

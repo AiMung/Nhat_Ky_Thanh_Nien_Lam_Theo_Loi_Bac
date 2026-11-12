@@ -13,6 +13,8 @@ export default function PWAInstallPrompt() {
 
     if (isStandalone) return;
 
+    if (sessionStorage.getItem('pwa_prompt_dismissed')) return;
+
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e);
@@ -28,7 +30,7 @@ export default function PWAInstallPrompt() {
     if (isIOSDevice && isSafari && !sessionStorage.getItem('ios_pwa_dismissed')) {
       const timer = setTimeout(() => {
         setShowIOSModal(true);
-      }, 3000);
+      }, 4000);
       return () => clearTimeout(timer);
     }
 
@@ -47,6 +49,11 @@ export default function PWAInstallPrompt() {
     setDeferredPrompt(null);
   };
 
+  const dismissAndroid = () => {
+    setShowAndroidBtn(false);
+    sessionStorage.setItem('pwa_prompt_dismissed', 'true');
+  };
+
   const dismissIOSModal = () => {
     setShowIOSModal(false);
     sessionStorage.setItem('ios_pwa_dismissed', 'true');
@@ -55,46 +62,43 @@ export default function PWAInstallPrompt() {
   return (
     <>
       {showAndroidBtn && (
-        <div className="fixed bottom-4 right-4 z-50 animate-bounce">
+        <div className="fixed bottom-4 right-4 z-40 flex items-center gap-1.5 bg-slate-900/95 backdrop-blur-md text-white px-3.5 py-2 rounded-full shadow-lg border border-slate-700 text-xs">
           <button
             onClick={handleInstallClick}
-            className="flex items-center gap-2 bg-redflag-800 hover:bg-redflag-900 text-amber-100 font-medium px-4 py-2.5 rounded-full shadow-lg border border-amber-400/40 text-sm"
+            className="flex items-center gap-1.5 font-medium hover:text-amber-300 transition-colors"
           >
-            <Download className="w-4 h-4 text-amber-300" />
-            <span>Cài ứng dụng Ký Ức</span>
+            <Download className="w-3.5 h-3.5 text-amber-400" />
+            <span>Cài app vào máy</span>
+          </button>
+          <span className="text-slate-600">|</span>
+          <button
+            onClick={dismissAndroid}
+            className="text-slate-400 hover:text-white p-0.5 rounded-full"
+            title="Đóng"
+          >
+            <X className="w-3.5 h-3.5" />
           </button>
         </div>
       )}
 
       {showIOSModal && (
-        <div className="fixed inset-x-4 bottom-6 z-50 max-w-md mx-auto bg-heritage-900/95 backdrop-blur text-white p-5 rounded-2xl shadow-2xl border border-heritage-700">
-          <div className="flex items-start justify-between mb-3">
-            <div className="flex items-center gap-2 font-serif font-bold text-amber-300 text-sm">
-              <Download className="w-4 h-4" />
-              <span>Cài ứng dụng Ký Ức lên iPhone</span>
+        <div className="fixed inset-x-4 bottom-6 z-50 max-w-sm mx-auto bg-slate-900/95 backdrop-blur-md text-white p-4 rounded-2xl shadow-2xl border border-slate-700 animate-in slide-in-from-bottom-3">
+          <div className="flex items-start justify-between mb-2">
+            <div className="flex items-center gap-1.5 font-bold text-amber-300 text-xs">
+              <Download className="w-3.5 h-3.5" />
+              <span>Thêm ứng dụng vào Màn hình chính</span>
             </div>
             <button 
               onClick={dismissIOSModal}
-              className="text-heritage-400 hover:text-white p-1"
+              className="text-slate-400 hover:text-white p-0.5"
             >
-              <X className="w-4 h-4" />
+              <X className="w-3.5 h-3.5" />
             </button>
           </div>
           
-          <p className="text-xs text-heritage-200 mb-3 leading-relaxed">
-            Để truy cập nhanh và đọc bài viết khi không có mạng, bạn có thể thêm ứng dụng vào màn hình chính:
+          <p className="text-[11px] text-slate-300 mb-2 leading-relaxed">
+            Chạm vào <strong className="text-white inline-flex items-center gap-0.5">Chia sẻ <Share className="w-3 h-3 inline text-blue-400" /></strong> rồi chọn <strong className="text-white inline-flex items-center gap-0.5">Thêm vào MH chính <PlusSquare className="w-3 h-3 inline text-emerald-400" /></strong>.
           </p>
-
-          <ol className="text-xs space-y-2 text-heritage-300 border-t border-heritage-800 pt-2">
-            <li className="flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full bg-redflag-800 text-amber-200 flex items-center justify-center font-bold text-[10px]">1</span>
-              <span>Chạm vào nút <strong className="text-white inline-flex items-center gap-1">Chia sẻ <Share className="w-3.5 h-3.5 inline text-blue-400" /></strong> ở thanh dưới</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full bg-redflag-800 text-amber-200 flex items-center justify-center font-bold text-[10px]">2</span>
-              <span>Cuộn xuống chọn <strong className="text-white inline-flex items-center gap-1">Thêm vào MH chính <PlusSquare className="w-3.5 h-3.5 inline text-green-400" /></strong></span>
-            </li>
-          </ol>
         </div>
       )}
     </>

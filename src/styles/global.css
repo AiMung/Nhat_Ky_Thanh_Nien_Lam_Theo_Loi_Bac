@@ -4,56 +4,61 @@
 
 @layer base {
   :root {
-    --bg-page: #FAF8F5;
-    --text-primary: #1E293B;
+    --bg-page: #F8FAFC;
+    --text-primary: #0F172A;
+    --text-secondary: #475569;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
   }
 
   body {
     background-color: var(--bg-page);
     color: var(--text-primary);
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
-    background-image: radial-gradient(#E2D9CC 0.75px, transparent 0.75px);
-    background-size: 20px 20px;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
 
-  h1, h2, h3, h4, .font-serif-historical {
+  h1, h2, h3, h4 {
+    letter-spacing: -0.02em;
+  }
+
+  .font-serif {
     font-family: 'Merriweather', 'Lora', Georgia, serif;
   }
 }
 
-/* Thẻ bài viết hiện đại Thời Hoa Lửa */
+/* Thẻ bài viết chuẩn Enterprise hiện đại */
 .youth-card {
   background-color: #FFFFFF;
-  border: 1px solid #E5DFD5;
-  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
+  border: 1px solid #E2E8F0;
+  border-radius: 1rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
 }
 
 .youth-card:hover {
-  transform: translateY(-5px);
-  border-color: #D97706;
-  box-shadow: 0 16px 36px -10px rgba(185, 28, 28, 0.18), 0 0 20px -5px rgba(245, 158, 11, 0.25);
+  transform: translateY(-3px);
+  border-color: #CBD5E1;
+  box-shadow: 0 12px 24px -6px rgba(15, 23, 42, 0.08), 0 4px 8px -2px rgba(15, 23, 42, 0.04);
 }
 
-/* Gradient Thời Hoa Lửa (Ánh lửa chiến khu & Màu cờ đỏ sao vàng) */
-.bg-gradient-hoa-lua {
-  background: radial-gradient(circle at top right, #B91C1C 0%, #7F1D1D 40%, #003A75 100%);
-  position: relative;
-}
-
-/* Hiệu ứng Đốm lửa bập bùng (Ember sparks) */
+/* Hiệu ứng Tàn lửa hoa lửa tinh tế (nhẹ nhàng, không làm rối màn hình) */
 @keyframes emberFloat {
   0% {
     transform: translateY(0) translateX(0) scale(1);
-    opacity: 0.8;
+    opacity: 0.6;
   }
   50% {
-    transform: translateY(-80px) translateX(20px) scale(0.8);
-    opacity: 0.4;
+    transform: translateY(-60px) translateX(15px) scale(0.7);
+    opacity: 0.3;
   }
   100% {
-    transform: translateY(-160px) translateX(-15px) scale(0.2);
+    transform: translateY(-120px) translateX(-10px) scale(0.2);
     opacity: 0;
   }
 }
@@ -62,20 +67,7 @@
   position: absolute;
   border-radius: 50%;
   background: #F59E0B;
-  box-shadow: 0 0 8px #F59E0B, 0 0 16px #DC2626;
-  animation: emberFloat 4s infinite linear;
+  box-shadow: 0 0 6px #F59E0B;
+  animation: emberFloat 3.5s infinite linear;
   pointer-events: none;
-}
-
-/* Con dấu kỷ vật thời chiến (Vintage Stamp) */
-.vintage-stamp {
-  border: 2px dashed #B91C1C;
-  padding: 4px 8px;
-  text-transform: uppercase;
-  font-weight: 900;
-  letter-spacing: 0.15em;
-  color: #B91C1C;
-  display: inline-block;
-  transform: rotate(-3deg);
-  border-radius: 4px;
 }

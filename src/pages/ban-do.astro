@@ -6,35 +6,25 @@ import { withBase } from '@/lib/utils';
 
 <RootLayout title="Bản đồ Địa chỉ Đỏ & Ký ức Lịch sử - Thành Đoàn TP. Hồ Chí Minh">
   
-  <!-- Banner tiêu đề Bản đồ Ký ức Thời Hoa Lửa -->
-  <section class="relative bg-gradient-hero text-white py-14 px-4 border-b-4 border-gold-500 overflow-hidden">
-    <div class="absolute inset-0 z-0">
-      <img
-        src="/images/thoi-hoa-lua/hero-ban-do.jpg"
-        alt="Bản đồ ký ức lịch sử"
-        class="w-full h-full object-cover opacity-35 filter contrast-125"
-      />
-      <div class="absolute inset-0 bg-gradient-to-r from-redflag-950/95 via-doan-950/85 to-redflag-950/90"></div>
-    </div>
-
-    <div class="max-w-7xl mx-auto relative z-10 text-center">
-      <div class="inline-flex items-center gap-2 text-xs text-gold-300 font-bold mb-3 uppercase tracking-wider bg-slate-950/70 px-3.5 py-1 rounded-full border border-gold-500/40">
-        <a href={withBase('/')} class="hover:underline">Trang chủ</a>
+  <!-- Banner tiêu đề chuẩn Enterprise: Sáng sủa, trang trọng, thanh lịch -->
+  <section class="bg-gradient-to-b from-white via-slate-50 to-slate-100/80 border-b border-slate-200 py-10 px-4">
+    <div class="max-w-7xl mx-auto text-center">
+      <div class="inline-flex items-center gap-2 text-xs text-slate-500 font-semibold mb-2.5 uppercase tracking-wider">
+        <a href={withBase('/')} class="hover:text-red-700 transition-colors">Trang chủ</a>
         <span>/</span>
-        <span class="text-white">Bản đồ Địa chỉ Đỏ</span>
+        <span class="text-red-700 font-bold">Bản đồ Địa chỉ Đỏ</span>
       </div>
 
-      <h1 class="font-serif font-black text-2xl sm:text-4xl text-white tracking-tight leading-tight mb-2">
+      <h1 class="font-serif font-bold text-2xl sm:text-4xl text-slate-900 tracking-tight leading-tight mb-2">
         BẢN ĐỒ KÝ ỨC LỊCH SỬ & ĐỊA CHỈ ĐỎ
       </h1>
-      <p class="text-xs sm:text-sm text-gold-100 max-w-2xl mx-auto leading-relaxed">
-        Theo chân các thế hệ thanh niên khám phá các chiến tích hào hùng từ đất liền tới hải đảo xa xôi, khẳng định trọn vẹn chủ quyền Hoàng Sa và Trường Sa của Tổ quốc.
+      <p class="text-xs sm:text-sm text-slate-600 max-w-2xl mx-auto leading-relaxed">
+        Theo chân các thế hệ thanh niên khám phá các chiến tích hào hùng, khẳng định trọn vẹn chủ quyền thiêng liêng đối với hai quần đảo Hoàng Sa và Trường Sa.
       </p>
     </div>
   </section>
 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-    <!-- Component bản đồ tương tác -->
     <VietnamMap client:load />
   </div>
 

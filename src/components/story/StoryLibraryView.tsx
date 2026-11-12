@@ -154,28 +154,33 @@ export default function StoryLibraryView() {
           {filteredStories.map((story) => (
             <article 
               key={story.id} 
-              className="youth-card rounded-2xl overflow-hidden flex flex-col group"
+              className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col group"
             >
-              <div className="relative h-52 overflow-hidden">
+              <div className="relative h-52 overflow-hidden bg-slate-100">
                 <img 
                   src={story.cover_url} 
                   alt={story.title} 
                   loading="lazy" 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" 
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-900/20 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent"></div>
                 
-                <div className="absolute top-3.5 left-3.5">
-                  <span className="bg-doan-900/90 text-gold-300 text-[11px] font-bold px-2.5 py-1 rounded-full shadow border border-gold-400/30">
+                <div className="absolute top-3 left-3 flex items-center gap-1.5 flex-wrap">
+                  <span className="bg-slate-950/70 backdrop-blur-md text-white text-[11px] font-medium px-2.5 py-0.5 rounded-full shadow-sm">
                     📍 {story.province_name}
                   </span>
+                  {story.images && story.images.length > 1 && (
+                    <span className="bg-slate-950/70 backdrop-blur-md text-amber-300 text-[11px] font-semibold px-2 py-0.5 rounded-full shadow-sm">
+                      📷 {story.images.length}
+                    </span>
+                  )}
                 </div>
 
-                <div className="absolute bottom-3 left-3.5 right-3.5 flex items-center justify-between text-xs text-white">
-                  <span className="font-bold text-gold-300 text-[11px] bg-redflag-900/90 px-2.5 py-0.5 rounded border border-gold-400/30">
+                <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+                  <span className="font-bold text-[11px] text-red-800 bg-white/95 backdrop-blur px-2.5 py-0.5 rounded-md shadow-xs uppercase tracking-wider">
                     {story.category_name}
                   </span>
-                  <span className="text-[11px] text-slate-300">
+                  <span className="text-[11px] text-white/90 font-medium drop-shadow">
                     ⏱️ {story.read_minutes} phút
                   </span>
                 </div>
@@ -183,10 +188,10 @@ export default function StoryLibraryView() {
 
               <div className="p-5 flex-1 flex flex-col justify-between">
                 <div>
-                  <div className="text-xs text-slate-500 mb-2">
+                  <div className="text-xs text-slate-400 font-medium mb-2">
                     {formatDate(story.published_at || story.created_at)}
                   </div>
-                  <h3 className="font-serif font-black text-slate-900 text-base sm:text-lg leading-snug group-hover:text-doan-800 transition-colors mb-2">
+                  <h3 className="font-serif font-bold text-slate-900 text-base sm:text-lg leading-snug group-hover:text-red-700 transition-colors mb-2 line-clamp-2">
                     <a href={withBase(`/truyen/${story.slug}`)}>
                       {story.title}
                     </a>
@@ -196,17 +201,18 @@ export default function StoryLibraryView() {
                   </p>
                 </div>
 
-                <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+                <div className="pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs">
                   <div className="truncate pr-2">
-                    <div className="font-bold text-slate-800 truncate">
-                      Kể: <span className="text-doan-800">{story.narrator_name}</span>
+                    <div className="text-slate-800 font-semibold truncate">
+                      Kể: <span className="text-slate-900">{story.narrator_name}</span>
                     </div>
                   </div>
                   <a
                     href={withBase(`/truyen/${story.slug}`)}
-                    className="shrink-0 font-bold text-doan-800 bg-doan-50 hover:bg-doan-100 px-3 py-1.5 rounded-lg transition-colors"
+                    className="shrink-0 font-semibold text-red-700 hover:text-red-800 flex items-center gap-1 group/link bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors"
                   >
-                    Đọc tiếp →
+                    <span>Đọc tiếp</span>
+                    <span className="group-hover/link:translate-x-0.5 transition-transform">→</span>
                   </a>
                 </div>
               </div>
