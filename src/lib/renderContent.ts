@@ -8,22 +8,18 @@ export function renderStoryContent(content: string): string {
 
   let html = content;
 
-  // 1. Chuyển đổi cú pháp ảnh Markdown sang thẻ <figure> đẹp mắt
+  // 1. Chuyển đổi cú pháp ảnh Markdown sang thẻ <figure> đẹp mắt, gọn gàng (không bắt buộc chú thích)
   // Cú pháp: ![Chú thích ảnh](https://res.cloudinary.com/...)
   html = html.replace(/!\[(.*?)\]\((.*?)\)/g, (_match, alt, src) => {
-    const caption = alt ? alt.trim() : 'Ảnh tư liệu lịch sử';
+    const cleanAlt = alt ? alt.trim() : 'Ảnh tư liệu';
     return `
       <figure class="my-6 rounded-2xl overflow-hidden border border-amber-200/90 shadow-md bg-stone-900 group">
         <img 
           src="${src}" 
-          alt="${caption}" 
-          class="w-full h-auto max-h-[520px] object-contain mx-auto group-hover:scale-[1.01] transition-transform duration-300"
+          alt="${cleanAlt}" 
+          class="w-full h-auto max-h-[560px] object-contain mx-auto transition-transform duration-300"
           loading="lazy"
         />
-        <figcaption class="text-center text-xs text-stone-600 py-2.5 px-4 bg-amber-50/80 italic font-sans border-t border-amber-100 flex items-center justify-center gap-1.5">
-          <span>📷</span>
-          <span>${caption}</span>
-        </figcaption>
       </figure>
     `;
   });
@@ -63,3 +59,4 @@ export function renderStoryContent(content: string): string {
 
   return html;
 }
+

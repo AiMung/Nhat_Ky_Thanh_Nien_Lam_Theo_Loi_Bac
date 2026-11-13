@@ -92,13 +92,16 @@ const { story } = Astro.props;
     </header>
 
     <!-- Hình ảnh & Album Facebook Collage của bài viết -->
-    <div class="mb-8">
-      <FacebookImageGrid 
-        client:load 
-        images={story.images && story.images.length > 0 ? story.images : [story.cover_url]} 
-        title={story.title} 
-      />
-    </div>
+    {/* Chỉ hiển thị Ảnh bìa ở đầu bài nếu trong nội dung bài viết CHƯA chèn ảnh trực tiếp */}
+    {!/<img|!\[/i.test(story.body) && story.cover_url && (
+      <div class="mb-8 rounded-2xl overflow-hidden border border-amber-200/80 shadow-md max-h-[480px] bg-slate-900">
+        <img 
+          src={story.cover_url} 
+          alt={story.title} 
+          class="w-full h-full object-cover max-h-[480px]"
+        />
+      </div>
+    )}
 
     <!-- Thanh công cụ tương tác: Nghe đọc tiếng Việt, chỉnh cỡ chữ, bookmark, share -->
     <StoryReaderToolbar 

@@ -16,8 +16,7 @@ import {
   Search, 
   Trash2, 
   ShieldCheck, 
-  Lock, 
-  AlertCircle
+  Lock
 } from 'lucide-react';
 
 export default function AdminModerationQueue() {
@@ -28,6 +27,7 @@ export default function AdminModerationQueue() {
   const [user, setUser] = useState<UserSession | null>(null);
   const [toast, setToast] = useState('');
   const [reviewStory, setReviewStory] = useState<Story | null>(null);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const loadData = () => {
     setStories(getAllStories());
@@ -123,7 +123,7 @@ export default function AdminModerationQueue() {
     }
   };
 
-  // Xóa bài viết
+  // Xóa bài viết đơn lẻ
   const handleDelete = (id: string, title: string) => {
     if (window.confirm(`Bạn có chắc chắn muốn xóa bài viết "${title}" khỏi hệ thống?`)) {
       deleteStory(id);
@@ -131,7 +131,62 @@ export default function AdminModerationQueue() {
       if (reviewStory && reviewStory.id === id) {
         setReviewStory(null);
       }
+      setSelectedIds((prev) => prev.filter((item) => item !== id));
       showToast(`Đã xóa bài viết khỏi cơ sở dữ liệu.`);
+    }
+  };
+
+  // ================= THAO TÁC HÀNG LOẠT (BATCH MODERATION) =================
+  const handleBatchApprove = async () => {
+    if (selectedIds.length === 0) return;
+    const count = selectedIds.length;
+    let approvedCount = 0;
+    for (const id of selectedIds) {
+      const success = updateStoryStatus(id, 'approved');
+      if (success) {
+        approvedCount++;
+        const updated = getAllStories().find((s) => s.id === id);
+        if (updated) {
+          await saveStoryToSupabase(updated);
+        }
+      }
+    }
+    setSelectedIds([]);
+    loadData();
+    showToast(`✓ Đã duyệt và xuất bản hàng loạt thành công ${approvedCount} bài viết!`);
+  };
+
+  const handleBatchReject = async () => {
+    if (selectedIds.length === 0) return;
+    const count = selectedIds.length;
+    const reason = window.prompt(
+      `Nhập lý do yêu cầu chỉnh sửa cho ${count} bài viết đã chọn:`,
+      'Tư liệu cần bổ sung thêm căn cứ xác thực và hình ảnh rõ nét hơn.'
+    );
+    if (reason !== null) {
+      for (const id of selectedIds) {
+        updateStoryStatus(id, 'rejected', reason);
+        const updated = getAllStories().find((s) => s.id === id);
+        if (updated) {
+          await saveStoryToSupabase(updated);
+        }
+      }
+      setSelectedIds([]);
+      loadData();
+      showToast(`Đã chuyển ${count} bài viết sang trạng thái Yêu cầu chỉnh sửa.`);
+    }
+  };
+
+  const handleBatchDelete = () => {
+    if (selectedIds.length === 0) return;
+    const count = selectedIds.length;
+    if (window.confirm(`CẢNH BÁO: Bạn có chắc chắn muốn xóa vĩnh viễn ${count} bài viết đã chọn khỏi hệ thống?`)) {
+      for (const id of selectedIds) {
+        deleteStory(id);
+      }
+      setSelectedIds([]);
+      loadData();
+      showToast(`Đã xóa thành công ${count} bài viết khỏi hệ thống.`);
     }
   };
 
@@ -156,6 +211,23 @@ export default function AdminModerationQueue() {
     }
     return true;
   });
+
+  const allFilteredIds = filteredStories.map((s) => s.id);
+  const isAllSelected = allFilteredIds.length > 0 && allFilteredIds.every((id) => selectedIds.includes(id));
+
+  const toggleSelectAll = () => {
+    if (isAllSelected) {
+      setSelectedIds((prev) => prev.filter((id) => !allFilteredIds.includes(id)));
+    } else {
+      setSelectedIds((prev) => Array.from(new Set([...prev, ...allFilteredIds])));
+    }
+  };
+
+  const toggleSelectOne = (id: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -239,6 +311,74 @@ export default function AdminModerationQueue() {
 
       </div>
 
+      {/* THANH THAO TÁC HÀNG LOẠT (BATCH ACTIONS TOOLBAR) */}
+      {filteredStories.length > 0 && (
+        <div className="bg-[#FAF6F0] p-3.5 sm:p-4 rounded-2xl border border-amber-300 shadow-xs flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <label className="flex items-center gap-2 cursor-pointer font-bold text-xs sm:text-sm text-slate-800 select-none">
+              <input
+                type="checkbox"
+                checked={isAllSelected}
+                onChange={toggleSelectAll}
+                className="w-4 h-4 rounded text-red-700 accent-red-700 cursor-pointer"
+              />
+              <span>Chọn tất cả ({filteredStories.length} bài)</span>
+            </label>
+            {selectedIds.length > 0 && (
+              <span className="px-2.5 py-0.5 rounded-full bg-red-100 text-red-900 text-xs font-black border border-red-200">
+                Đã chọn: {selectedIds.length}
+              </span>
+            )}
+          </div>
+
+          {selectedIds.length > 0 ? (
+            <div className="flex flex-wrap items-center gap-2">
+              {activeTab !== 'approved' && (
+                <button
+                  type="button"
+                  onClick={handleBatchApprove}
+                  className="px-3.5 py-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition-colors"
+                >
+                  <Check className="w-3.5 h-3.5" />
+                  <span>Duyệt đã chọn ({selectedIds.length})</span>
+                </button>
+              )}
+
+              {activeTab !== 'rejected' && (
+                <button
+                  type="button"
+                  onClick={handleBatchReject}
+                  className="px-3.5 py-1.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 font-bold text-xs flex items-center gap-1.5 transition-colors"
+                >
+                  <span>Yêu cầu sửa ({selectedIds.length})</span>
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={handleBatchDelete}
+                className="px-3.5 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 font-bold text-xs flex items-center gap-1.5 transition-colors"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Xóa ({selectedIds.length})</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSelectedIds([])}
+                className="px-2.5 py-1.5 text-xs text-slate-500 hover:text-slate-800 underline"
+              >
+                Bỏ chọn
+              </button>
+            </div>
+          ) : (
+            <span className="text-xs text-slate-400 italic">
+              Tích chọn các ô bên dưới để duyệt hoặc xử lý hàng loạt nhanh chóng
+            </span>
+          )}
+        </div>
+      )}
+
       {/* DANH SÁCH BÀI VIẾT CẦN DUYỆT */}
       {filteredStories.length === 0 ? (
         <div className="bg-[#FAF6F0] rounded-3xl border border-amber-200/80 p-12 text-center shadow-xs">
@@ -252,22 +392,37 @@ export default function AdminModerationQueue() {
         </div>
       ) : (
         <div className="space-y-4">
-          {filteredStories.map((story) => (
-            <div
-              key={story.id}
-              className="bg-[#FAF6F0] rounded-3xl border border-amber-200/80 p-4 sm:p-5 shadow-xs hover:shadow-md transition-shadow flex flex-col md:flex-row md:items-center justify-between gap-4"
-            >
-              {/* Bên trái: Thumbnail & Thông tin */}
-              <div className="flex items-start gap-4 flex-1">
-                <div className="w-24 sm:w-32 aspect-[4/3] rounded-2xl overflow-hidden bg-slate-900 shrink-0 border border-amber-200/60">
-                  <img
-                    src={story.cover_url || '/images/thoi-hoa-lua-hero.jpg'}
-                    alt={story.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+          {filteredStories.map((story) => {
+            const isChecked = selectedIds.includes(story.id);
+            return (
+              <div
+                key={story.id}
+                className={`bg-[#FAF6F0] rounded-3xl border p-4 sm:p-5 shadow-xs hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 ${
+                  isChecked ? 'border-red-600 bg-red-50/20 ring-2 ring-red-600/20' : 'border-amber-200/80'
+                }`}
+              >
+                {/* Bên trái: Checkbox + Thumbnail & Thông tin */}
+                <div className="flex items-start gap-3 sm:gap-4 flex-1">
+                  {/* Checkbox chọn bài */}
+                  <div className="pt-2 sm:pt-3 shrink-0">
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={() => toggleSelectOne(story.id)}
+                      className="w-4 h-4 rounded text-red-700 accent-red-700 cursor-pointer"
+                      title="Chọn bài viết này"
+                    />
+                  </div>
 
-                <div className="space-y-1.5 flex-1 min-w-0">
+                  <div className="w-24 sm:w-32 aspect-[4/3] rounded-2xl overflow-hidden bg-slate-900 shrink-0 border border-amber-200/60">
+                    <img
+                      src={story.cover_url || '/images/thoi-hoa-lua-hero.jpg'}
+                      alt={story.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5 flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="px-2.5 py-0.5 rounded-full bg-red-100 text-red-900 text-[10px] font-black uppercase tracking-wider border border-red-200">
                       {story.category_name}
@@ -344,7 +499,8 @@ export default function AdminModerationQueue() {
                 </button>
               </div>
             </div>
-          ))}
+          );
+        })}
         </div>
       )}
 
@@ -369,28 +525,14 @@ export default function AdminModerationQueue() {
               </button>
             </div>
 
-            {/* Ảnh bìa & chùm ảnh */}
-            {reviewStory.images && reviewStory.images.length > 0 && (
-              <div className="space-y-2">
-                <div className="rounded-2xl overflow-hidden aspect-[16/9] bg-slate-900 max-h-80">
-                  <img
-                    src={reviewStory.images[0]}
-                    alt={reviewStory.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                {reviewStory.images.length > 1 && (
-                  <div className="flex gap-2 overflow-x-auto pb-1">
-                    {reviewStory.images.slice(1).map((im, idx) => (
-                      <img
-                        key={idx}
-                        src={im}
-                        alt="Ảnh tư liệu phụ"
-                        className="w-20 h-16 object-cover rounded-xl border border-amber-200 shrink-0"
-                      />
-                    ))}
-                  </div>
-                )}
+            {/* Ảnh bìa (Chỉ hiển thị nếu nội dung chưa có ảnh chèn trực tiếp, tránh nhân đôi) */}
+            {!/<img|!\[/i.test(reviewStory.body) && (reviewStory.cover_url || (reviewStory.images && reviewStory.images[0])) && (
+              <div className="rounded-2xl overflow-hidden aspect-[16/9] bg-slate-900 max-h-80">
+                <img
+                  src={reviewStory.cover_url || (reviewStory.images && reviewStory.images[0])}
+                  alt={reviewStory.title}
+                  className="w-full h-full object-cover"
+                />
               </div>
             )}
 

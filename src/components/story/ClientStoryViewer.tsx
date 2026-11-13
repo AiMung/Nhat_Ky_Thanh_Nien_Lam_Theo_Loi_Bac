@@ -177,13 +177,16 @@ export default function ClientStoryViewer({ initialSlug }: Props) {
         </div>
       </header>
 
-      {/* Album ảnh Facebook Collage */}
-      <div className="mb-8">
-        <FacebookImageGrid
-          images={story.images && story.images.length > 0 ? story.images : [story.cover_url]}
-          title={story.title}
-        />
-      </div>
+      {/* Chỉ hiển thị Ảnh bìa ở đầu trang nếu trong nội dung bài viết CHƯA chèn ảnh trực tiếp */}
+      {!/<img|!\[/i.test(story.body) && story.cover_url && (
+        <div className="mb-8 rounded-2xl overflow-hidden border border-amber-200/80 shadow-md max-h-[480px] bg-slate-900">
+          <img
+            src={story.cover_url}
+            alt={story.title}
+            className="w-full h-full object-cover max-h-[480px]"
+          />
+        </div>
+      )}
 
       {/* Thanh công cụ đọc to, chỉnh cỡ chữ, bookmark */}
       <StoryReaderToolbar

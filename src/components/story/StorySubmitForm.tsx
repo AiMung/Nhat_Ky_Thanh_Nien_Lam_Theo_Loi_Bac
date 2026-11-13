@@ -261,7 +261,7 @@ export default function StorySubmitForm() {
         const imgHtml = uploadedUrls
           .map(
             (u) =>
-              `<figure class="my-4 text-center"><img src="${u}" alt="Ảnh tư liệu lịch sử" class="rounded-2xl max-h-[460px] mx-auto border border-amber-200/90 shadow-md object-contain" /><figcaption class="text-xs text-slate-500 mt-1.5 italic font-sans">Ảnh tư liệu lịch sử</figcaption></figure><p><br/></p>`
+              `<figure class="my-4 text-center"><img src="${u}" alt="Ảnh tư liệu" class="rounded-2xl max-h-[480px] mx-auto border border-amber-200/90 shadow-md object-contain" /></figure><p><br/></p>`
           )
           .join('');
         insertHtmlAtCursor(imgHtml);
@@ -300,7 +300,7 @@ export default function StorySubmitForm() {
         e.preventDefault();
         setImages((prev) => [...prev, text]);
         insertHtmlAtCursor(
-          `<figure class="my-4 text-center"><img src="${text}" alt="Ảnh tư liệu lịch sử" class="rounded-2xl max-h-[460px] mx-auto border border-amber-200/90 shadow-md object-contain" /><figcaption class="text-xs text-slate-500 mt-1.5 italic font-sans">Ảnh tư liệu lịch sử</figcaption></figure><p><br/></p>`
+          `<figure class="my-4 text-center"><img src="${text}" alt="Ảnh tư liệu" class="rounded-2xl max-h-[480px] mx-auto border border-amber-200/90 shadow-md object-contain" /></figure><p><br/></p>`
         );
         showToast('📋 Đã nhận và chèn ảnh vào bài viết!');
         return;
@@ -1059,6 +1059,10 @@ export default function StorySubmitForm() {
               </div>
             )}
 
+            <div className="text-[11px] text-amber-900 bg-amber-50/80 p-2.5 rounded-xl border border-amber-200/70 leading-relaxed">
+              💡 <strong>Quy chuẩn Ảnh bài viết:</strong> Ảnh có nhãn đỏ <strong>Ảnh bìa</strong> sẽ là ảnh đại diện ngoài danh sách & Thư viện. Trong nội dung bài viết, ảnh hiển thị tự nhiên tại vị trí bạn chèn (bấm nút <strong>+ Chèn bài</strong>).
+            </div>
+
             {/* Grid danh sách ảnh */}
             {images.length === 0 ? (
               <div className="p-6 rounded-2xl border-2 border-dashed border-amber-200 text-center bg-white/60">
@@ -1080,7 +1084,7 @@ export default function StorySubmitForm() {
                         type="button"
                         onClick={() => {
                           insertHtmlAtCursor(
-                            `<figure class="my-4 text-center"><img src="${images[idx]}" alt="Ảnh tư liệu lịch sử" class="rounded-2xl max-h-[460px] mx-auto border border-amber-200/90 shadow-md object-contain" /><figcaption class="text-xs text-slate-500 mt-1.5 italic font-sans">Ảnh tư liệu lịch sử</figcaption></figure><p><br/></p>`
+                            `<figure class="my-4 text-center"><img src="${images[idx]}" alt="Ảnh tư liệu" class="rounded-2xl max-h-[480px] mx-auto border border-amber-200/90 shadow-md object-contain" /></figure><p><br/></p>`
                           );
                           showToast('Đã chèn ảnh vào nội dung bài viết!');
                         }}
