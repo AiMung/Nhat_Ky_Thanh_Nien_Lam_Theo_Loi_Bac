@@ -6,7 +6,7 @@ import react from '@astrojs/react';
 export default defineConfig({
   // Thay đổi base khi deploy lên GitHub Pages dạng https://<user>.github.io/<repo>/
   // Nếu có custom domain (vd: kyucviet.vn), đặt BASE_PATH=/
-  site: process.env.SITE_URL || 'https://dtn-hcm.github.io',
+  site: process.env.SITE_URL || 'https://aimung.github.io',
   base: process.env.BASE_PATH || '/',
   integrations: [
     tailwind({
