@@ -19,14 +19,14 @@ export default function LoginForm() {
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
-  const handleTdpLogin = (e: React.FormEvent) => {
+  const handleTdpLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
     if (!tdpPassword.trim()) {
       setErrorMsg('Vui lòng nhập mật khẩu xác thực của Tổ Dân Phố.');
       return;
     }
-    const res = login(selectedTdpUser, tdpPassword);
+    const res = await login(selectedTdpUser, tdpPassword);
     if (res.success) {
       setSuccessMsg(res.message);
       setTimeout(() => {
@@ -37,14 +37,14 @@ export default function LoginForm() {
     }
   };
 
-  const handleAdminLogin = (e: React.FormEvent) => {
+  const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
     if (!adminUser.trim() || !adminPassword.trim()) {
       setErrorMsg('Vui lòng nhập đầy đủ tài khoản và mật khẩu quản trị.');
       return;
     }
-    const res = login(adminUser.trim(), adminPassword);
+    const res = await login(adminUser.trim(), adminPassword);
     if (res.success) {
       setSuccessMsg(res.message);
       setTimeout(() => {

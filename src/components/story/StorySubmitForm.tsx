@@ -143,6 +143,7 @@ export default function StorySubmitForm() {
   const [createdStory, setCreatedStory] = useState<Story | null>(null);
   const [toastMessage, setToastMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const isPastingRef = useRef(false);
 
   useEffect(() => {
     setCharacterList(getHistoricalCharacters());
@@ -283,7 +284,7 @@ export default function StorySubmitForm() {
 
   const handlePasteImage = async (e: React.ClipboardEvent) => {
     const items = e.clipboardData?.items;
-    if (!items) return;
+    if (!items || items.length === 0) return;
 
     const imageFiles: File[] = [];
     for (let i = 0; i < items.length; i++) {
@@ -302,7 +303,12 @@ export default function StorySubmitForm() {
         /\.(jpeg|jpg|gif|png|webp)($|\?)/i.test(text)
       ) {
         e.preventDefault();
-        setImages((prev) => [...prev, text]);
+        e.stopPropagation();
+        if (isPastingRef.current) return;
+        isPastingRef.current = true;
+        setTimeout(() => { isPastingRef.current = false; }, 800);
+
+        setImages((prev) => Array.from(new Set([...prev, text])));
         insertHtmlAtCursor(
           `<figure class="my-4 text-center"><img src="${text}" alt="Ảnh tư liệu" class="rounded-2xl max-h-[480px] mx-auto border border-amber-200/90 shadow-md object-contain" /></figure><p><br/></p>`
         );
@@ -313,9 +319,14 @@ export default function StorySubmitForm() {
 
     if (imageFiles.length > 0) {
       e.preventDefault();
+      e.stopPropagation();
+      if (isPastingRef.current) return;
+      isPastingRef.current = true;
+      setTimeout(() => { isPastingRef.current = false; }, 1000);
+
       const dt = new DataTransfer();
       imageFiles.forEach((f) => dt.items.add(f));
-      // Tự động tải lên Cloudinary và chèn vào bài viết
+      // Tự động tải lên Cloudinary và chèn vào bài viết duy nhất 1 lần
       await handleFileUpload(dt.files, true);
     }
   };
@@ -476,7 +487,7 @@ export default function StorySubmitForm() {
   }
 
   return (
-    <div className="space-y-6" onPaste={handlePasteImage}>
+    <div className="space-y-6">
       
       {/* Toast thông báo nổi bật */}
       {toastMessage && (
