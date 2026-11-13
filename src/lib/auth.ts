@@ -10,6 +10,8 @@
  * 4. Chống tấn công dò quét Brute-Force (Tự động khóa sau 5 lần nhập sai).
  */
 
+import { getSupabase, isSupabaseConfigured } from './supabase';
+
 export type UserRole = 'guest' | 'tdp' | 'admin';
 
 export interface UserAccount {
@@ -221,7 +223,59 @@ export async function login(
   // Băm mật khẩu người dùng vừa nhập
   const inputHash = await hashPassword(cleanPass);
 
-  // 1. Kiểm tra Admin Ban Biên tập
+  // 0. XÁC THỰC QUA ĐÁM MÂY SUPABASE (NẾU ĐÃ KẾT NỐI VÀ CÓ BẢNG ACCOUNTS)
+  if (isSupabaseConfigured()) {
+    try {
+      const client = getSupabase();
+      const { data: cloudUser, error } = await client
+        .from('accounts')
+        .select('*')
+        .or(`username.ilike.${cleanUser},to_dan_pho.ilike.${cleanUser}`)
+        .limit(1)
+        .maybeSingle();
+
+      if (cloudUser && !error) {
+        if (cloudUser.password_hash === inputHash) {
+          if (typeof window !== 'undefined') {
+            sessionStorage.removeItem('dtn_auth_failed_count');
+            sessionStorage.removeItem('dtn_auth_locked_until');
+            const safeUser: UserAccount = {
+              id: cloudUser.id,
+              username: cloudUser.username,
+              passwordHash: '',
+              name: cloudUser.name,
+              unit: cloudUser.unit,
+              to_dan_pho: cloudUser.to_dan_pho,
+              role: cloudUser.role,
+              avatar: cloudUser.avatar || '/images/thoi-hoa-lua/logo-doan.webp',
+              tdp_code: cloudUser.tdp_code
+            };
+            localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(safeUser));
+            window.dispatchEvent(new Event('auth-changed'));
+          }
+          return {
+            success: true,
+            user: cloudUser,
+            message: `Xác thực thành công qua Supabase Cloud: ${cloudUser.name}!`
+          };
+        } else {
+          if (typeof window !== 'undefined') {
+            const failedAttempts = Number(sessionStorage.getItem('dtn_auth_failed_count') || '0') + 1;
+            sessionStorage.setItem('dtn_auth_failed_count', String(failedAttempts));
+            if (failedAttempts >= 5) {
+              sessionStorage.setItem('dtn_auth_locked_until', String(Date.now() + 30000));
+              return { success: false, message: 'CẢNH BÁO BẢO MẬT: Nhập sai mật khẩu 5 lần! Hệ thống tạm khóa 30 giây.' };
+            }
+          }
+          return { success: false, message: 'Mật khẩu không chính xác theo dữ liệu Supabase!' };
+        }
+      }
+    } catch (e) {
+      console.warn('Supabase accounts check fallback:', e);
+    }
+  }
+
+  // 1. Kiểm tra Admin Ban Biên tập (Chế độ dự phòng cục bộ an toàn)
   if (
     (cleanUser === 'admin' || cleanUser === 'bientap@xuanhuong.dalat.vn') &&
     inputHash === ADMIN_HASH
