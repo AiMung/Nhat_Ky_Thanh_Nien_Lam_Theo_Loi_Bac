@@ -47,7 +47,8 @@ import {
   CheckCircle2, 
   AlertCircle,
   Sparkles,
-  ShieldCheck
+  ShieldCheck,
+  Clipboard
 } from 'lucide-react';
 
 // Danh sách chuẩn 37 Tổ Dân Phố Phường Xuân Hương - Đà Lạt
@@ -200,8 +201,8 @@ export default function StorySubmitForm() {
     }, 50);
   };
 
-  // Xử lý upload ảnh (hỗ trợ kéo thả, chọn file và dán Clipboard)
-  const handleFileUpload = async (files: FileList | null) => {
+  // Xử lý upload ảnh (hỗ trợ kéo thả, chọn file và dán Clipboard trực tiếp)
+  const handleFileUpload = async (files: FileList | null, insertToEditor: boolean = false) => {
     if (!files || files.length === 0) return;
     setIsUploadingImg(true);
     setUploadProgress(10);
@@ -222,7 +223,13 @@ export default function StorySubmitForm() {
 
     if (uploadedUrls.length > 0) {
       setImages((prev) => [...prev, ...uploadedUrls]);
-      showToast(`Đã thêm thành công ${uploadedUrls.length} ảnh vào thư viện!`);
+      if (insertToEditor) {
+        const markdownTags = uploadedUrls.map((u) => `\n\n![Ảnh tư liệu lịch sử](${u})\n\n`).join('');
+        insertFormatting(markdownTags);
+        showToast(`📸 Đã dán ${uploadedUrls.length} ảnh trực tiếp vào bài viết & đồng bộ Cloudinary!`);
+      } else {
+        showToast(`✨ Đã thêm thành công ${uploadedUrls.length} ảnh vào thư viện!`);
+      }
     }
     setUploadProgress(100);
     setTimeout(() => {
@@ -234,6 +241,7 @@ export default function StorySubmitForm() {
   const handlePasteImage = async (e: React.ClipboardEvent) => {
     const items = e.clipboardData?.items;
     if (!items) return;
+
     const imageFiles: File[] = [];
     for (let i = 0; i < items.length; i++) {
       if (items[i].type.indexOf('image') !== -1) {
@@ -241,11 +249,29 @@ export default function StorySubmitForm() {
         if (file) imageFiles.push(file);
       }
     }
+
+    // Nếu dán link ảnh dạng text (URL kết thúc bằng jpg, png, webp, data:image...)
+    if (imageFiles.length === 0) {
+      const text = e.clipboardData.getData('text')?.trim();
+      if (
+        text &&
+        (text.startsWith('http://') || text.startsWith('https://') || text.startsWith('data:image/')) &&
+        /\.(jpeg|jpg|gif|png|webp)($|\?)/i.test(text)
+      ) {
+        e.preventDefault();
+        setImages((prev) => [...prev, text]);
+        insertFormatting(`\n\n![Ảnh tư liệu lịch sử](${text})\n\n`);
+        showToast('📋 Đã nhận và chèn link ảnh vào bài viết!');
+        return;
+      }
+    }
+
     if (imageFiles.length > 0) {
       e.preventDefault();
       const dt = new DataTransfer();
       imageFiles.forEach((f) => dt.items.add(f));
-      await handleFileUpload(dt.files);
+      // Tự động tải lên Cloudinary và chèn vào bài viết
+      await handleFileUpload(dt.files, true);
     }
   };
 
@@ -767,6 +793,22 @@ export default function StorySubmitForm() {
                 >
                   <ImageIcon className="w-4 h-4" />
                 </button>
+
+                <div className="w-px h-5 bg-slate-200 mx-1"></div>
+
+                {/* Nút dán ảnh tiện lợi */}
+                <button
+                  type="button"
+                  title="Dán ảnh từ bộ nhớ tạm (Ctrl+V)"
+                  onClick={() => {
+                    showToast('💡 Mẹo: Bạn có thể copy ảnh (PrtScn, Zalo, Web...) rồi nhấn Ctrl + V để chèn trực tiếp vào đây!');
+                    if (editorRef.current) editorRef.current.focus();
+                  }}
+                  className="p-1.5 px-2 rounded-lg bg-amber-50 hover:bg-amber-100 text-red-800 flex items-center gap-1.5 border border-amber-300 font-bold text-xs transition-colors"
+                >
+                  <Clipboard className="w-3.5 h-3.5 text-red-700" />
+                  <span>Dán ảnh (Ctrl+V)</span>
+                </button>
               </div>
 
               {/* Textarea */}
@@ -775,6 +817,7 @@ export default function StorySubmitForm() {
                 rows={12}
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
+                onPaste={handlePasteImage}
                 placeholder="Soạn thảo nội dung câu chuyện hào hùng, hồi ức của nhân chứng, những trang sử vẻ vang hoặc câu chuyện làm theo lời Bác... Bạn có thể copy và dán ảnh trực tiếp vào đây (Ctrl+V)!"
                 className="w-full px-4 py-3 rounded-b-2xl bg-white border-x border-b border-amber-300 text-xs sm:text-sm text-slate-900 leading-relaxed font-sans focus:outline-none focus:ring-2 focus:ring-red-700/30"
               />
@@ -809,6 +852,7 @@ export default function StorySubmitForm() {
                 <Upload className="w-3.5 h-3.5" />
                 <span>+ Thêm ảnh</span>
                 <input
+                  id="storyImageFileInput"
                   type="file"
                   multiple
                   accept="image/*"
@@ -816,6 +860,35 @@ export default function StorySubmitForm() {
                   className="hidden"
                 />
               </label>
+            </div>
+
+            {/* Vùng Kéo thả & Dán ảnh (Ctrl+V) nổi bật */}
+            <div
+              onDragOver={(e) => { e.preventDefault(); }}
+              onDrop={(e) => {
+                e.preventDefault();
+                if (e.dataTransfer.files) handleFileUpload(e.dataTransfer.files, false);
+              }}
+              onClick={() => {
+                const input = document.getElementById('storyImageFileInput') as HTMLInputElement;
+                if (input) input.click();
+              }}
+              className="border-2 border-dashed border-amber-300 hover:border-red-600 bg-white/70 hover:bg-amber-50/60 rounded-2xl p-4 text-center transition-all cursor-pointer group shadow-2xs"
+            >
+              <div className="flex items-center justify-center gap-2 mb-1.5">
+                <div className="w-8 h-8 rounded-xl bg-red-100 text-red-700 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Clipboard className="w-4 h-4" />
+                </div>
+                <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Sparkles className="w-4 h-4" />
+                </div>
+              </div>
+              <div className="font-bold text-xs text-slate-800">
+                Dán ảnh (<span className="text-red-700 font-mono bg-red-50 px-1.5 py-0.5 rounded border border-red-200">Ctrl + V</span>) hoặc Kéo thả ảnh vào đây
+              </div>
+              <p className="text-[11px] text-slate-500 mt-1">
+                Chụp màn hình (PrtScn) hoặc copy ảnh từ Zalo, Web rồi dán trực tiếp. Hệ thống tự động upload lên Cloudinary!
+              </p>
             </div>
 
             {/* Thanh tiến trình upload nếu đang tải */}
@@ -850,7 +923,18 @@ export default function StorySubmitForm() {
                       alt="Ảnh tư liệu"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                     />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-wrap items-center justify-center gap-1.5 p-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          insertFormatting(`\n\n![Ảnh tư liệu lịch sử](${images[idx]})\n\n`);
+                          showToast('Đã chèn ảnh vào vị trí soạn thảo!');
+                        }}
+                        className="px-2 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10px] shadow-xs"
+                        title="Chèn ảnh này vào nội dung bài viết"
+                      >
+                        + Chèn bài
+                      </button>
                       <button
                         type="button"
                         onClick={() => {
@@ -858,7 +942,7 @@ export default function StorySubmitForm() {
                           setImages([item, ...images.filter((_, i) => i !== idx)]);
                           showToast('Đã đặt làm ảnh đại diện chính!');
                         }}
-                        className="px-2 py-1 rounded bg-amber-500 text-white font-bold text-[10px]"
+                        className="px-2 py-1 rounded bg-amber-500 hover:bg-amber-600 text-white font-bold text-[10px] shadow-xs"
                         title="Đặt làm ảnh bìa"
                       >
                         Bìa
@@ -866,7 +950,7 @@ export default function StorySubmitForm() {
                       <button
                         type="button"
                         onClick={() => setImages(images.filter((_, i) => i !== idx))}
-                        className="px-2 py-1 rounded bg-red-600 text-white font-bold text-[10px]"
+                        className="px-2 py-1 rounded bg-red-600 hover:bg-red-700 text-white font-bold text-[10px] shadow-xs"
                         title="Xóa ảnh"
                       >
                         Xóa
