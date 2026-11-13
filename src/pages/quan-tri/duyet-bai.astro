@@ -1,33 +1,35 @@
 ---
 import RootLayout from '@/layouts/RootLayout.astro';
 import AdminModerationQueue from '@/components/admin/AdminModerationQueue';
+import { withBase } from '@/lib/utils';
 ---
 
-<RootLayout title="Hàng đợi kiểm duyệt bài viết - Thành Đoàn TP. Hồ Chí Minh">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+<RootLayout title="Hàng đợi Kiểm duyệt & Thẩm định — Phường Xuân Hương, Đà Lạt">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
     
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-amber-200/80">
       <div>
         <div class="flex items-center gap-2">
-          <span class="text-xs font-bold text-redflag-800 uppercase tracking-widest bg-redflag-50 px-3 py-1 rounded-full border border-redflag-200">
-            Ban Tuyên giáo Thành Đoàn
+          <span class="text-xs font-bold text-red-800 uppercase tracking-widest bg-red-100 px-3.5 py-1 rounded-full border border-red-300">
+            ★ Ban Biên tập & Tuyên giáo Đoàn Phường Xuân Hương
           </span>
         </div>
-        <h1 class="font-serif font-black text-2xl sm:text-3xl text-slate-900 mt-2">
-          Kiểm Duyệt & Xuất Bản Nhật Ký
+        <h1 class="font-serif font-black text-2xl sm:text-3xl text-slate-900 mt-2.5">
+          Thẩm Định & Xuất Bản Ký Ức
         </h1>
-        <p class="text-xs sm:text-sm text-slate-500 mt-1">
-          Hệ thống phê duyệt hai tầng: Tiền kiểm tư liệu trước khi công bố rộng rãi trên Cổng thông tin
+        <p class="text-xs sm:text-sm text-slate-600 mt-1">
+          Hệ thống kiểm duyệt đa tầng: Kiểm duyệt tư liệu từ 37 Tổ Dân Phố trước khi xuất bản rộng rãi trên toàn quốc.
         </p>
       </div>
 
-      <button
-        onclick="alert('Đã đồng bộ dữ liệu xuất bản tĩnh lên máy chủ!');"
-        class="inline-flex items-center gap-2 bg-gradient-to-r from-redflag-800 to-doan-900 text-white px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all"
-      >
-        <span>⚡</span>
-        <span>Xuất bản ngay (Instant Build)</span>
-      </button>
+      <div class="flex items-center gap-3">
+        <a
+          href={withBase('/huong-dan-tich-hop')}
+          class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-amber-50 text-slate-700 hover:text-red-700 border border-amber-300 text-xs sm:text-sm font-bold shadow-xs transition-colors"
+        >
+          <span>⚡ Hướng dẫn Supabase & Cloudinary</span>
+        </a>
+      </div>
     </div>
 
     <!-- Hàng đợi kiểm duyệt tương tác thật 100% -->

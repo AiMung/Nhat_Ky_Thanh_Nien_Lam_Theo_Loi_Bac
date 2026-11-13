@@ -1,0 +1,172 @@
+---
+import RootLayout from '@/layouts/RootLayout.astro';
+---
+
+<RootLayout title="Hướng dẫn tích hợp Supabase & Cloudinary — Phường Xuân Hương, Đà Lạt">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 space-y-10">
+    
+    {/* HEADER TIÊU ĐỀ */}
+    <div class="border-b border-amber-200/80 pb-6">
+      <div class="inline-flex items-center gap-2 text-xs font-bold text-red-800 uppercase tracking-widest bg-red-100 px-3.5 py-1 rounded-full border border-red-200 mb-3">
+        ★ TÀI LIỆU KỸ THUẬT & HƯỚNG DẪN KẾT NỐI
+      </div>
+      <h1 class="font-serif font-black text-3xl sm:text-4xl text-slate-900 tracking-tight">
+        Hướng Dẫn Tích Hợp Supabase & Cloudinary
+      </h1>
+      <p class="text-sm text-slate-600 mt-2 max-w-3xl leading-relaxed">
+        Hệ thống được thiết kế theo kiến trúc <strong>Hybrid Tối ưu</strong>: Mặc định hoạt động 100% trơn tru với LocalStorage. Khi kết nối Supabase và Cloudinary, dữ liệu sẽ tự động đồng bộ vĩnh viễn lên Đám mây phục vụ hàng triệu độc giả.
+      </p>
+    </div>
+
+    {/* PHẦN 1: HƯỚNG DẪN SUPABASE */}
+    <div class="bg-[#FAF6F0] rounded-3xl border border-amber-200/90 p-6 sm:p-8 shadow-xs space-y-6">
+      <div class="flex items-center gap-3">
+        <span class="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-800 font-black text-xl flex items-center justify-center border border-emerald-300">
+          S
+        </span>
+        <div>
+          <h2 class="font-serif font-black text-xl text-slate-900">
+            1. Cấu hình Supabase (Cơ sở dữ liệu PostgreSQL Đám mây)
+          </h2>
+          <p class="text-xs text-slate-500 mt-0.5">
+            Lưu trữ vĩnh viễn các bài viết, nhân chứng và lịch sử duyệt bài của 37 Tổ Dân Phố
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed">
+        <div class="p-4 rounded-2xl bg-white border border-amber-200/80 space-y-2">
+          <strong>Bước 1.1: Tạo Project mới tại Supabase</strong>
+          <p>Truy cập <a href="https://supabase.com" target="_blank" rel="noreferrer" class="text-red-700 font-bold underline">https://supabase.com</a>, đăng ký miễn phí và bấm <strong>"New Project"</strong>. Đặt tên project (ví dụ: <code>dtn-xuanhuong-dalat</code>) và chọn khu vực Singapore (gần Việt Nam nhất).</p>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-white border border-amber-200/80 space-y-2">
+          <strong>Bước 1.2: Chạy mã SQL tạo bảng</strong>
+          <p>Vào mục <strong>SQL Editor</strong> ở thanh menu bên trái của Supabase, dán đoạn mã sau và bấm <strong>Run</strong>:</p>
+          <div class="relative">
+            <pre class="p-4 rounded-xl bg-slate-900 text-amber-200 text-xs overflow-x-auto font-mono leading-relaxed"><code>-- BẢNG STORIES: Lưu trữ nhật ký và câu chuyện lịch sử
+CREATE TABLE IF NOT EXISTS public.stories (
+  id TEXT PRIMARY KEY,
+  slug TEXT UNIQUE NOT NULL,
+  title TEXT NOT NULL,
+  narrator_name TEXT,
+  contributor_name TEXT,
+  contributor_unit TEXT,
+  to_dan_pho TEXT,
+  summary TEXT,
+  body TEXT NOT NULL,
+  category_id TEXT,
+  category_name TEXT,
+  province_code TEXT,
+  province_name TEXT,
+  event_year INTEGER,
+  period TEXT,
+  media_type TEXT DEFAULT 'article',
+  video_url TEXT,
+  audio_url TEXT,
+  cover_url TEXT,
+  images JSONB DEFAULT '[]'::jsonb,
+  historical_characters JSONB DEFAULT '[]'::jsonb,
+  status TEXT DEFAULT 'pending',
+  reject_reason TEXT,
+  read_minutes INTEGER DEFAULT 3,
+  likes_count INTEGER DEFAULT 0,
+  published_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- CẤP QUYỀN TRUY CẬP ROW LEVEL SECURITY (RLS)
+ALTER TABLE public.stories ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public read stories" ON public.stories FOR SELECT USING (true);
+CREATE POLICY "Public insert stories" ON public.stories FOR INSERT WITH CHECK (true);
+CREATE POLICY "Public update stories" ON public.stories FOR UPDATE USING (true);</code></pre>
+            <button
+              onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); alert('Đã sao chép mã SQL vào bộ nhớ tạm!');"
+              class="absolute top-3 right-3 px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-900 text-xs font-bold shadow"
+            >
+              Sao chép SQL
+            </button>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-white border border-amber-200/80 space-y-2">
+          <strong>Bước 1.3: Lấy API Key</strong>
+          <p>Vào <strong>Project Settings → API</strong>. Sao chép 2 giá trị:</p>
+          <ul class="list-disc pl-5 space-y-1">
+            <li><strong>Project URL</strong> (dạng <code>https://abcdefghijkl.supabase.co</code>)</li>
+            <li><strong>Project API Key (anon/public)</strong> (chuỗi mã token dài)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    {/* PHẦN 2: HƯỚNG DẪN CLOUDINARY */}
+    <div class="bg-[#FAF6F0] rounded-3xl border border-amber-200/90 p-6 sm:p-8 shadow-xs space-y-6">
+      <div class="flex items-center gap-3">
+        <span class="w-10 h-10 rounded-2xl bg-sky-100 text-sky-800 font-black text-xl flex items-center justify-center border border-sky-300">
+          C
+        </span>
+        <div>
+          <h2 class="font-serif font-black text-xl text-slate-900">
+            2. Cấu hình Cloudinary (Lưu trữ Hình ảnh & Video CDN Tốc độ cao)
+          </h2>
+          <p class="text-xs text-slate-500 mt-0.5">
+            Tải ảnh tư liệu, video và giọng đọc podcast trực tiếp từ máy tính lên Cloudinary
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed">
+        <div class="p-4 rounded-2xl bg-white border border-amber-200/80 space-y-2">
+          <strong>Bước 2.1: Tạo tài khoản Cloudinary</strong>
+          <p>Truy cập <a href="https://cloudinary.com" target="_blank" rel="noreferrer" class="text-red-700 font-bold underline">https://cloudinary.com</a> và đăng ký gói miễn phí (Free Tier cho 25GB lưu trữ).</p>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-white border border-amber-200/80 space-y-2">
+          <strong>Bước 2.2: Lấy Cloud Name</strong>
+          <p>Ở trang <strong>Dashboard</strong>, bạn sẽ nhìn thấy mục <strong>Cloud name</strong> (ví dụ: <code>duyencao</code> hoặc <code>dtn-dalat</code>).</p>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-white border border-amber-200/80 space-y-2">
+          <strong>Bước 2.3: Tạo Unsigned Upload Preset (Cho phép upload trực tiếp)</strong>
+          <ol class="list-decimal pl-5 space-y-1">
+            <li>Vào <strong>Settings (biểu tượng bánh răng) → Upload</strong>.</li>
+            <li>Cuộn xuống mục <strong>Upload presets</strong>, bấm <strong>Add upload preset</strong>.</li>
+            <li>Đặt tên preset (ví dụ: <code>thoi_hoa_lua_preset</code>).</li>
+            <li><strong>QUAN TRỌNG:</strong> Ở mục <em>Signing Mode</em>, đổi từ <strong>Signed</strong> sang <strong>Unsigned</strong>.</li>
+            <li>Bấm <strong>Save</strong> ở góc trên bên phải.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    {/* PHẦN 3: FILE .ENV VÀ TEST NHANH */}
+    <div class="bg-[#FAF6F0] rounded-3xl border border-amber-200/90 p-6 sm:p-8 shadow-xs space-y-6">
+      <h2 class="font-serif font-black text-xl text-slate-900 flex items-center gap-2">
+        <span>3. Điền vào file cấu hình .env</span>
+        <span class="text-amber-500 text-sm">★</span>
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-600">
+        Mở file <code>.env</code> trong thư mục dự án và điền các thông số bạn vừa lấy được:
+      </p>
+
+      <div class="relative">
+        <pre class="p-4 rounded-xl bg-slate-900 text-amber-200 text-xs overflow-x-auto font-mono leading-relaxed"><code>PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+PUBLIC_CLOUDINARY_CLOUD_NAME=your-cloud-name
+PUBLIC_CLOUDINARY_UPLOAD_PRESET=your-unsigned-preset</code></pre>
+        <button
+          onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); alert('Đã sao chép nội dung .env!');"
+          class="absolute top-3 right-3 px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-900 text-xs font-bold shadow"
+        >
+          Sao chép mẫu .env
+        </button>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-amber-100/70 border border-amber-300 text-amber-950 text-xs leading-relaxed">
+        <strong>💡 Lưu ý hữu ích:</strong> Dự án được trang bị sẵn cơ chế nén ảnh tự động và lưu trữ LocalStorage, nên ngay cả khi bạn chưa cấu hình Cloudinary hay Supabase, mọi chức năng như <em>Gửi câu chuyện mới, Thẩm định duyệt bài, Tìm kiếm thời gian thực, Lọc 37 Tổ dân phố</em> vẫn hoạt động trơn tru 100%!
+      </div>
+    </div>
+
+  </div>
+</RootLayout>

@@ -4,6 +4,15 @@
  * Lưu trữ đồng bộ LocalStorage đảm bảo 100% chức năng Thêm - Xóa - Sửa - Cập nhật hoạt động tức thì.
  */
 
+export interface HistoricalCharacter {
+  id: string;
+  name: string;
+  birth_year?: string;
+  hometown?: string;
+  biography?: string;
+  avatar_url?: string;
+}
+
 export interface Story {
   id: string;
   slug: string;
@@ -11,6 +20,7 @@ export interface Story {
   narrator_name: string;
   contributor_name: string;
   contributor_unit?: string;
+  to_dan_pho?: string;
   summary: string;
   body: string;
   category_id: string;
@@ -19,6 +29,10 @@ export interface Story {
   province_name: string;
   event_year?: number;
   period: string;
+  media_type?: 'article' | 'video' | 'audio' | 'gallery';
+  historical_characters?: HistoricalCharacter[];
+  video_url?: string;
+  audio_url?: string;
   status: 'draft' | 'pending' | 'approved' | 'rejected';
   reject_reason?: string;
   cover_url: string;
@@ -503,6 +517,50 @@ export function getAllStories(): Story[] {
   }
 }
 
+export const DEFAULT_CHARACTERS: HistoricalCharacter[] = [
+  { id: 'c-ho-chi-minh', name: 'Chủ tịch Hồ Chí Minh', birth_year: '1890 - 1969', hometown: 'Kim Liên, Nam Đàn, Nghệ An', biography: 'Lãnh tụ vĩ đại của Đảng và dân tộc Việt Nam, Anh hùng giải phóng dân tộc, Nhà văn hóa kiệt xuất.' },
+  { id: 'c-vo-nguyen-giap', name: 'Đại tướng Võ Nguyên Giáp', birth_year: '1911 - 2013', hometown: 'An Xá, Lộc Thủy, Lệ Thủy, Quảng Bình', biography: 'Người Anh cả của Quân đội nhân dân Việt Nam, Tổng tư lệnh huyền thoại chiến dịch Điện Biên Phủ.' },
+  { id: 'c-ly-tu-trong', name: 'Anh hùng Lý Tự Trọng', birth_year: '1914 - 1931', hometown: 'Thạch Minh, Thạch Hà, Hà Tĩnh', biography: 'Người đoàn viên thanh niên cộng sản đầu tiên với câu nói bất hủ: "Con đường của thanh niên chỉ là con đường cách mạng".' },
+  { id: 'c-vo-thi-sau', name: 'Anh hùng Võ Thị Sáu', birth_year: '1933 - 1952', hometown: 'Phước Thọ, Đất Đỏ, Bà Rịa - Vũng Tàu', biography: 'Nữ chiến sĩ công an dũng cảm hy sinh vì độc lập dân tộc tại Côn Đảo.' },
+  { id: 'c-le-van-tam', name: 'Anh hùng Lê Văn Tám', birth_year: '1932 - 1945', hometown: 'Đa Kao, Quận 1, Sài Gòn', biography: 'Ngọn đuốc sống phá hủy kho đạn Thị Nghè của thực dân Pháp.' },
+  { id: 'c-mai-hoai-dieu', name: 'Bác Mai Hoài Điều (Dũng sĩ Nhà lao Thiếu nhi Đà Lạt)', birth_year: 'SN 1956', hometown: 'Phường Xuân Hương — Đà Lạt', biography: 'Chiến sĩ thiếu niên dũng cảm đấu tranh rạch bụng phản đối chế độ lao tù hà khắc tại Nhà lao Thiếu nhi Đà Lạt 1973.' },
+  { id: 'c-tieu-thi-kieu', name: 'TIÊU THỊ KIỀU', birth_year: 'SN 1892', hometown: 'Tân Đức, Đầm Dơi, Cà Mau', biography: 'Nhân chứng cách mạng, cơ sở bí mật nuôi giấu cán bộ tiền khởi nghĩa.' },
+  { id: 'c-lam-thi-kinh', name: 'LÂM THỊ KÍNH', birth_year: 'SN 1912', hometown: 'Tân Trung, Đầm Dơi, Cà Mau', biography: 'Gia đình có công với cách mạng, tiếp tế lương thực vũ khí cho kháng chiến.' },
+  { id: 'c-pham-thi-lu', name: 'PHẠM THỊ LỮ', birth_year: 'SN 1916', hometown: 'Khánh An, Trần Văn Thời, Cà Mau', biography: 'Mẹ chiến sĩ nuôi dưỡng bộ đội địa phương và dân công hỏa tuyến.' },
+  { id: 'c-bui-thi-lua', name: 'BÙI THỊ LỤA', birth_year: 'SN 1913', hometown: 'Phong Thạnh Tây, Giá Rai, Minh Hải', biography: 'Hội viên phụ nữ cứu quốc kiên trung.' },
+  { id: 'c-nguyen-van-troi', name: 'Anh hùng Nguyễn Văn Trỗi', birth_year: '1940 - 1964', hometown: 'Điện Thắng, Điện Bàn, Quảng Nam', biography: 'Người chiến sĩ biệt động với 9 phút bất tử trước pháp trường.' }
+];
+
+const STORAGE_KEY_CHARACTERS = 'dtn_hcm_characters_v5';
+
+export function getHistoricalCharacters(): HistoricalCharacter[] {
+  if (typeof window === 'undefined') return DEFAULT_CHARACTERS;
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_CHARACTERS);
+    if (!raw) {
+      localStorage.setItem(STORAGE_KEY_CHARACTERS, JSON.stringify(DEFAULT_CHARACTERS));
+      return DEFAULT_CHARACTERS;
+    }
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_CHARACTERS;
+  } catch {
+    return DEFAULT_CHARACTERS;
+  }
+}
+
+export function addHistoricalCharacter(char: Omit<HistoricalCharacter, 'id'>): HistoricalCharacter {
+  const current = getHistoricalCharacters();
+  const newChar: HistoricalCharacter = {
+    ...char,
+    id: 'char-' + Date.now()
+  };
+  const updated = [newChar, ...current];
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(STORAGE_KEY_CHARACTERS, JSON.stringify(updated));
+  }
+  return newChar;
+}
+
 // 2. LẤY CÂU CHUYỆN THEO SLUG
 export function getStoryBySlug(slug: string): Story | undefined {
   const list = getAllStories();
@@ -510,7 +568,10 @@ export function getStoryBySlug(slug: string): Story | undefined {
 }
 
 // 3. THÊM BÀI VIẾT MỚI (CREATE - Người dùng đóng góp - lưu ngay vào localStorage)
-export function submitNewStory(data: Omit<Story, 'id' | 'slug' | 'created_at' | 'status' | 'read_minutes'>): Story {
+export function submitNewStory(
+  data: Omit<Story, 'id' | 'slug' | 'created_at' | 'status' | 'read_minutes'>,
+  initialStatus: 'draft' | 'pending' = 'pending'
+): Story {
   const current = getAllStories();
   
   // Tạo slug sạch từ tiêu đề
@@ -530,7 +591,7 @@ export function submitNewStory(data: Omit<Story, 'id' | 'slug' | 'created_at' | 
     ...data,
     id: 'user-story-' + Date.now(),
     slug,
-    status: 'pending', // Luôn đưa vào hàng đợi kiểm duyệt
+    status: initialStatus,
     read_minutes: readMinutes,
     created_at: new Date().toISOString(),
     likes_count: 0

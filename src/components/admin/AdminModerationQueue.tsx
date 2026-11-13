@@ -1,14 +1,42 @@
-import { useState, useEffect } from 'react';
-import { getAllStories, updateStoryStatus, getCurrentUser, switchUserRole, type Story, type UserSession } from '@/lib/storage';
+import React, { useState, useEffect } from 'react';
+import { 
+  getAllStories, 
+  updateStoryStatus, 
+  deleteStory,
+  getCurrentUser, 
+  switchUserRole, 
+  type Story, 
+  type UserSession 
+} from '@/lib/storage';
+import { saveStoryToSupabase } from '@/lib/supabase';
 import { withBase, formatDate } from '@/lib/utils';
-import StoryActionToolbar from '@/components/story/StoryActionToolbar';
-import { Check, X, Eye, RefreshCw, AlertTriangle } from 'lucide-react';
+import { 
+  Check, 
+  X, 
+  Eye, 
+  Search, 
+  Filter, 
+  Trash2, 
+  ShieldCheck, 
+  Clock, 
+  FileText, 
+  Video, 
+  Mic, 
+  Image as ImageIcon, 
+  AlertTriangle, 
+  Sparkles,
+  ChevronRight,
+  ExternalLink
+} from 'lucide-react';
 
 export default function AdminModerationQueue() {
   const [stories, setStories] = useState<Story[]>([]);
-  const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected'>('pending');
+  const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected' | 'draft'>('pending');
+  const [selectedTdp, setSelectedTdp] = useState('ALL');
+  const [searchQuery, setSearchQuery] = useState('');
   const [user, setUser] = useState<UserSession | null>(null);
   const [toast, setToast] = useState('');
+  const [reviewStory, setReviewStory] = useState<Story | null>(null);
 
   const loadData = () => {
     setStories(getAllStories());
@@ -17,239 +45,419 @@ export default function AdminModerationQueue() {
 
   useEffect(() => {
     loadData();
+    window.addEventListener('stories-changed', loadData);
+    return () => window.removeEventListener('stories-changed', loadData);
   }, []);
 
-  const handleApprove = (id: string, title: string) => {
-    updateStoryStatus(id, 'approved');
-    loadData();
-    setToast(`Đã duyệt thành công: "${title}". Bài viết đã xuất hiện trên Thư viện.`);
+  const showToast = (msg: string) => {
+    setToast(msg);
     setTimeout(() => setToast(''), 4000);
   };
 
-  const handleReject = (id: string, title: string) => {
-    const reason = window.prompt(`Nhập lý do từ chối bài viết "${title}":`, 'Tư liệu cần bổ sung thêm căn cứ xác thực.');
+  // Hành động Duyệt bài
+  const handleApprove = async (id: string, title: string) => {
+    updateStoryStatus(id, 'approved');
+    const updated = getAllStories().find((s) => s.id === id);
+    if (updated) {
+      await saveStoryToSupabase(updated);
+    }
+    loadData();
+    if (reviewStory && reviewStory.id === id) {
+      setReviewStory(null);
+    }
+    showToast(`✓ Đã duyệt và xuất bản thành công: "${title}"`);
+  };
+
+  // Hành động Từ chối / Yêu cầu chỉnh sửa
+  const handleReject = async (id: string, title: string) => {
+    const reason = window.prompt(
+      `Nhập lý do yêu cầu chỉnh sửa/từ chối bài "${title}":`,
+      'Tư liệu cần bổ sung thêm căn cứ xác thực và hình ảnh rõ nét hơn.'
+    );
     if (reason !== null) {
       updateStoryStatus(id, 'rejected', reason);
+      const updated = getAllStories().find((s) => s.id === id);
+      if (updated) {
+        await saveStoryToSupabase(updated);
+      }
       loadData();
-      setToast(`Đã chuyển bài viết sang danh sách từ chối.`);
-      setTimeout(() => setToast(''), 4000);
+      if (reviewStory && reviewStory.id === id) {
+        setReviewStory(null);
+      }
+      showToast(`Đã chuyển trạng thái sang Yêu cầu chỉnh sửa.`);
+    }
+  };
+
+  // Xóa bài viết
+  const handleDelete = (id: string, title: string) => {
+    if (window.confirm(`Bạn có chắc chắn muốn xóa bài viết "${title}" khỏi hệ thống?`)) {
+      deleteStory(id);
+      loadData();
+      if (reviewStory && reviewStory.id === id) {
+        setReviewStory(null);
+      }
+      showToast(`Đã xóa bài viết khỏi cơ sở dữ liệu.`);
     }
   };
 
   const handleGrantAdmin = () => {
     switchUserRole('admin');
     setUser(getCurrentUser());
+    showToast('Đã kích hoạt quyền Ban Biên tập (Admin)!');
   };
 
-  const filtered = stories.filter((s) => s.status === activeTab);
+  // Đếm số lượng theo trạng thái
+  const counts = {
+    pending: stories.filter((s) => s.status === 'pending').length,
+    approved: stories.filter((s) => s.status === 'approved').length,
+    rejected: stories.filter((s) => s.status === 'rejected').length,
+    draft: stories.filter((s) => s.status === 'draft').length
+  };
+
+  // Lọc dữ liệu
+  const filteredStories = stories.filter((s) => {
+    if (s.status !== activeTab) return false;
+    if (selectedTdp !== 'ALL' && s.to_dan_pho !== selectedTdp) return false;
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
+      const matchTitle = s.title.toLowerCase().includes(q);
+      const matchNarrator = s.narrator_name.toLowerCase().includes(q);
+      const matchTdp = (s.to_dan_pho || '').toLowerCase().includes(q);
+      if (!matchTitle && !matchNarrator && !matchTdp) return false;
+    }
+    return true;
+  });
 
   return (
     <div className="space-y-6">
       
-      {/* Toast thông báo hành động */}
+      {/* Toast thông báo */}
       {toast && (
-        <div className="fixed top-24 right-6 z-50 bg-green-900 text-white text-xs sm:text-sm font-semibold px-5 py-3 rounded-2xl shadow-2xl border border-green-500/40 flex items-center gap-2 animate-bounce">
+        <div className="fixed top-20 right-6 z-50 bg-emerald-900 text-emerald-100 px-6 py-3.5 rounded-2xl shadow-2xl border border-emerald-500/60 flex items-center gap-2.5 font-bold text-xs sm:text-sm animate-fade-in">
           <span>✓</span>
           <span>{toast}</span>
         </div>
       )}
 
-      {/* Thanh cảnh báo quyền nếu chưa phải Admin */}
+      {/* Cảnh báo quyền nếu chưa là Admin */}
       {user && user.role !== 'admin' && (
-        <div className="p-4 rounded-2xl bg-amber-50 border border-amber-300 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="p-4 sm:p-5 rounded-3xl bg-amber-50 border border-amber-300 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3 text-xs text-amber-900">
             <AlertTriangle className="w-5 h-5 text-amber-700 shrink-0" />
             <div>
-              <strong>Bạn đang xem với tư cách: {user.name} ({user.role === 'member' ? 'Đoàn viên' : 'Khách'}).</strong>
-              <div className="text-amber-700">Để thực hiện duyệt hoặc từ chối bài viết, bạn có thể chuyển nhanh sang quyền Ban Biên tập.</div>
+              <strong>Chế độ xem: {user.name}</strong>
+              <div className="text-amber-700 mt-0.5">
+                Bạn có thể kích hoạt quyền Ban Biên tập để thực hiện thao tác duyệt, từ chối và xuất bản bài viết.
+              </div>
             </div>
           </div>
           <button
             onClick={handleGrantAdmin}
-            className="shrink-0 px-4 py-2 bg-redflag-800 hover:bg-redflag-900 text-white rounded-xl text-xs font-bold shadow transition-colors"
+            className="shrink-0 px-4 py-2 bg-red-700 hover:bg-red-800 text-white rounded-xl text-xs font-bold shadow transition-colors"
           >
-            Chuyển sang quyền Ban Biên tập (Admin)
+            Kích hoạt quyền Ban Biên tập (Admin)
           </button>
         </div>
       )}
 
-      {/* Tabs chuyển đổi trạng thái */}
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-white p-3 rounded-2xl border border-slate-200 shadow-sm">
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setActiveTab('pending')}
-            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 ${
-              activeTab === 'pending'
-                ? 'bg-amber-500 text-white shadow'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            <span>⏳ Chờ kiểm duyệt</span>
-            <span className="bg-white/20 px-2 py-0.5 rounded-full text-xs">
-              {stories.filter((s) => s.status === 'pending').length}
-            </span>
-          </button>
+      {/* TABS & BỘ LỌC CHUẨN THỜI HOA LỬA */}
+      <div className="bg-[#FAF6F0] p-4 sm:p-5 rounded-3xl border border-amber-200/80 shadow-xs space-y-4">
+        
+        {/* Hàng Tabs trạng thái */}
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-amber-200/80 pb-4">
+          <div className="flex flex-wrap items-center gap-2">
+            {[
+              { id: 'pending', label: 'Chờ duyệt', count: counts.pending, color: 'text-amber-700 bg-amber-100' },
+              { id: 'approved', label: 'Đã xuất bản', count: counts.approved, color: 'text-emerald-700 bg-emerald-100' },
+              { id: 'rejected', label: 'Yêu cầu sửa', count: counts.rejected, color: 'text-red-700 bg-red-100' },
+              { id: 'draft', label: 'Bản nháp', count: counts.draft, color: 'text-slate-700 bg-slate-200' },
+            ].map((tab) => {
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as any)}
+                  className={`px-4 py-2 rounded-2xl font-bold text-xs sm:text-sm flex items-center gap-2 transition-all ${
+                    isActive
+                      ? 'bg-red-700 text-white shadow-md'
+                      : 'bg-white hover:bg-amber-100 text-slate-700 border border-amber-200/70'
+                  }`}
+                >
+                  <span>{tab.label}</span>
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${isActive ? 'bg-white/20 text-white' : tab.color}`}>
+                    {tab.count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
 
-          <button
-            onClick={() => setActiveTab('approved')}
-            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 ${
-              activeTab === 'approved'
-                ? 'bg-green-700 text-white shadow'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
+          <a
+            href={withBase('/gui-cau-chuyen')}
+            className="px-4 py-2 rounded-xl bg-red-700 hover:bg-red-800 text-white font-bold text-xs flex items-center gap-1.5 shadow-2xs"
           >
-            <span>✓ Đã duyệt & Xuất bản</span>
-            <span className="bg-white/20 px-2 py-0.5 rounded-full text-xs">
-              {stories.filter((s) => s.status === 'approved').length}
-            </span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('rejected')}
-            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 ${
-              activeTab === 'rejected'
-                ? 'bg-redflag-800 text-white shadow'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            <span>✕ Đã từ chối</span>
-            <span className="bg-white/20 px-2 py-0.5 rounded-full text-xs">
-              {stories.filter((s) => s.status === 'rejected').length}
-            </span>
-          </button>
+            <span>+ Tạo bài mới</span>
+          </a>
         </div>
 
-        <button
-          onClick={loadData}
-          className="p-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 text-xs font-semibold flex items-center gap-1.5"
-          title="Tải lại danh sách"
-        >
-          <RefreshCw className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">Làm mới</span>
-        </button>
+        {/* Thanh tìm kiếm & Lọc Tổ Dân Phố */}
+        <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
+          <div className="sm:col-span-8 relative">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Tìm theo tiêu đề, nhân chứng hoặc tổ dân phố..."
+              className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-white border border-amber-200/80 text-xs sm:text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-red-700/30"
+            />
+          </div>
+
+          <div className="sm:col-span-4">
+            <select
+              value={selectedTdp}
+              onChange={(e) => setSelectedTdp(e.target.value)}
+              className="w-full px-3 py-2.5 rounded-2xl bg-white border border-amber-200/80 text-xs sm:text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-red-700/30"
+            >
+              <option value="ALL">Tất cả 37 Tổ Dân Phố</option>
+              {Array.from(new Set(stories.map((s) => s.to_dan_pho).filter(Boolean))).map((tdp) => (
+                <option key={tdp} value={tdp as string}>
+                  {tdp}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
       </div>
 
-      {/* Danh sách các câu chuyện theo Tab */}
-      {filtered.length === 0 ? (
-        <div className="bg-white rounded-2xl p-12 text-center border border-slate-200">
-          <div className="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-xl mx-auto mb-3">
-            📋
-          </div>
-          <h3 className="font-serif font-bold text-base text-slate-800 mb-1">
+      {/* DANH SÁCH BÀI VIẾT CẦN DUYỆT */}
+      {filteredStories.length === 0 ? (
+        <div className="bg-[#FAF6F0] rounded-3xl border border-amber-200/80 p-12 text-center shadow-xs">
+          <ShieldCheck className="w-12 h-12 text-amber-600 mx-auto mb-3 opacity-60" />
+          <h3 className="font-serif font-bold text-lg text-slate-800">
             Không có bài viết nào trong mục này
           </h3>
-          <p className="text-xs text-slate-500">
-            {activeTab === 'pending'
-              ? 'Tất cả các câu chuyện gửi về đều đã được xử lý xong!'
-              : 'Chưa có bản ghi nào trong trạng thái này.'}
+          <p className="text-xs text-slate-500 mt-1">
+            Tất cả bài viết đã được xử lý hoặc không có dữ liệu khớp với bộ lọc tìm kiếm.
           </p>
         </div>
       ) : (
         <div className="space-y-4">
-          {filtered.map((item) => (
+          {filteredStories.map((story) => (
             <div
-              key={item.id}
-              className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col lg:flex-row justify-between gap-6 hover:border-slate-300 transition-colors"
+              key={story.id}
+              className="bg-[#FAF6F0] rounded-3xl border border-amber-200/80 p-4 sm:p-5 shadow-xs hover:shadow-md transition-shadow flex flex-col md:flex-row md:items-center justify-between gap-4"
             >
-              {/* Ảnh thu nhỏ và nội dung */}
-              <div className="flex flex-col sm:flex-row gap-5 flex-1">
-                <img
-                  src={item.cover_url}
-                  alt={item.title}
-                  className="w-full sm:w-44 h-32 object-cover rounded-xl border border-slate-100 shrink-0"
-                />
+              {/* Bên trái: Thumbnail & Thông tin */}
+              <div className="flex items-start gap-4 flex-1">
+                <div className="w-24 sm:w-32 aspect-[4/3] rounded-2xl overflow-hidden bg-slate-900 shrink-0 border border-amber-200/60">
+                  <img
+                    src={story.cover_url || '/images/thoi-hoa-lua-hero.jpg'}
+                    alt={story.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
 
-                <div className="flex-1">
-                  <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 mb-2">
-                    <span className="font-bold text-doan-800 bg-doan-50 px-2 py-0.5 rounded">
-                      {item.category_name}
+                <div className="space-y-1.5 flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="px-2.5 py-0.5 rounded-full bg-red-100 text-red-900 text-[10px] font-black uppercase tracking-wider border border-red-200">
+                      {story.category_name}
                     </span>
-                    <span>•</span>
-                    <span>📍 {item.province_name}</span>
-                    <span>•</span>
-                    <span>{formatDate(item.created_at)}</span>
+                    <span className="text-[11px] text-slate-500">
+                      {story.to_dan_pho || 'Phường Xuân Hương — Đà Lạt'}
+                    </span>
+                    <span className="text-[11px] text-slate-400">•</span>
+                    <span className="text-[11px] text-slate-500">{formatDate(story.created_at)}</span>
                   </div>
 
-                  <h3 className="font-serif font-bold text-lg text-slate-900 mb-2">
-                    {item.title}
+                  <h3 className="font-serif font-black text-base sm:text-lg text-slate-900 hover:text-red-700 transition-colors line-clamp-1">
+                    {story.title}
                   </h3>
 
-                  <p className="text-xs text-slate-600 line-clamp-2 mb-3">
-                    {item.summary}
+                  <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+                    {story.summary}
                   </p>
 
-                  <div className="text-xs text-slate-600 grid grid-cols-1 sm:grid-cols-2 gap-1 pt-2 border-t border-slate-100">
-                    <div>Người kể: <strong className="text-slate-900">{item.narrator_name}</strong></div>
-                    <div>Ghi chép: <strong className="text-slate-900">{item.contributor_unit || item.contributor_name}</strong></div>
+                  <div className="text-[11px] text-slate-500 flex flex-wrap items-center gap-3 pt-0.5">
+                    <span>Nhân chứng / Người kể: <strong className="text-slate-800">{story.narrator_name}</strong></span>
+                    <span>•</span>
+                    <span>Thời gian đọc: <strong>~{story.read_minutes} phút</strong></span>
                   </div>
 
-                  {item.reject_reason && (
-                    <div className="mt-2 text-xs text-redflag-700 bg-redflag-50 p-2 rounded-lg border border-redflag-200">
-                      <strong>Lý do từ chối:</strong> {item.reject_reason}
+                  {story.reject_reason && story.status === 'rejected' && (
+                    <div className="text-xs text-red-700 bg-red-50 p-2 rounded-xl border border-red-200 mt-1">
+                      <strong>Lý do yêu cầu sửa:</strong> {story.reject_reason}
                     </div>
                   )}
                 </div>
               </div>
 
-              {/* Nút hành động kiểm duyệt */}
-              <div className="flex lg:flex-col items-center justify-center gap-2 border-t lg:border-t-0 lg:border-l border-slate-100 pt-4 lg:pt-0 lg:pl-6 min-w-[150px]">
-                {item.status === 'pending' && (
-                  <>
-                    <button
-                      onClick={() => handleApprove(item.id, item.title)}
-                      className="w-full py-2.5 px-4 bg-green-700 hover:bg-green-800 text-white rounded-xl text-xs font-bold shadow flex items-center justify-center gap-1.5 transition-colors"
-                    >
-                      <Check className="w-4 h-4" />
-                      <span>Duyệt & Xuất bản</span>
-                    </button>
-
-                    <button
-                      onClick={() => handleReject(item.id, item.title)}
-                      className="w-full py-2.5 px-4 bg-slate-100 hover:bg-redflag-50 text-redflag-700 hover:text-redflag-800 rounded-xl text-xs font-bold border border-slate-200 transition-colors flex items-center justify-center gap-1.5"
-                    >
-                      <X className="w-4 h-4" />
-                      <span>Từ chối</span>
-                    </button>
-                  </>
-                )}
-
-                {item.status === 'approved' && (
-                  <button
-                    onClick={() => handleReject(item.id, item.title)}
-                    className="w-full py-2 px-3 bg-redflag-50 hover:bg-redflag-100 text-redflag-800 rounded-xl text-xs font-bold border border-redflag-200 transition-colors"
-                  >
-                    Gỡ bài viết
-                  </button>
-                )}
-
-                {item.status === 'rejected' && (
-                  <button
-                    onClick={() => handleApprove(item.id, item.title)}
-                    className="w-full py-2 px-3 bg-green-50 hover:bg-green-100 text-green-800 rounded-xl text-xs font-bold border border-green-200 transition-colors"
-                  >
-                    Duyệt lại bài này
-                  </button>
-                )}
-
-                <a
-                  href={withBase(`/truyen/chi-tiet?slug=${item.slug}`)}
-                  className="w-full py-2 px-3 border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-medium text-center flex items-center justify-center gap-1"
+              {/* Bên phải: Nút Thao tác */}
+              <div className="flex items-center gap-2 shrink-0 md:flex-col lg:flex-row border-t md:border-t-0 pt-3 md:pt-0 border-amber-200/60 justify-end">
+                <button
+                  type="button"
+                  onClick={() => setReviewStory(story)}
+                  className="px-3.5 py-2 rounded-xl bg-white hover:bg-amber-100 text-slate-700 font-bold text-xs border border-amber-300 flex items-center gap-1.5 transition-colors shadow-2xs"
+                  title="Xem toàn bộ nội dung & thẩm định"
                 >
-                  <Eye className="w-3.5 h-3.5" />
-                  <span>Xem chi tiết</span>
-                </a>
+                  <Eye className="w-3.5 h-3.5 text-slate-500" />
+                  <span>Thẩm định</span>
+                </button>
 
-                {/* Sửa và Xóa trực tiếp trong Hàng đợi Admin */}
-                <div className="w-full pt-1 flex items-center justify-center">
-                  <StoryActionToolbar
-                    story={item}
-                    onUpdated={loadData}
-                    onDeleted={loadData}
-                  />
-                </div>
+                {story.status !== 'approved' && (
+                  <button
+                    type="button"
+                    onClick={() => handleApprove(story.id, story.title)}
+                    className="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center gap-1.5 shadow transition-colors"
+                  >
+                    <Check className="w-3.5 h-3.5" />
+                    <span>Duyệt ngay</span>
+                  </button>
+                )}
+
+                {story.status !== 'rejected' && (
+                  <button
+                    type="button"
+                    onClick={() => handleReject(story.id, story.title)}
+                    className="px-3 py-2 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-xs border border-amber-300"
+                  >
+                    Yêu cầu sửa
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => handleDelete(story.id, story.title)}
+                  className="p-2 rounded-xl text-slate-400 hover:text-red-700 hover:bg-red-50 transition-colors"
+                  title="Xóa bài viết"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* ================= MODAL THẨM ĐỊNH CHI TIẾT (FULL REVIEW DRAWER) ================= */}
+      {reviewStory && (
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-[#FAF6F0] rounded-3xl border border-amber-300 max-w-4xl w-full max-h-[92vh] overflow-y-auto p-6 sm:p-8 shadow-2xl space-y-6 animate-scale-up">
+            
+            <div className="flex items-center justify-between border-b border-amber-200/80 pb-3">
+              <div className="flex items-center gap-2">
+                <span className="px-3 py-1 rounded-full bg-red-100 text-red-900 text-xs font-black uppercase tracking-wider border border-red-300">
+                  {reviewStory.status === 'pending' ? 'HỒ SƠ CHỜ THẨM ĐỊNH' : `TRẠNG THÁI: ${reviewStory.status.toUpperCase()}`}
+                </span>
+                <span className="text-xs text-slate-500">{reviewStory.to_dan_pho}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setReviewStory(null)}
+                className="w-8 h-8 rounded-full bg-white hover:bg-slate-100 flex items-center justify-center text-slate-600 font-bold text-lg"
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Ảnh bìa & chùm ảnh */}
+            {reviewStory.images && reviewStory.images.length > 0 && (
+              <div className="space-y-2">
+                <div className="rounded-2xl overflow-hidden aspect-[16/9] bg-slate-900 max-h-80">
+                  <img
+                    src={reviewStory.images[0]}
+                    alt={reviewStory.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                {reviewStory.images.length > 1 && (
+                  <div className="flex gap-2 overflow-x-auto pb-1">
+                    {reviewStory.images.slice(1).map((im, idx) => (
+                      <img
+                        key={idx}
+                        src={im}
+                        alt="Ảnh tư liệu phụ"
+                        className="w-20 h-16 object-cover rounded-xl border border-amber-200 shrink-0"
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Chi tiết thông tin */}
+            <div>
+              <h2 className="font-serif font-black text-2xl sm:text-3xl text-slate-900 leading-snug">
+                {reviewStory.title}
+              </h2>
+              <div className="text-xs text-slate-500 mt-2 flex flex-wrap items-center gap-3">
+                <span>Nhân chứng / Người kể: <strong className="text-slate-800">{reviewStory.narrator_name}</strong></span>
+                <span>•</span>
+                <span>Thời kỳ: <strong>{reviewStory.period}</strong></span>
+                <span>•</span>
+                <span>Đơn vị gửi: <strong>{reviewStory.contributor_unit || reviewStory.contributor_name}</strong></span>
+              </div>
+            </div>
+
+            {/* Tóm tắt */}
+            <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs sm:text-sm text-slate-700 italic">
+              "{reviewStory.summary}"
+            </div>
+
+            {/* Nội dung chi tiết */}
+            <div className="prose prose-slate max-w-none text-xs sm:text-sm leading-relaxed whitespace-pre-wrap">
+              {reviewStory.body}
+            </div>
+
+            {/* Video / Audio nếu có */}
+            {reviewStory.video_url && (
+              <div className="p-3 rounded-2xl bg-white border border-amber-200 text-xs">
+                <strong>Link Video / Phóng sự đính kèm:</strong>{' '}
+                <a href={reviewStory.video_url} target="_blank" rel="noreferrer" className="text-red-700 underline font-mono">
+                  {reviewStory.video_url}
+                </a>
+              </div>
+            )}
+            {reviewStory.audio_url && (
+              <div className="p-3 rounded-2xl bg-white border border-amber-200 text-xs">
+                <strong>Link Audio / Giọng đọc đính kèm:</strong>{' '}
+                <a href={reviewStory.audio_url} target="_blank" rel="noreferrer" className="text-red-700 underline font-mono">
+                  {reviewStory.audio_url}
+                </a>
+              </div>
+            )}
+
+            {/* Nút Phê duyệt / Từ chối dưới chân Drawer */}
+            <div className="pt-4 border-t border-amber-200/80 flex flex-wrap items-center justify-between gap-3">
+              <button
+                type="button"
+                onClick={() => handleDelete(reviewStory.id, reviewStory.title)}
+                className="px-4 py-2 rounded-xl text-red-700 hover:bg-red-50 font-bold text-xs"
+              >
+                Xóa bài viết
+              </button>
+
+              <div className="flex items-center gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => handleReject(reviewStory.id, reviewStory.title)}
+                  className="px-4 py-2.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-xs border border-amber-300"
+                >
+                  Yêu cầu sửa
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleApprove(reviewStory.id, reviewStory.title)}
+                  className="px-6 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center gap-1.5 shadow"
+                >
+                  <Check className="w-4 h-4" />
+                  <span>Phê duyệt xuất bản</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
         </div>
       )}
 

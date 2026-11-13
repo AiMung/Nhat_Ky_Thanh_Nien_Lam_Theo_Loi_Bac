@@ -1,263 +1,149 @@
-import { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { withBase } from '@/lib/utils';
-import { ChevronLeft, ChevronRight, Sparkles, BookOpen, Clock, Calendar } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 interface Milestone {
   year: string;
-  badge: string;
   title: string;
-  subtitle: string;
   desc: string;
-  quote: string;
-  period: string;
   img: string;
-  storySlug: string;
+  link: string;
 }
 
-const MILESTONES: Milestone[] = [
+const TIMELINE_DATA: Milestone[] = [
   {
-    year: '1931',
-    badge: 'Mốc son Khai sinh',
-    title: 'Thành lập Đoàn TNCS Đông Dương',
-    subtitle: 'Ngọn đuốc soi đường của tuổi trẻ Việt Nam',
-    desc: 'Tại Hội nghị BCH Trung ương Đảng lần thứ 2 (20-26/3/1931), Trung ương Đảng đã quyết định thành lập tổ chức thanh niên cộng sản, mở ra kỷ nguyên rèn luyện và chiến đấu oanh liệt của tuổi trẻ nước nhà dưới sự dìu dắt của Bác Hồ.',
-    quote: 'Tuổi trẻ là mùa xuân của xã hội — Chủ tịch Hồ Chí Minh',
-    period: '1945-truoc',
-    img: '/images/thoi-hoa-lua/story-1.jpg',
-    storySlug: 'loi-dan-cua-bac-voi-thanh-nien-sai-gon-gia-dinh'
+    year: '1945',
+    title: 'Cách mạng Tháng Tám & Mùa thu Độc lập',
+    desc: 'Bác Hồ đọc Tuyên ngôn Độc lập tại Quảng trường Ba Đình lịch sử, khai sinh nước Việt Nam Dân chủ Cộng hòa.',
+    img: '/images/thoi-hoa-lua/story-den-hung.jpg',
+    link: '/thu-vien?period=1945-truoc'
   },
   {
     year: '1954',
-    badge: 'Thiên sử vàng Điện Biên',
     title: 'Chiến thắng Điện Biên Phủ "Lừng lẫy năm châu"',
-    subtitle: 'Tuổi mười chín đôi mươi bạt núi kéo pháo',
-    desc: '56 ngày đêm khoét núi, ngủ hầm, mưa dầm, cơm vắt. Tinh thần thanh niên xung phong mở đường Thắng Lợi và sự hy sinh kiên cường của các anh hùng Phan Đình Giót, Tô Vĩnh Diện, Bế Văn Đàn làm nên chiến thắng địa cầu.',
-    quote: 'Dốc Pha Đin, chị gánh anh thồ / Đèo Lũng Lô, anh hò chị hát',
-    period: '1945-1954',
+    desc: '56 ngày đêm khoét núi ngủ hầm, tuổi trẻ bạt núi kéo pháo làm nên chiến thắng chấn động địa cầu, giải phóng hoàn toàn miền Bắc.',
     img: '/images/thoi-hoa-lua/story-chien-dich-dien-bien-phu.jpg',
-    storySlug: 'chien-dich-dien-bien-phu-lung-lay-nam-chau'
+    link: '/thu-vien?period=1945-1954'
   },
   {
     year: '1968',
-    badge: 'Bão lửa Sài Gòn',
-    title: 'Tổng tiến công Mậu Thân & Phong trào HSSV',
-    subtitle: 'Ngọn lửa Biệt động thành bùng cháy giữa đô thành',
-    desc: 'Những đêm thắp nến không ngủ, phong trào "Hát cho đồng bào tôi nghe" hòa cùng súng lệnh của Đội Biệt động Sài Gòn tấn công thẳng vào cơ quan đầu não địch, khẳng định khí phách bất khuất của tuổi trẻ thành đồng.',
-    quote: 'Dậy mà đi! Dậy mà đi! Hỡi đồng bào ơi...',
-    period: '1955-1975',
+    title: 'Tổng tiến công Mậu Thân & Tiếng hát át tiếng bom',
+    desc: 'Ngọn lửa đấu tranh của phong trào học sinh - sinh viên và các chiến sĩ biệt động dũng cảm tiến công giữa lòng đô thành.',
     img: '/images/thoi-hoa-lua/cat-khang-chien.jpg',
-    storySlug: 'loi-dan-cua-bac-voi-thanh-nien-sai-gon-gia-dinh'
-  },
-  {
-    year: '1972',
-    badge: 'Điện Biên Phủ trên không',
-    title: 'Hà Nội 12 ngày đêm kiên cường',
-    subtitle: 'Quân dân Thủ đô đập tan pháo đài bay B-52',
-    desc: 'Cuộc tập kích chiến lược bằng pháo đài bay B-52 bị bẻ gãy hoàn toàn. Hàng vạn thanh niên, tự vệ Hà Nội bám trụ trận địa, bắt sống phi công Mỹ, buộc đối phương phải ký Hiệp định Paris lập lại hòa bình.',
-    quote: 'Hà Nội - Bản hùng ca bất tử của ý chí quật cường',
-    period: '1955-1975',
-    img: '/images/thoi-hoa-lua/story-ha-noi-12-ngay-dem.jpg',
-    storySlug: 'ha-noi-12-ngay-dem-dien-bien-phu-tren-khong'
+    link: '/thu-vien?period=1955-1975'
   },
   {
     year: '1975',
-    badge: 'Đại thắng Mùa Xuân',
-    title: 'Chiến dịch Hồ Chí Minh - Non sông thu về một mối',
-    subtitle: 'Tuổi trẻ tiếp quản và chung tay dựng xây Thành phố',
-    desc: '11 giờ 30 phút ngày 30/4/1975, lá cờ chiến thắng tung bay trên nóc Dinh Độc Lập. Hàng chục ngàn thanh niên Sài Gòn hân hoan đón đoàn quân giải phóng, cùng thắt chặt tay nhau giữ gìn trật tự và bắt tay vào hàn gắn vết thương chiến tranh.',
-    quote: 'Mùa xuân đại thắng - Đất nước trọn niềm vui sum họp',
-    period: '1955-1975',
-    img: '/images/thoi-hoa-lua/timeline-1975.jpg',
-    storySlug: 'chuyen-nhung-chiec-ao-xanh-rung-sac-can-gio'
+    title: 'Đại thắng Mùa Xuân & Giải phóng Đà Lạt (3/4/1975)',
+    desc: 'Non sông thu về một mối. Tuổi trẻ Khu phố Ánh Sáng và nhân dân Phường Xuân Hương hân hoan rợp cờ hoa đón đoàn quân giải phóng.',
+    img: '/images/thoi-hoa-lua/story-me-va-nhung-la-thu.jpg',
+    link: '/thu-vien?period=1955-1975'
+  },
+  {
+    year: '1979',
+    title: 'Bảo vệ biên giới thiêng liêng của Tổ quốc',
+    desc: 'Hàng vạn thanh niên xung phong, bộ đội biên phòng kiên cường bảo vệ từng tấc đất thiêng liêng nơi biên cương địa đầu non sông.',
+    img: '/images/thoi-hoa-lua/cat-bien-gioi.jpg',
+    link: '/thu-vien?period=1975-1988'
   },
   {
     year: '1988',
-    badge: 'Chủ quyền Biển đảo',
-    title: 'Vòng tròn bất tử Gạc Ma & Giữ vững Trường Sa',
-    subtitle: 'Máu của những người lính trẻ hòa vào biển mẹ thiêng liêng',
-    desc: 'Ngày 14/3/1988, 64 chiến sĩ Hải quân đã nắm chặt tay nhau kết thành "Vòng tròn bất tử", lấy thân mình làm lá chắn bảo vệ ngọn cờ Tổ quốc trên đá Gạc Ma. Bản hùng ca bất tử khẳng định chủ quyền không thể chối cãi của Việt Nam.',
-    quote: 'Không được lùi bước, phải để máu mình tô thắm cờ Tổ quốc',
-    period: '1975-1988',
+    title: 'Khúc tráng ca Gạc Ma & Chủ quyền Biển đảo',
+    desc: '64 chiến sĩ Hải quân tạo thành "Vòng tròn bất tử" bảo vệ lá cờ Tổ quốc giữa ngàn khơi Hoàng Sa - Trường Sa ruột thịt.',
     img: '/images/truong-sa-chu-quyen.jpg',
-    storySlug: 'la-thu-gui-tu-nha-gian-dk1-va-tinh-yeu-bien-dao'
+    link: '/thu-vien?period=1975-1988'
   },
   {
-    year: '1975 - Nay',
-    badge: 'Khát vọng Tương lai',
-    title: 'Giải phóng Đà Lạt & Tuổi trẻ Phường Xuân Hương',
-    subtitle: 'Nối tiếp ngọn lửa truyền thống — Tiên phong số hóa và hội nhập',
-    desc: 'Từ ngày 3/4/1975 khi cờ giải phóng bay trên đỉnh Hồ Xuân Hương đến công trình thanh niên số hóa 37 Tổ dân phố hôm nay, thế hệ trẻ Phường Xuân Hương — Đà Lạt luôn ghi sâu lời dạy của Bác Hồ, xung kích dựng xây quê hương ngày càng giàu đẹp.',
-    quote: 'Đâu cần thanh niên có, việc gì khó có thanh niên',
-    period: '1989-nay',
-    img: '/images/thoi-hoa-lua/story-me-va-nhung-la-thu.jpg',
-    storySlug: 'tuoi-tre-phuong-xuan-huong-da-lat-hoc-loi-bac'
+    year: '1990+',
+    title: 'Đổi mới & hội nhập sâu rộng',
+    desc: 'Đất nước bước vào thời kỳ Đổi mới, phát triển kinh tế, số hóa di sản và hội nhập quốc tế sâu rộng cùng tuổi trẻ Phường Xuân Hương.',
+    img: '/images/thoi-hoa-lua/sk-tin1.jpg',
+    link: '/thu-vien?period=1989-nay'
   }
 ];
 
 export default function InteractiveTimelineGsap() {
-  const [activeIdx, setActiveIdx] = useState(0);
-  const [animating, setAnimating] = useState(false);
+  const [activeIdx, setActiveIdx] = useState(6); // Default active at 1990+ as in screenshot 4
 
-  const cur = MILESTONES[activeIdx];
-
-  const handleSelect = (idx: number) => {
-    if (idx === activeIdx || animating) return;
-    setAnimating(true);
-    setTimeout(() => {
-      setActiveIdx(idx);
-      setAnimating(false);
-    }, 150);
-  };
-
-  const handleNext = () => {
-    handleSelect((activeIdx + 1) % MILESTONES.length);
-  };
-
-  const handlePrev = () => {
-    handleSelect((activeIdx - 1 + MILESTONES.length) % MILESTONES.length);
-  };
+  const activeItem = TIMELINE_DATA[activeIdx];
 
   return (
-    <div className="w-full">
+    <div className="space-y-8">
       
-      {/* 1. TRỤC ĐIỀU HƯỚNG MỐC SON THỜI GIAN (INTERACTIVE GSAP-STYLE TIMELINE) */}
-      <div className="relative mb-8 pb-3">
-        {/* Đường ray trục thời gian vàng rực rỡ */}
-        <div className="hidden md:block absolute top-1/2 left-8 right-8 -translate-y-1/2 h-1 bg-gradient-to-r from-red-600 via-amber-400 to-red-600 rounded-full z-0 opacity-40 shadow-xs"></div>
-        
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 relative z-10">
-          {MILESTONES.map((item, idx) => {
-            const isActive = idx === activeIdx;
+      {/* THANH DÒNG CHẢY LỊCH SỬ NẰM NGANG VỚI CÁC MỐC NĂM (CHUẨN SCREENSHOT 4) */}
+      <div className="relative px-4 sm:px-8 py-4">
+        {/* Đường kẻ ngang */}
+        <div className="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-0.5 bg-amber-200/90 z-0"></div>
+
+        {/* Các mốc chấm tròn */}
+        <div className="relative z-10 flex items-center justify-between">
+          {TIMELINE_DATA.map((item, idx) => {
+            const isCur = activeIdx === idx;
             return (
               <button
                 key={item.year}
                 type="button"
-                onClick={() => handleSelect(idx)}
-                className={`group relative p-3 sm:p-4 rounded-2xl text-center transition-all duration-300 cursor-pointer flex flex-col justify-between items-center ${
-                  isActive
-                    ? 'bg-gradient-to-b from-red-700 to-red-800 text-white shadow-xl scale-105 border-2 border-amber-400 ring-4 ring-amber-400/20'
-                    : 'bg-white hover:bg-slate-50 text-slate-800 border border-slate-200/90 hover:border-red-600/50 shadow-xs'
-                }`}
+                onClick={() => setActiveIdx(idx)}
+                className="group flex flex-col items-center focus:outline-none cursor-pointer"
               >
-                {/* Nốt sao vàng phát sáng */}
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-transform ${
-                  isActive
-                    ? 'bg-amber-400 text-red-900 shadow-[0_0_12px_rgba(251,191,36,0.9)] animate-pulse'
-                    : 'bg-slate-100 text-slate-400 group-hover:bg-red-50 group-hover:text-red-700'
-                }`}>
-                  ★
-                </div>
-
-                <div className={`font-serif font-black text-xl sm:text-2xl mt-1 tracking-tight ${
-                  isActive ? 'text-amber-300' : 'text-slate-900 group-hover:text-red-700'
-                }`}>
+                {/* Chấm tròn */}
+                <div
+                  className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full transition-all duration-300 border-2 ${
+                    isCur
+                      ? 'bg-red-700 border-red-700 scale-125 shadow-md shadow-red-700/40'
+                      : 'bg-amber-100 border-amber-300 group-hover:border-red-600 group-hover:scale-110'
+                  }`}
+                />
+                {/* Nhãn năm dưới chấm tròn */}
+                <span
+                  className={`mt-2.5 text-xs sm:text-sm font-bold tracking-tight transition-colors ${
+                    isCur ? 'text-red-800 font-black text-sm sm:text-base' : 'text-slate-500 group-hover:text-slate-800'
+                  }`}
+                >
                   {item.year}
-                </div>
-
-                <div className={`text-[10px] font-medium line-clamp-1 mt-1 leading-tight ${
-                  isActive ? 'text-amber-100 font-semibold' : 'text-slate-500'
-                }`}>
-                  {item.badge}
-                </div>
+                </span>
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* 2. THẺ SHOWCASE MỐC LỊCH SỬ CHUYỂN CẢNH MƯỢT MÀ */}
-      <div className={`bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden transition-all duration-300 ${animating ? 'opacity-40 scale-[0.99]' : 'opacity-100 scale-100'}`}>
-        <div className="grid grid-cols-1 lg:grid-cols-12 items-stretch">
+      {/* THẺ HIỂN THỊ NỘI DUNG THỜI KỲ (BÊN TRÁI CHỮ, BÊN PHẢI ẢNH LỚN) */}
+      <div className="bg-[#FAF6F0] rounded-3xl border border-amber-200/80 p-5 sm:p-8 shadow-xs overflow-hidden">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-center">
           
-          {/* Cột ảnh tư liệu sắc nét */}
-          <div className="lg:col-span-5 relative min-h-[300px] sm:min-h-[360px] bg-slate-900 overflow-hidden group">
-            <img
-              src={cur.img}
-              alt={cur.title}
-              className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent"></div>
-            
-            <div className="absolute top-4 left-4 flex items-center gap-2">
-              <span className="bg-red-700/90 backdrop-blur text-amber-200 text-xs font-black px-3 py-1 rounded-full shadow border border-amber-400/30">
-                Năm {cur.year}
-              </span>
-              <span className="bg-slate-950/70 backdrop-blur text-white text-[11px] font-semibold px-2.5 py-1 rounded-full">
-                {cur.badge}
-              </span>
-            </div>
+          {/* Cột trái: Tiêu đề, mô tả, nút xem câu chuyện */}
+          <div className="md:col-span-6 space-y-4">
+            <span className="text-[11px] font-black uppercase tracking-widest text-red-800 bg-red-100 px-3 py-1 rounded-full border border-red-200">
+              MỐC SON NĂM {activeItem.year}
+            </span>
 
-            <div className="absolute bottom-4 left-4 right-4">
-              <p className="text-xs text-amber-200 italic font-serif leading-relaxed bg-black/60 backdrop-blur-md p-3 rounded-xl border border-white/10">
-                "{cur.quote}"
-              </p>
+            <h3 className="font-serif font-black text-2xl sm:text-3xl text-slate-900 leading-snug">
+              {activeItem.title}
+            </h3>
+
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-sans">
+              {activeItem.desc}
+            </p>
+
+            <div className="pt-2">
+              <a
+                href={withBase(activeItem.link)}
+                className="inline-flex items-center gap-2 text-red-700 hover:text-red-800 font-bold text-xs sm:text-sm hover:underline"
+              >
+                <span>Xem câu chuyện thời kỳ này</span>
+                <ArrowRight className="w-4 h-4" />
+              </a>
             </div>
           </div>
 
-          {/* Cột thông tin chi tiết */}
-          <div className="lg:col-span-7 p-6 sm:p-10 flex flex-col justify-between space-y-6">
-            <div>
-              <div className="inline-flex items-center gap-2 text-xs font-bold text-red-700 uppercase tracking-widest bg-red-50 px-3 py-1 rounded-full border border-red-200 mb-3">
-                <Sparkles className="w-3.5 h-3.5 text-red-700" />
-                <span>Biên niên sử vàng Tuổi trẻ</span>
-              </div>
-
-              <h3 className="font-serif font-black text-2xl sm:text-3xl text-slate-900 leading-tight">
-                {cur.title}
-              </h3>
-
-              <div className="text-sm font-semibold text-amber-700 mt-1 mb-4 flex items-center gap-1.5">
-                <span>✦</span>
-                <span>{cur.subtitle}</span>
-              </div>
-
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed text-justify">
-                {cur.desc}
-              </p>
-            </div>
-
-            {/* Chân thẻ: Điều hướng & Nút xem chi tiết */}
-            <div className="pt-5 border-t border-slate-100 flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={handlePrev}
-                  className="p-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 hover:text-red-700 transition-colors"
-                  title="Mốc trước đó"
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
-                <span className="text-xs text-slate-500 font-semibold px-2">
-                  {activeIdx + 1} / {MILESTONES.length}
-                </span>
-                <button
-                  type="button"
-                  onClick={handleNext}
-                  className="p-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 hover:text-red-700 transition-colors"
-                  title="Mốc kế tiếp"
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <a
-                  href={withBase(`/truyen/chi-tiet?slug=${cur.storySlug}`)}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-red-700 hover:bg-red-800 text-white font-bold text-xs shadow-md transition-all hover:scale-105"
-                >
-                  <BookOpen className="w-4 h-4" />
-                  <span>Đọc trang ký ức này</span>
-                </a>
-                <a
-                  href={withBase(`/thu-vien?period=${cur.period}`)}
-                  className="inline-flex items-center gap-1 px-4 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold text-xs transition-colors"
-                >
-                  <span>Xem thời kỳ {cur.year}</span>
-                  <span>→</span>
-                </a>
-              </div>
-            </div>
-
+          {/* Cột phải: Ảnh tư liệu lớn */}
+          <div className="md:col-span-6 rounded-2xl overflow-hidden aspect-[16/10] bg-slate-900 border border-amber-200 shadow-xs relative">
+            <img
+              src={activeItem.img}
+              alt={activeItem.title}
+              className="w-full h-full object-cover filter brightness-95"
+            />
           </div>
 
         </div>
@@ -266,4 +152,3 @@ export default function InteractiveTimelineGsap() {
     </div>
   );
 }
-

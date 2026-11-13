@@ -1,32 +1,10 @@
 ---
 import RootLayout from '@/layouts/RootLayout.astro';
 import StorySubmitForm from '@/components/story/StorySubmitForm';
-import { withBase } from '@/lib/utils';
 ---
 
-<RootLayout title="Gửi Nhật Ký Ký Ức - Đề án Thành Đoàn TP. Hồ Chí Minh">
-  
-  <!-- Banner tiêu đề trang Gửi câu chuyện chuẩn Enterprise -->
-  <section class="bg-gradient-to-b from-white via-slate-50 to-slate-100/80 border-b border-slate-200 py-10 px-4">
-    <div class="max-w-5xl mx-auto text-center">
-      <div class="inline-flex items-center gap-2 text-xs text-slate-500 font-semibold mb-2.5 uppercase tracking-wider">
-        <a href={withBase('/')} class="hover:text-red-700 transition-colors">Trang chủ</a>
-        <span>/</span>
-        <span class="text-red-700 font-bold">Đóng góp câu chuyện</span>
-      </div>
-
-      <h1 class="font-serif font-bold text-2xl sm:text-4xl text-slate-900 tracking-tight leading-tight mb-2">
-        VIẾT & ĐÓNG GÓP TRANG NHẬT KÝ KÝ ỨC
-      </h1>
-      <p class="text-xs sm:text-sm text-slate-600 max-w-2xl mx-auto leading-relaxed">
-        Lưu giữ ký ức của các thế hệ cha anh, nhân chứng lịch sử và việc tốt của tuổi trẻ hôm nay. Hỗ trợ chọn file, kéo thả hoặc dán ảnh trực tiếp từ bộ nhớ tạm (Ctrl+V).
-      </p>
-    </div>
-  </section>
-
-  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Form gửi tương tác thực tế 100% -->
+<RootLayout title="Gửi câu chuyện mới — Đoàn TNCS Hồ Chí Minh Phường Xuân Hương, Đà Lạt">
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
     <StorySubmitForm client:load />
   </main>
-
 </RootLayout>
