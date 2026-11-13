@@ -50,7 +50,9 @@ import {
   Sparkles,
   ShieldCheck,
   Clipboard,
-  BookOpen
+  BookOpen,
+  Lock,
+  UserCheck
 } from 'lucide-react';
 
 // Danh sách chuẩn 37 Tổ Dân Phố Phường Xuân Hương - Đà Lạt
@@ -96,6 +98,7 @@ const TO_DAN_PHO_LIST = [
 
 export default function StorySubmitForm() {
   const [currentUser, setCurrentUser] = useState<UserAccount>(getCurrentSession());
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   // 1. Quản lý Nhân vật lịch sử
   const [characterList, setCharacterList] = useState<HistoricalCharacter[]>([]);
@@ -148,6 +151,7 @@ export default function StorySubmitForm() {
     if (session.role === 'tdp' && session.to_dan_pho) {
       setToDanPho(session.to_dan_pho);
     }
+    setIsCheckingAuth(false);
   }, []);
 
   // Lọc nhân vật lịch sử
@@ -323,6 +327,15 @@ export default function StorySubmitForm() {
 
   // Lưu bài viết (Nháp, Gửi duyệt, hoặc Xuất bản trực tiếp)
   const handleSaveOrSubmit = async (status: 'draft' | 'pending' | 'approved') => {
+    // 1. Kiểm tra quyền bắt buộc phải đăng nhập
+    if (currentUser.role === 'guest') {
+      showToast('⚠️ Bạn bắt buộc phải đăng nhập tài khoản Tổ Dân Phố hoặc Ban Biên tập để gửi bài!');
+      setTimeout(() => {
+        window.location.href = withBase('/tai-khoan/dang-nhap');
+      }, 1200);
+      return;
+    }
+
     if (!title.trim()) {
       showToast('⚠️ Vui lòng nhập Tiêu đề bài viết trước khi tiếp tục.');
       return;
@@ -399,6 +412,68 @@ export default function StorySubmitForm() {
       showToast('Lỗi khi lưu bài: ' + (err.message || 'Thử lại sau'));
     }
   };
+
+  // 1. Chờ kiểm tra trạng thái đăng nhập
+  if (isCheckingAuth) {
+    return (
+      <div className="py-24 text-center text-slate-500 font-medium text-sm flex flex-col items-center justify-center gap-3">
+        <div className="w-8 h-8 border-3 border-red-700 border-t-transparent rounded-full animate-spin"></div>
+        <span>Đang kiểm tra quyền xác thực hệ thống...</span>
+      </div>
+    );
+  }
+
+  // 2. KHÓA CHẶT: BẮT BUỘC ĐĂNG NHẬP MỚI ĐƯỢC GỬI BÀI VIẾT
+  if (currentUser.role === 'guest') {
+    return (
+      <div className="bg-[#FAF6F0] rounded-3xl border border-amber-300/90 p-8 sm:p-12 text-center max-w-xl mx-auto shadow-xl space-y-6 animate-fade-in my-8">
+        <div className="w-16 h-16 rounded-3xl bg-gradient-to-tr from-red-700 to-red-800 text-amber-300 font-serif font-black text-2xl flex items-center justify-center mx-auto shadow-md border border-amber-300/50">
+          ★
+        </div>
+        
+        <div className="space-y-1.5">
+          <div className="text-[11px] font-bold text-red-800 uppercase tracking-widest">
+            ĐOÀN TNCS HỒ CHÍ MINH PHƯỜNG XUÂN HƯƠNG — ĐÀ LẠT
+          </div>
+          <h2 className="font-serif font-black text-2xl sm:text-3xl text-slate-900 tracking-tight">
+            Yêu Cầu Đăng Nhập Để Gửi Bài
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
+            Hệ thống quản lý ký ức chính quy của 37 Tổ Dân Phố Phường Xuân Hương.
+          </p>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs sm:text-sm text-slate-700 leading-relaxed max-w-md mx-auto space-y-2 text-left">
+          <div className="flex items-start gap-2 text-slate-800 font-bold">
+            <Lock className="w-4 h-4 text-red-700 shrink-0 mt-0.5" />
+            <span>Quy định xác thực bắt buộc:</span>
+          </div>
+          <p className="text-slate-600 text-xs pl-6">
+            Nhằm đảm bảo tính chính danh của từng trang sử hào hùng và ghi nhận đóng góp chính xác cho <strong>37 Tổ Dân Phố</strong>, bạn cần đăng nhập tài khoản Tổ Dân Phố hoặc Ban Biên tập trước khi tạo và gửi bài viết.
+          </p>
+          <div className="text-[11px] text-amber-900 font-semibold pl-6 pt-1">
+            ✓ Bài gửi sẽ tự động gắn định danh Tổ Dân Phố chính chủ và chuyển vào danh sách chờ Ban Biên tập duyệt.
+          </div>
+        </div>
+
+        <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <a
+            href={withBase('/tai-khoan/dang-nhap')}
+            className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-amber-100 font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-transform hover:scale-[1.02] flex items-center justify-center gap-2"
+          >
+            <UserCheck className="w-4 h-4" />
+            <span>Đăng nhập để gửi bài viết →</span>
+          </a>
+          <a
+            href={withBase('/')}
+            className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-white border border-amber-200 text-slate-700 font-bold text-xs sm:text-sm hover:bg-amber-50 transition-colors shadow-2xs"
+          >
+            Quay lại Trang chủ
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6" onPaste={handlePasteImage}>
