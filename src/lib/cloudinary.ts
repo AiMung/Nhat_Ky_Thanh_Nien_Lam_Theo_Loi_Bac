@@ -106,3 +106,4 @@ export async function uploadToCloudinary(
     reader.readAsDataURL(file);
   });
 }
+

@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getAllStories, getCurrentUser, type Story, type UserSession } from '@/lib/storage';
 import { withBase, formatDate } from '@/lib/utils';
-import StoryActionToolbar from '@/components/story/StoryActionToolbar';
-import { PlusCircle, BookOpen, Clock, CheckCircle2, XCircle, Eye, AlertCircle } from 'lucide-react';
+import { PlusCircle, BookOpen, Clock, CheckCircle2, AlertCircle, Send, Trash2, Edit } from 'lucide-react';
 
 export default function MyStoriesView() {
   const [stories, setStories] = useState<Story[]>([]);
@@ -14,15 +13,17 @@ export default function MyStoriesView() {
     const all = getAllStories();
     
     // Nếu là admin, hiển thị toàn bộ
-    // Nếu là member, hiển thị bài viết user tạo hoặc các bài mẫu có tên tương ứng
+    // Nếu là TDP, hiển thị các bài thuộc TDP đó
     if (currentUser.role === 'admin') {
       setStories(all);
-    } else {
+    } else if (currentUser.role === 'tdp' && currentUser.to_dan_pho) {
       setStories(all.filter((s) => 
-        s.id.startsWith('user-story-') || 
-        s.contributor_name.toLowerCase().includes(currentUser.name.toLowerCase()) ||
-        s.id === 'story-1' || s.id === 'story-2'
+        s.to_dan_pho === currentUser.to_dan_pho ||
+        s.contributor_unit?.includes(currentUser.to_dan_pho!) ||
+        s.id.startsWith('user-story-')
       ));
+    } else {
+      setStories(all.filter((s) => s.id.startsWith('user-story-')));
     }
   };
 
@@ -40,179 +41,112 @@ export default function MyStoriesView() {
 
   if (!user) return null;
 
+  const counts = {
+    total: stories.length,
+    approved: stories.filter((s) => s.status === 'approved').length,
+    pending: stories.filter((s) => s.status === 'pending').length,
+    draft: stories.filter((s) => s.status === 'draft').length
+  };
+
   return (
-    <div className="space-y-8">
-      {/* Header trang cá nhân */}
-      <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6">
+    <div className="space-y-6">
+      {/* Header trang cá nhân / Tổ Dân Phố */}
+      <div className="bg-[#FAF6F0] p-6 sm:p-8 rounded-3xl border border-amber-200/90 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-4">
           <img
-            src={user.avatar}
+            src={user.avatar || '/images/thoi-hoa-lua/logo-doan.webp'}
             alt={user.name}
-            className="w-16 h-16 rounded-2xl object-cover border-2 border-doan-700 shadow-md"
+            className="w-14 h-14 rounded-2xl object-contain drop-shadow"
           />
           <div>
             <div className="flex items-center gap-2">
-              <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
-                user.role === 'admin' ? 'bg-redflag-100 text-redflag-800' : 'bg-doan-100 text-doan-800'
+              <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${
+                user.role === 'admin'
+                  ? 'bg-red-100 text-red-900 border-red-300'
+                  : 'bg-amber-100 text-amber-900 border-amber-300'
               }`}>
-                {user.role === 'admin' ? '★ Quản trị viên Ban Biên tập' : 'Đoàn viên đóng góp'}
+                {user.role === 'admin' ? '★ Quản trị viên Ban Biên tập' : `★ Đại diện ${user.to_dan_pho || 'Tổ Dân Phố'}`}
               </span>
             </div>
             <h1 className="font-serif font-black text-xl sm:text-2xl text-slate-900 mt-1">
               {user.name}
             </h1>
-            <p className="text-xs text-slate-500">{user.unit} • {user.email}</p>
+            <p className="text-xs text-slate-500 mt-0.5">{user.unit}</p>
           </div>
         </div>
 
         <a
           href={withBase('/gui-cau-chuyen')}
-          className="inline-flex items-center gap-2 bg-doan-800 hover:bg-doan-900 text-gold-300 font-serif font-black px-6 py-3 rounded-2xl shadow transition-all hover:scale-105 shrink-0"
+          className="inline-flex items-center gap-2 bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-amber-100 font-bold text-xs sm:text-sm px-6 py-3 rounded-full shadow-md transition-all hover:scale-105 shrink-0"
         >
-          <PlusCircle className="w-5 h-5" />
-          <span>Viết trang nhật ký mới</span>
+          <Send className="w-4 h-4 text-amber-300" />
+          <span>Gửi bài viết mới</span>
         </a>
       </div>
 
       {/* Thống kê nhanh */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-2xl border border-slate-200 text-center">
-          <div className="text-2xl font-black text-slate-900 font-serif">{stories.length}</div>
-          <div className="text-xs text-slate-500 font-semibold mt-1">Tổng số câu chuyện</div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="bg-[#FAF6F0] p-4 rounded-2xl border border-amber-200 text-center">
+          <div className="text-2xl font-black text-slate-900 font-serif">{counts.total}</div>
+          <div className="text-[11px] text-slate-500 font-bold uppercase tracking-wider mt-0.5">Tổng bài viết</div>
         </div>
-        <div className="bg-white p-4 rounded-2xl border border-slate-200 text-center">
-          <div className="text-2xl font-black text-amber-600 font-serif">
-            {stories.filter((s) => s.status === 'pending').length}
-          </div>
-          <div className="text-xs text-slate-500 font-semibold mt-1">Đang chờ duyệt</div>
+        <div className="bg-[#FAF6F0] p-4 rounded-2xl border border-amber-200 text-center">
+          <div className="text-2xl font-black text-emerald-700 font-serif">{counts.approved}</div>
+          <div className="text-[11px] text-emerald-800 font-bold uppercase tracking-wider mt-0.5">Đã xuất bản</div>
         </div>
-        <div className="bg-white p-4 rounded-2xl border border-slate-200 text-center">
-          <div className="text-2xl font-black text-green-600 font-serif">
-            {stories.filter((s) => s.status === 'approved').length}
-          </div>
-          <div className="text-xs text-slate-500 font-semibold mt-1">Đã xuất bản</div>
+        <div className="bg-[#FAF6F0] p-4 rounded-2xl border border-amber-200 text-center">
+          <div className="text-2xl font-black text-amber-700 font-serif">{counts.pending}</div>
+          <div className="text-[11px] text-amber-800 font-bold uppercase tracking-wider mt-0.5">Đang chờ duyệt</div>
         </div>
-        <div className="bg-white p-4 rounded-2xl border border-slate-200 text-center">
-          <div className="text-2xl font-black text-redflag-700 font-serif">
-            {stories.filter((s) => s.status === 'rejected').length}
-          </div>
-          <div className="text-xs text-slate-500 font-semibold mt-1">Cần bổ sung tư liệu</div>
+        <div className="bg-[#FAF6F0] p-4 rounded-2xl border border-amber-200 text-center">
+          <div className="text-2xl font-black text-slate-600 font-serif">{counts.draft}</div>
+          <div className="text-[11px] text-slate-600 font-bold uppercase tracking-wider mt-0.5">Bản nháp</div>
         </div>
       </div>
 
-      {/* Danh sách câu chuyện */}
-      <div className="space-y-4">
-        <h2 className="font-serif font-black text-xl text-slate-900 flex items-center gap-2">
-          <BookOpen className="w-5 h-5 text-doan-800" />
-          <span>Danh sách câu chuyện của tôi ({stories.length})</span>
-        </h2>
-
+      {/* Danh sách bài viết */}
+      <div className="space-y-3">
         {stories.length === 0 ? (
-          <div className="bg-white rounded-3xl p-12 text-center border border-slate-200">
-            <div className="w-16 h-16 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-2xl mx-auto mb-4">
-              ✍️
-            </div>
-            <h3 className="font-serif font-black text-lg text-slate-800 mb-2">
-              Bạn chưa đóng góp câu chuyện nào
-            </h3>
-            <p className="text-xs text-slate-500 mb-6 max-w-md mx-auto">
-              Hãy chia sẻ những trang nhật ký, hồi ức của các thế hệ cha anh để cùng làm giàu thêm kho tàng lịch sử của tuổi trẻ thành phố!
-            </p>
-            <a
-              href={withBase('/gui-cau-chuyen')}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-doan-800 text-white rounded-xl text-xs font-bold shadow hover:bg-doan-900 transition-colors"
-            >
-              <span>Viết bài ngay bây giờ</span>
-              <span>→</span>
-            </a>
+          <div className="bg-[#FAF6F0] rounded-3xl border border-amber-200 p-12 text-center text-slate-500 text-xs sm:text-sm">
+            Tổ Dân Phố chưa có bài viết nào. Hãy bấm <strong>"Gửi bài viết mới"</strong> để lưu giữ ký ức hào hùng của quê hương!
           </div>
         ) : (
-          <div className="space-y-4">
-            {stories.map((story) => (
-              <div
-                key={story.id}
-                className="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col lg:flex-row justify-between gap-6 hover:border-slate-300 transition-colors"
-              >
-                <div className="flex flex-col sm:flex-row gap-5 flex-1">
-                  <img
-                    src={story.cover_url}
-                    alt={story.title}
-                    className="w-full sm:w-44 h-32 object-cover rounded-xl border border-slate-100 shrink-0"
-                  />
-
-                  <div className="flex-1">
-                    <div className="flex flex-wrap items-center gap-2 text-xs mb-2">
-                      {story.status === 'approved' && (
-                        <span className="inline-flex items-center gap-1 font-bold text-green-700 bg-green-50 border border-green-200 px-2.5 py-0.5 rounded-full">
-                          <CheckCircle2 className="w-3.5 h-3.5" />
-                          <span>Đã xuất bản</span>
-                        </span>
-                      )}
-                      {story.status === 'pending' && (
-                        <span className="inline-flex items-center gap-1 font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-full">
-                          <Clock className="w-3.5 h-3.5" />
-                          <span>Đang chờ duyệt</span>
-                        </span>
-                      )}
-                      {story.status === 'rejected' && (
-                        <span className="inline-flex items-center gap-1 font-bold text-red-700 bg-red-50 border border-red-200 px-2.5 py-0.5 rounded-full">
-                          <XCircle className="w-3.5 h-3.5" />
-                          <span>Bị từ chối</span>
-                        </span>
-                      )}
-
-                      <span className="text-slate-400">•</span>
-                      <span className="text-slate-500 font-medium">📍 {story.province_name}</span>
-                      <span className="text-slate-400">•</span>
-                      <span className="text-slate-500">{formatDate(story.created_at)}</span>
-                    </div>
-
-                    <h3 className="font-serif font-black text-lg text-slate-900 mb-2">
-                      {story.title}
-                    </h3>
-
-                    <p className="text-xs text-slate-600 line-clamp-2 mb-3">
-                      {story.summary}
-                    </p>
-
-                    <div className="text-xs text-slate-500 flex items-center gap-4">
-                      <span>Người kể: <strong>{story.narrator_name}</strong></span>
-                      <span>Thời lượng đọc: <strong>{story.read_minutes} phút</strong></span>
-                    </div>
-
-                    {story.reject_reason && (
-                      <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-800 flex items-start gap-2">
-                        <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
-                        <div>
-                          <strong>Lý do từ chối / cần sửa:</strong> {story.reject_reason}
-                        </div>
-                      </div>
-                    )}
-                  </div>
+          stories.map((s) => (
+            <div
+              key={s.id}
+              className="bg-[#FAF6F0] rounded-2xl border border-amber-200/80 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-amber-400 transition-colors"
+            >
+              <div className="space-y-1 min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <span className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider ${
+                    s.status === 'approved'
+                      ? 'bg-emerald-100 text-emerald-800'
+                      : s.status === 'pending'
+                      ? 'bg-amber-100 text-amber-800'
+                      : 'bg-slate-200 text-slate-700'
+                  }`}>
+                    {s.status === 'approved' ? '✓ Đã xuất bản' : s.status === 'pending' ? '⏳ Đang chờ duyệt' : '📝 Bản nháp'}
+                  </span>
+                  <span className="text-[11px] text-slate-400">{formatDate(s.created_at)}</span>
                 </div>
-
-                {/* Các nút hành động: Xem, Sửa, Xóa */}
-                <div className="flex lg:flex-col items-center justify-center gap-2 border-t lg:border-t-0 lg:border-l border-slate-100 pt-4 lg:pt-0 lg:pl-6 min-w-[150px]">
-                  <a
-                    href={withBase(`/truyen/chi-tiet?slug=${story.slug}`)}
-                    className="w-full py-2 px-3 border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
-                  >
-                    <Eye className="w-3.5 h-3.5" />
-                    <span>Xem bài</span>
+                <h3 className="font-serif font-bold text-base text-slate-900 truncate">
+                  <a href={withBase(`/truyen/chi-tiet?slug=${s.slug}`)} className="hover:text-red-700">
+                    {s.title}
                   </a>
-
-                  {/* Thanh công cụ Sửa & Xóa */}
-                  <div className="w-full flex items-center justify-center">
-                    <StoryActionToolbar
-                      story={story}
-                      onUpdated={loadData}
-                      onDeleted={loadData}
-                    />
-                  </div>
-                </div>
+                </h3>
+                <p className="text-xs text-slate-500 line-clamp-1">{s.summary}</p>
               </div>
-            ))}
-          </div>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <a
+                  href={withBase(`/truyen/chi-tiet?slug=${s.slug}`)}
+                  className="px-3 py-1.5 rounded-xl bg-white border border-slate-300 hover:border-red-700 hover:text-red-700 text-xs font-bold transition-colors"
+                >
+                  Xem bài
+                </a>
+              </div>
+            </div>
+          ))
         )}
       </div>
     </div>

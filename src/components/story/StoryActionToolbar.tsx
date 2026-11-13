@@ -37,9 +37,13 @@ export default function StoryActionToolbar({ story, onUpdated, onDeleted }: Prop
     return () => window.removeEventListener('auth-changed', handleAuth);
   }, []);
 
-  const canManage = user?.role === 'admin' || user?.role === 'member';
+  const isOwner =
+    user?.role === 'admin' ||
+    (user?.role === 'tdp' &&
+      ((Boolean(user.to_dan_pho) && story.to_dan_pho === user.to_dan_pho) ||
+        (Boolean(user.name) && story.contributor_unit?.includes(user.name))));
 
-  if (!canManage) return null;
+  if (!isOwner) return null;
 
   const handleSaveEdit = (e: React.FormEvent) => {
     e.preventDefault();

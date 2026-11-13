@@ -149,3 +149,4 @@ npm run dev
    - Nếu chưa điền: Ảnh được nén tự động và lưu trên trình duyệt mượt mà.
 4. Bấm **Tạo bài & Gửi duyệt**: Bài viết sẽ xuất hiện trong trang **Quản trị duyệt bài** (`http://localhost:4321/quan-tri/duyet-bai`).
 5. Bấm **Phê duyệt ngay**: Bài viết lập tức xuất hiện trên Trang chủ và Thư viện cho toàn bộ độc giả!
+

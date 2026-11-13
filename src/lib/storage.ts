@@ -43,14 +43,9 @@ export interface Story {
   likes_count?: number;
 }
 
-export interface UserSession {
-  id: string;
-  name: string;
-  email: string;
-  unit: string;
-  role: 'guest' | 'member' | 'admin';
-  avatar: string;
-}
+import { getCurrentSession, type UserAccount } from './auth';
+
+export type UserSession = UserAccount;
 
 // BỘ DỮ LIỆU GỐC VỚI HÌNH ẢNH LỊCH SỬ THỜI HOA LỬA CHÂN THỰC 100%
 export const SEED_STORIES: Story[] = [
@@ -497,7 +492,6 @@ export const SEED_STORIES: Story[] = [
 ];
 
 const STORAGE_KEY_STORIES = 'dtn_hcm_stories_v5'; // Bump version to refresh all 20 rich stories
-const STORAGE_KEY_USER = 'dtn_hcm_current_user_v5';
 const STORAGE_KEY_FAVS = 'dtn_hcm_favorites_v5';
 
 // 1. LẤY DANH SÁCH BÀI VIẾT (Tự động kết hợp Seed Data và bài do người dùng tạo)
@@ -573,7 +567,13 @@ export function submitNewStory(
   initialStatus: 'draft' | 'pending' = 'pending'
 ): Story {
   const current = getAllStories();
-  
+  const session = getCurrentSession();
+
+  // BẢO MẬT: Nếu là Tổ Dân Phố, khóa cứng đơn vị vào TDP của tài khoản đăng nhập
+  const lockedToDanPho = (session.role === 'tdp' && session.to_dan_pho) ? session.to_dan_pho : (data.to_dan_pho || 'Phường Xuân Hương — Đà Lạt');
+  const lockedUnit = (session.role === 'tdp' && session.unit) ? session.unit : (data.contributor_unit || lockedToDanPho);
+  const lockedContributor = (session.role === 'tdp') ? session.name : (data.contributor_name || 'Đoàn TNCS Hồ Chí Minh Phường Xuân Hương');
+
   // Tạo slug sạch từ tiêu đề
   const slug = data.title
     .toLowerCase()
@@ -589,6 +589,9 @@ export function submitNewStory(
 
   const newStory: Story = {
     ...data,
+    to_dan_pho: lockedToDanPho,
+    contributor_unit: lockedUnit,
+    contributor_name: lockedContributor,
     id: 'user-story-' + Date.now(),
     slug,
     status: initialStatus,
@@ -607,12 +610,29 @@ export function submitNewStory(
 
 // 4. CẬP NHẬT / SỬA BÀI VIẾT (UPDATE - Chỉnh sửa thông tin bài viết)
 export function updateStory(id: string, updates: Partial<Omit<Story, 'id' | 'created_at'>>): boolean {
+  const currentUser = getCurrentUser();
+  if (currentUser.role === 'guest') {
+    console.error('BẢO MẬT: Khách vãng lai không có quyền chỉnh sửa bài viết.');
+    return false;
+  }
+
   const list = getAllStories();
   const index = list.findIndex((s) => s.id === id);
   if (index === -1) return false;
 
   const current = list[index];
-  
+
+  // RBAC: TDP chỉ được sửa bài của TDP mình
+  if (currentUser.role === 'tdp') {
+    const isOwn =
+      (Boolean(currentUser.to_dan_pho) && current.to_dan_pho === currentUser.to_dan_pho) ||
+      (Boolean(currentUser.name) && current.contributor_unit?.includes(currentUser.name));
+    if (!isOwn) {
+      console.error('BẢO MẬT: Tổ dân phố không có quyền chỉnh sửa bài viết của đơn vị khác.');
+      return false;
+    }
+  }
+
   // Tính lại số phút đọc nếu có cập nhật body
   let readMinutes = current.read_minutes;
   if (updates.body) {
@@ -649,7 +669,29 @@ export function updateStory(id: string, updates: Partial<Omit<Story, 'id' | 'cre
 
 // 5. XOÁ BÀI VIẾT (DELETE - Xoá hoàn toàn khỏi hệ thống)
 export function deleteStory(id: string): boolean {
+  const currentUser = getCurrentUser();
+  if (currentUser.role === 'guest') {
+    console.error('BẢO MẬT: Khách vãng lai không có quyền xoá bài viết.');
+    return false;
+  }
+
   const list = getAllStories();
+  const index = list.findIndex((s) => s.id === id);
+  if (index === -1) return false;
+
+  const current = list[index];
+
+  // RBAC: TDP chỉ được xoá bài của TDP mình
+  if (currentUser.role === 'tdp') {
+    const isOwn =
+      (Boolean(currentUser.to_dan_pho) && current.to_dan_pho === currentUser.to_dan_pho) ||
+      (Boolean(currentUser.name) && current.contributor_unit?.includes(currentUser.name));
+    if (!isOwn) {
+      console.error('BẢO MẬT: Tổ dân phố không có quyền xoá bài viết của đơn vị khác.');
+      return false;
+    }
+  }
+
   const filtered = list.filter((s) => s.id !== id);
   if (filtered.length === list.length) return false;
 
@@ -660,8 +702,14 @@ export function deleteStory(id: string): boolean {
   return true;
 }
 
-// 6. DUYỆT HOẶC TỪ CHỐI BÀI VIẾT (Admin chức năng thực tế 100%)
+// 6. DUYỆT HOẶC TỪ CHỐI BÀI VIẾT (Bảo mật: Chỉ Admin Ban Biên tập được duyệt)
 export function updateStoryStatus(id: string, status: 'approved' | 'rejected', rejectReason?: string): boolean {
+  const currentUser = getCurrentUser();
+  if (currentUser.role !== 'admin') {
+    console.error('BẢO MẬT: Từ chối thao tác! Bạn không có quyền Ban Biên tập (Admin).');
+    return false;
+  }
+
   const list = getAllStories();
   const index = list.findIndex((s) => s.id === id);
   if (index === -1) return false;
@@ -681,84 +729,32 @@ export function updateStoryStatus(id: string, status: 'approved' | 'rejected', r
   return true;
 }
 
-// 7. LẤY DANH SÁCH BÀI VIẾT DO NGƯỜI DÙNG ĐÃ ĐÓNG GÓP (Truyện của tôi)
+// 7. LẤY DANH SÁCH BÀI VIẾT DO TỔ DÂN PHỐ / NGƯỜI DÙNG ĐÃ ĐÓNG GÓP
 export function getMyStories(): Story[] {
   const currentUser = getCurrentUser();
   const all = getAllStories();
   
-  // Nếu là admin, hiển thị các bài viết admin đã tạo hoặc toàn bộ
+  // Nếu là admin, hiển thị toàn bộ bài viết để kiểm tra
   if (currentUser.role === 'admin') {
     return all;
   }
   
-  // Lọc theo tên người đóng góp hoặc id bài viết do user tạo
-  return all.filter((s) => 
-    s.id.startsWith('user-story-') || 
-    s.contributor_name.toLowerCase().includes(currentUser.name.toLowerCase()) ||
-    s.contributor_unit?.toLowerCase().includes(currentUser.unit.toLowerCase())
-  );
+  // Nếu là Tổ Dân Phố, hiển thị tất cả các bài thuộc Tổ Dân Phố của mình
+  if (currentUser.role === 'tdp' && currentUser.to_dan_pho) {
+    return all.filter((s) => 
+      s.to_dan_pho === currentUser.to_dan_pho ||
+      s.contributor_unit?.includes(currentUser.to_dan_pho!) ||
+      s.contributor_name.includes(currentUser.name)
+    );
+  }
+
+  // Khách: Lọc theo id do trình duyệt tạo
+  return all.filter((s) => s.id.startsWith('user-story-'));
 }
 
-// 8. QUẢN LÝ PHIÊN ĐĂNG NHẬP (Khách, Đoàn viên, Admin Ban Biên tập)
+// 8. QUẢN LÝ PHIÊN ĐĂNG NHẬP (Chuyển tiếp đến Module Auth bảo mật)
 export function getCurrentUser(): UserSession {
-  if (typeof window === 'undefined') {
-    return {
-      id: 'guest',
-      name: 'Đoàn viên Khách',
-      email: 'khach@thanhdoan.tphcm.gov.vn',
-      unit: 'Thành phố Hồ Chí Minh',
-      role: 'guest',
-      avatar: '/images/thoi-hoa-lua/logo-doan.webp'
-    };
-  }
-
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY_USER);
-    if (raw) return JSON.parse(raw);
-  } catch {}
-
-  // Mặc định là Đoàn viên mẫu
-  const defaultUser: UserSession = {
-    id: 'user-1',
-    name: 'Nguyễn Văn An',
-    email: 'vanan.doan@tphcm.gov.vn',
-    unit: 'Chi đoàn Ban Phong trào Thành Đoàn',
-    role: 'member',
-    avatar: '/images/thoi-hoa-lua/logo-doan.webp'
-  };
-  localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(defaultUser));
-  return defaultUser;
-}
-
-export function switchUserRole(role: 'guest' | 'member' | 'admin'): UserSession {
-  const user: UserSession = role === 'admin' ? {
-    id: 'admin-1',
-    name: 'Đ/c Trần Quốc Tuấn',
-    email: 'bientap@thanhdoan.tphcm.gov.vn',
-    unit: 'Đoàn TNCS Hồ Chí Minh Phường Xuân Hương — Đà Lạt',
-    role: 'admin',
-    avatar: '/images/thoi-hoa-lua/logo-doan.webp'
-  } : role === 'member' ? {
-    id: 'user-1',
-    name: 'Nguyễn Văn An',
-    email: 'vanan.doan@tphcm.gov.vn',
-    unit: 'Chi đoàn Ban Phong trào Thành Đoàn',
-    role: 'member',
-    avatar: '/images/thoi-hoa-lua/logo-doan.webp'
-  } : {
-    id: 'guest',
-    name: 'Đoàn viên Khách',
-    email: 'khach@thanhdoan.tphcm.gov.vn',
-    unit: 'Thành phố Hồ Chí Minh',
-    role: 'guest',
-    avatar: '/images/thoi-hoa-lua/logo-doan.webp'
-  };
-
-  if (typeof window !== 'undefined') {
-    localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(user));
-    window.dispatchEvent(new Event('auth-changed'));
-  }
-  return user;
+  return getCurrentSession();
 }
 
 // 9. YÊU THÍCH (FAVORITES)

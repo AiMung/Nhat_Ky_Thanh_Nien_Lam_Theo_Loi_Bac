@@ -6,6 +6,7 @@ import {
   type HistoricalCharacter, 
   type Story 
 } from '@/lib/storage';
+import { getCurrentSession, type UserAccount } from '@/lib/auth';
 import { uploadToCloudinary, isCloudinaryConfigured } from '@/lib/cloudinary';
 import { saveStoryToSupabase } from '@/lib/supabase';
 import { withBase } from '@/lib/utils';
@@ -91,6 +92,8 @@ const TO_DAN_PHO_LIST = [
 ];
 
 export default function StorySubmitForm() {
+  const [currentUser, setCurrentUser] = useState<UserAccount>(getCurrentSession());
+
   // 1. Quản lý Nhân vật lịch sử
   const [characterList, setCharacterList] = useState<HistoricalCharacter[]>([]);
   const [characterSearch, setCharacterSearch] = useState('');
@@ -134,6 +137,11 @@ export default function StorySubmitForm() {
 
   useEffect(() => {
     setCharacterList(getHistoricalCharacters());
+    const session = getCurrentSession();
+    setCurrentUser(session);
+    if (session.role === 'tdp' && session.to_dan_pho) {
+      setToDanPho(session.to_dan_pho);
+    }
   }, []);
 
   // Lọc nhân vật lịch sử
@@ -351,7 +359,7 @@ export default function StorySubmitForm() {
               <span className="text-amber-500 text-lg">★</span>
             </h1>
             <p className="text-xs text-amber-900/80 mt-0.5">
-              Đang gửi với tài khoản <strong className="text-red-800">Phường Xuân Hương — Đà Lạt</strong> • Bài tạo ở trạng thái nháp
+              Đang gửi với tài khoản: <strong className="text-red-800">{currentUser.name}</strong> • Quyền: <span className="font-bold uppercase text-amber-900">{currentUser.role === 'admin' ? 'Ban Biên tập' : currentUser.role === 'tdp' ? 'Tổ Dân Phố' : 'Độc giả'}</span>
             </p>
           </div>
         </div>
@@ -588,20 +596,32 @@ export default function StorySubmitForm() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Tổ Dân Phố đóng góp (Phường Xuân Hương)
+                <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                  <span>Tổ Dân Phố đóng góp <span className="text-red-600">*</span></span>
+                  {currentUser.role === 'tdp' && (
+                    <span className="text-[10px] bg-red-100 text-red-800 font-bold px-2 py-0.5 rounded-full border border-red-300">
+                      🔒 Khóa định danh
+                    </span>
+                  )}
                 </label>
-                <select
-                  value={toDanPho}
-                  onChange={(e) => setToDanPho(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-2xl bg-white border border-amber-200/80 text-xs sm:text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-red-700/30"
-                >
-                  {TO_DAN_PHO_LIST.map((tdp, i) => (
-                    <option key={tdp} value={tdp}>
-                      {i + 1}. {tdp}
-                    </option>
-                  ))}
-                </select>
+                {currentUser.role === 'tdp' && currentUser.to_dan_pho ? (
+                  <div className="w-full px-3.5 py-2.5 rounded-2xl bg-amber-100/70 border border-amber-300 text-xs sm:text-sm font-bold text-red-900 flex items-center justify-between">
+                    <span>{currentUser.to_dan_pho}</span>
+                    <span className="text-[10px] text-amber-800">Tài khoản chính thức</span>
+                  </div>
+                ) : (
+                  <select
+                    value={toDanPho}
+                    onChange={(e) => setToDanPho(e.target.value)}
+                    className="w-full px-3 py-2.5 rounded-2xl bg-white border border-amber-200/80 text-xs sm:text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-red-700/30"
+                  >
+                    {TO_DAN_PHO_LIST.map((tdp, i) => (
+                      <option key={tdp} value={tdp}>
+                        {i + 1}. {tdp}
+                      </option>
+                    ))}
+                  </select>
+                )}
               </div>
             </div>
 

@@ -4,7 +4,6 @@ import {
   updateStoryStatus, 
   deleteStory,
   getCurrentUser, 
-  switchUserRole, 
   type Story, 
   type UserSession 
 } from '@/lib/storage';
@@ -12,21 +11,12 @@ import { saveStoryToSupabase } from '@/lib/supabase';
 import { withBase, formatDate } from '@/lib/utils';
 import { 
   Check, 
-  X, 
   Eye, 
   Search, 
-  Filter, 
   Trash2, 
   ShieldCheck, 
-  Clock, 
-  FileText, 
-  Video, 
-  Mic, 
-  Image as ImageIcon, 
-  AlertTriangle, 
-  Sparkles,
-  ChevronRight,
-  ExternalLink
+  Lock, 
+  AlertCircle
 } from 'lucide-react';
 
 export default function AdminModerationQueue() {
@@ -46,7 +36,11 @@ export default function AdminModerationQueue() {
   useEffect(() => {
     loadData();
     window.addEventListener('stories-changed', loadData);
-    return () => window.removeEventListener('stories-changed', loadData);
+    window.addEventListener('auth-changed', loadData);
+    return () => {
+      window.removeEventListener('stories-changed', loadData);
+      window.removeEventListener('auth-changed', loadData);
+    };
   }, []);
 
   const showToast = (msg: string) => {
@@ -54,9 +48,49 @@ export default function AdminModerationQueue() {
     setTimeout(() => setToast(''), 4000);
   };
 
+  // 1. KIỂM TRA BẢO MẬT: NẾU KHÔNG PHẢI ADMIN THÌ KHÓA CHẶT 100%
+  if (user && user.role !== 'admin') {
+    return (
+      <div className="bg-[#FAF6F0] rounded-3xl border border-red-300 p-8 sm:p-12 text-center max-w-xl mx-auto shadow-xl space-y-4">
+        <div className="w-16 h-16 rounded-3xl bg-red-100 text-red-700 flex items-center justify-center mx-auto text-2xl font-black border border-red-300">
+          <Lock className="w-8 h-8" />
+        </div>
+        <div>
+          <span className="px-3.5 py-1 rounded-full bg-red-100 text-red-800 text-[11px] font-black uppercase tracking-wider border border-red-200">
+            TRUY CẬP BỊ TỪ CHỐI (403 FORBIDDEN)
+          </span>
+        </div>
+        <h2 className="font-serif font-black text-2xl text-slate-900">
+          Khu Vực Dành Riêng Cho Ban Biên Tập
+        </h2>
+        <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-md mx-auto">
+          Bạn hiện đang truy cập với tư cách: <strong className="text-slate-800">{user.name}</strong> ({user.role === 'tdp' ? 'Tổ Dân Phố' : 'Khách vãng lai'}). Khu vực kiểm duyệt bài viết yêu cầu tài khoản Quản trị Ban Biên tập chính thức.
+        </p>
+        <div className="pt-2 flex flex-wrap justify-center gap-3">
+          <a
+            href={withBase('/tai-khoan/dang-nhap')}
+            className="px-6 py-2.5 rounded-2xl bg-red-700 hover:bg-red-800 text-white font-bold text-xs sm:text-sm shadow-md transition-colors"
+          >
+            Đăng nhập Ban Biên tập →
+          </a>
+          <a
+            href={withBase('/')}
+            className="px-5 py-2.5 rounded-2xl bg-white border border-slate-300 text-slate-700 font-bold text-xs sm:text-sm hover:bg-slate-50 transition-colors"
+          >
+            Quay lại Trang chủ
+          </a>
+        </div>
+      </div>
+    );
+  }
+
   // Hành động Duyệt bài
   const handleApprove = async (id: string, title: string) => {
-    updateStoryStatus(id, 'approved');
+    const success = updateStoryStatus(id, 'approved');
+    if (!success) {
+      alert('Bảo mật: Bạn không có quyền thực hiện thao tác duyệt bài!');
+      return;
+    }
     const updated = getAllStories().find((s) => s.id === id);
     if (updated) {
       await saveStoryToSupabase(updated);
@@ -100,12 +134,6 @@ export default function AdminModerationQueue() {
     }
   };
 
-  const handleGrantAdmin = () => {
-    switchUserRole('admin');
-    setUser(getCurrentUser());
-    showToast('Đã kích hoạt quyền Ban Biên tập (Admin)!');
-  };
-
   // Đếm số lượng theo trạng thái
   const counts = {
     pending: stories.filter((s) => s.status === 'pending').length,
@@ -136,27 +164,6 @@ export default function AdminModerationQueue() {
         <div className="fixed top-20 right-6 z-50 bg-emerald-900 text-emerald-100 px-6 py-3.5 rounded-2xl shadow-2xl border border-emerald-500/60 flex items-center gap-2.5 font-bold text-xs sm:text-sm animate-fade-in">
           <span>✓</span>
           <span>{toast}</span>
-        </div>
-      )}
-
-      {/* Cảnh báo quyền nếu chưa là Admin */}
-      {user && user.role !== 'admin' && (
-        <div className="p-4 sm:p-5 rounded-3xl bg-amber-50 border border-amber-300 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3 text-xs text-amber-900">
-            <AlertTriangle className="w-5 h-5 text-amber-700 shrink-0" />
-            <div>
-              <strong>Chế độ xem: {user.name}</strong>
-              <div className="text-amber-700 mt-0.5">
-                Bạn có thể kích hoạt quyền Ban Biên tập để thực hiện thao tác duyệt, từ chối và xuất bản bài viết.
-              </div>
-            </div>
-          </div>
-          <button
-            onClick={handleGrantAdmin}
-            className="shrink-0 px-4 py-2 bg-red-700 hover:bg-red-800 text-white rounded-xl text-xs font-bold shadow transition-colors"
-          >
-            Kích hoạt quyền Ban Biên tập (Admin)
-          </button>
         </div>
       )}
 
@@ -409,24 +416,6 @@ export default function AdminModerationQueue() {
             <div className="prose prose-slate max-w-none text-xs sm:text-sm leading-relaxed whitespace-pre-wrap">
               {reviewStory.body}
             </div>
-
-            {/* Video / Audio nếu có */}
-            {reviewStory.video_url && (
-              <div className="p-3 rounded-2xl bg-white border border-amber-200 text-xs">
-                <strong>Link Video / Phóng sự đính kèm:</strong>{' '}
-                <a href={reviewStory.video_url} target="_blank" rel="noreferrer" className="text-red-700 underline font-mono">
-                  {reviewStory.video_url}
-                </a>
-              </div>
-            )}
-            {reviewStory.audio_url && (
-              <div className="p-3 rounded-2xl bg-white border border-amber-200 text-xs">
-                <strong>Link Audio / Giọng đọc đính kèm:</strong>{' '}
-                <a href={reviewStory.audio_url} target="_blank" rel="noreferrer" className="text-red-700 underline font-mono">
-                  {reviewStory.audio_url}
-                </a>
-              </div>
-            )}
 
             {/* Nút Phê duyệt / Từ chối dưới chân Drawer */}
             <div className="pt-4 border-t border-amber-200/80 flex flex-wrap items-center justify-between gap-3">

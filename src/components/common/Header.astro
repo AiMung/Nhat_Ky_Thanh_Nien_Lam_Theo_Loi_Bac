@@ -3,65 +3,58 @@ import { withBase } from '@/lib/utils';
 import UserAuthNav from '@/components/common/UserAuthNav';
 ---
 
-<header class="sticky top-0 z-40 bg-[#FAF6F0]/95 backdrop-blur-md border-b border-amber-200/80 shadow-xs">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex items-center justify-between h-18 sm:h-20 gap-3">
+<header class="sticky top-0 z-40 bg-[#FAF6F0]/95 backdrop-blur-md border-b border-amber-200/80 shadow-2xs">
+  <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16 sm:h-18 gap-2 sm:gap-4">
       
-      <!-- Logo Huy hiệu Đoàn & Tiêu đề đề án chuẩn Enterprise -->
-      <a href={withBase('/')} class="flex items-center gap-3 shrink-0 group">
+      {/* 1. Logo Đoàn & Tiêu đề đề án gọn gàng, sắc nét */}
+      <a href={withBase('/')} class="flex items-center gap-2 sm:gap-2.5 shrink-0 group">
         <img
           src={withBase('/images/thoi-hoa-lua/logo-doan.webp')}
           alt="Huy hiệu Đoàn TNCS Hồ Chí Minh"
-          class="w-10 h-10 sm:w-11 sm:h-11 object-contain drop-shadow-sm group-hover:scale-105 transition-transform"
+          class="w-8 h-8 sm:w-9 sm:h-9 object-contain drop-shadow-xs group-hover:scale-105 transition-transform"
         />
 
         <div class="shrink-0">
-          <div class="text-[10px] font-bold text-red-800 uppercase tracking-wider leading-none flex items-center gap-1">
+          <div class="text-[9px] sm:text-[10px] font-bold text-red-800 uppercase tracking-wider leading-none flex items-center gap-1">
             <span>★</span>
-            <span>ĐOÀN PHƯỜNG XUÂN HƯƠNG — ĐÀ LẠT</span>
-            <span>★</span>
+            <span>ĐOÀN PHƯỜNG XUÂN HƯƠNG</span>
           </div>
-          <div class="font-serif font-black text-slate-900 text-sm sm:text-base tracking-tight mt-1 group-hover:text-red-700 transition-colors whitespace-nowrap">
-            NHẬT KÝ THANH NIÊN LÀM THEO LỜI BÁC
+          <div class="font-serif font-black text-slate-900 text-xs sm:text-sm tracking-tight mt-0.5 group-hover:text-red-700 transition-colors whitespace-nowrap">
+            NHẬT KÝ LÀM THEO LỜI BÁC
           </div>
         </div>
       </a>
 
-      <!-- Menu Điều hướng chính chuẩn phong cách Thời Hoa Lửa -->
-      <nav class="hidden xl:flex items-center gap-1 text-xs sm:text-sm font-semibold text-slate-700">
-        <a href={withBase('/')} class="px-3 py-2 rounded-xl hover:text-red-700 hover:bg-amber-100/60 transition-colors whitespace-nowrap">
+      {/* 2. Menu Điều hướng tinh gọn (chỉ 5 mục cốt lõi, không bị vỡ dòng) */}
+      <nav class="hidden lg:flex items-center gap-0.5 xl:gap-1 text-xs xl:text-sm font-semibold text-slate-700">
+        <a href={withBase('/')} class="px-2.5 xl:px-3 py-1.5 rounded-xl hover:text-red-700 hover:bg-amber-100/60 transition-colors whitespace-nowrap">
           Trang chủ
         </a>
-        <a href={withBase('/ve-de-an')} class="px-3 py-2 rounded-xl hover:text-red-700 hover:bg-amber-100/60 transition-colors whitespace-nowrap">
-          Về đề án
-        </a>
-        <a href={withBase('/thu-vien')} class="px-3 py-2 rounded-xl hover:text-red-700 hover:bg-amber-100/60 transition-colors whitespace-nowrap">
+        <a href={withBase('/thu-vien')} class="px-2.5 xl:px-3 py-1.5 rounded-xl hover:text-red-700 hover:bg-amber-100/60 transition-colors whitespace-nowrap">
           Thư viện ký ức
         </a>
-        <a href={withBase('/dia-chi-do')} class="px-3 py-2 rounded-xl hover:text-red-700 hover:bg-amber-100/60 transition-colors whitespace-nowrap">
+        <a href={withBase('/dia-chi-do')} class="px-2.5 xl:px-3 py-1.5 rounded-xl hover:text-red-700 hover:bg-amber-100/60 transition-colors whitespace-nowrap">
           Địa chỉ Đỏ
         </a>
-        <a href={withBase('/dong-thoi-gian')} class="px-3 py-2 rounded-xl hover:text-red-700 hover:bg-amber-100/60 transition-colors whitespace-nowrap">
+        <a href={withBase('/dong-thoi-gian')} class="px-2.5 xl:px-3 py-1.5 rounded-xl hover:text-red-700 hover:bg-amber-100/60 transition-colors whitespace-nowrap">
           Dòng thời gian
         </a>
-        <a href={withBase('/#bang-xep-hang')} class="px-3 py-2 rounded-xl hover:text-red-700 hover:bg-amber-100/60 transition-colors whitespace-nowrap">
+        <a href={withBase('/#bang-xep-hang')} class="px-2.5 xl:px-3 py-1.5 rounded-xl hover:text-red-700 hover:bg-amber-100/60 transition-colors whitespace-nowrap">
           37 Tổ Dân Phố
-        </a>
-        <a href={withBase('/quan-tri/duyet-bai')} class="px-3 py-2 rounded-xl text-amber-900 hover:text-red-700 hover:bg-amber-100/60 transition-colors whitespace-nowrap font-bold">
-          Duyệt bài
         </a>
       </nav>
 
-      <!-- Khung tài khoản & Nút gửi bài + Mobile Hamburger -->
-      <div class="flex items-center gap-2 shrink-0">
+      {/* 3. Khung tài khoản & Nút thao tác (RBAC phân quyền) + Mobile Button */}
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
         <UserAuthNav client:load />
 
-        <!-- Nút mở menu trên Mobile / Tablet -->
+        {/* Nút mở Menu trên Mobile & Tablet */}
         <button
           id="btnToggleMobileMenu"
           type="button"
-          aria-label="Mở menu"
-          class="xl:hidden p-2 rounded-xl text-slate-700 hover:bg-amber-100 border border-amber-300 transition-colors"
+          aria-label="Mở menu điều hướng"
+          class="lg:hidden p-1.5 sm:p-2 rounded-xl text-slate-700 hover:bg-amber-100 border border-amber-300 transition-colors"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -72,31 +65,29 @@ import UserAuthNav from '@/components/common/UserAuthNav';
     </div>
   </div>
 
-  <!-- Mobile Drawer Menu -->
-  <div id="mobileMenuDrawer" class="hidden xl:hidden border-t border-amber-200 bg-[#FAF6F0] px-4 py-3 space-y-1 shadow-lg">
-    <a href={withBase('/')} class="block px-3 py-2 rounded-lg font-semibold text-slate-800 hover:bg-amber-100 hover:text-red-700">
-      Trang chủ
+  {/* Drawer Menu trên Mobile & Tablet */}
+  <div id="mobileMenuDrawer" class="hidden lg:hidden border-t border-amber-200 bg-[#FAF6F0] px-4 py-3 space-y-1 shadow-lg text-xs sm:text-sm">
+    <a href={withBase('/')} class="block px-3 py-2 rounded-xl font-semibold text-slate-800 hover:bg-amber-100 hover:text-red-700">
+      🏠 Trang chủ
     </a>
-    <a href={withBase('/ve-de-an')} class="block px-3 py-2 rounded-lg font-semibold text-slate-800 hover:bg-amber-100 hover:text-red-700">
-      Về đề án
+    <a href={withBase('/thu-vien')} class="block px-3 py-2 rounded-xl font-semibold text-slate-800 hover:bg-amber-100 hover:text-red-700">
+      📖 Thư viện ký ức sống mãi
     </a>
-    <a href={withBase('/thu-vien')} class="block px-3 py-2 rounded-lg font-semibold text-slate-800 hover:bg-amber-100 hover:text-red-700">
-      Thư viện ký ức
+    <a href={withBase('/dia-chi-do')} class="block px-3 py-2 rounded-xl font-semibold text-slate-800 hover:bg-amber-100 hover:text-red-700">
+      📍 Địa chỉ Đỏ Đà Lạt
     </a>
-    <a href={withBase('/dia-chi-do')} class="block px-3 py-2 rounded-lg font-semibold text-slate-800 hover:bg-amber-100 hover:text-red-700">
-      Địa chỉ Đỏ Đà Lạt
+    <a href={withBase('/dong-thoi-gian')} class="block px-3 py-2 rounded-xl font-semibold text-slate-800 hover:bg-amber-100 hover:text-red-700">
+      ⏳ Dòng thời gian lịch sử
     </a>
-    <a href={withBase('/dong-thoi-gian')} class="block px-3 py-2 rounded-lg font-semibold text-slate-800 hover:bg-amber-100 hover:text-red-700">
-      Dòng thời gian
+    <a href={withBase('/#bang-xep-hang')} class="block px-3 py-2 rounded-xl font-semibold text-slate-800 hover:bg-amber-100 hover:text-red-700">
+      🏆 Bảng xếp hạng 37 Tổ Dân Phố
     </a>
-    <a href={withBase('/#bang-xep-hang')} class="block px-3 py-2 rounded-lg font-semibold text-slate-800 hover:bg-amber-100 hover:text-red-700">
-      Bảng xếp hạng 37 Tổ Dân Phố
+    <a href={withBase('/ve-de-an')} class="block px-3 py-2 rounded-xl font-semibold text-slate-800 hover:bg-amber-100 hover:text-red-700">
+      ℹ️ Về đề án
     </a>
-    <a href={withBase('/quan-tri/duyet-bai')} class="block px-3 py-2 rounded-lg font-bold text-amber-900 hover:bg-amber-100 hover:text-red-700">
-      Kiểm duyệt & Thẩm định bài viết
-    </a>
-    <a href={withBase('/huong-dan-tich-hop')} class="block px-3 py-2 rounded-lg font-bold text-red-800 hover:bg-amber-100">
-      ⚡ Hướng dẫn Supabase & Cloudinary
+    <div class="border-t border-amber-200/80 my-1"></div>
+    <a href={withBase('/tai-khoan/dang-nhap')} class="block px-3 py-2 rounded-xl font-bold text-red-800 hover:bg-amber-100">
+      🔐 Đăng nhập (37 Tổ Dân Phố & Admin)
     </a>
   </div>
 </header>

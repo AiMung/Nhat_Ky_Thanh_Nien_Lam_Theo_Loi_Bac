@@ -13,8 +13,6 @@ import { withBase } from '@/lib/utils';
         if (match && match[1] && match[1] !== 'chi-tiet') {
           var slug = match[1];
           // Chuyển hướng sang trang xem chi tiết động ngay lập tức
-          var basePath = '';
-          var hostPath = window.location.pathname;
           var targetUrl = (window.__BASE_PATH__ || '') + '/truyen/chi-tiet?slug=' + encodeURIComponent(slug);
           window.location.replace(targetUrl);
         }
