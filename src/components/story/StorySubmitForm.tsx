@@ -48,7 +48,8 @@ import {
   AlertCircle,
   Sparkles,
   ShieldCheck,
-  Clipboard
+  Clipboard,
+  BookOpen
 } from 'lucide-react';
 
 // Danh sách chuẩn 37 Tổ Dân Phố Phường Xuân Hương - Đà Lạt
@@ -133,6 +134,8 @@ export default function StorySubmitForm() {
 
   // 5. Trạng thái phản hồi & Preview Modal
   const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [createdStory, setCreatedStory] = useState<Story | null>(null);
   const [toastMessage, setToastMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -280,20 +283,20 @@ export default function StorySubmitForm() {
     setTimeout(() => setToastMessage(''), 4000);
   };
 
-  // Lưu bài viết (Nháp hoặc Gửi duyệt)
-  const handleSaveOrSubmit = async (status: 'draft' | 'pending') => {
+  // Lưu bài viết (Nháp, Gửi duyệt, hoặc Xuất bản trực tiếp)
+  const handleSaveOrSubmit = async (status: 'draft' | 'pending' | 'approved') => {
     if (!title.trim()) {
-      alert('Vui lòng nhập Tiêu đề bài viết trước khi tiếp tục.');
+      showToast('⚠️ Vui lòng nhập Tiêu đề bài viết trước khi tiếp tục.');
       return;
     }
 
-    if (status === 'pending') {
+    if (status !== 'draft') {
       if (!body.trim() && !summary.trim()) {
-        alert('Vui lòng nhập Nội dung chi tiết hoặc tóm tắt bài viết.');
+        showToast('⚠️ Vui lòng nhập Nội dung chi tiết hoặc tóm tắt bài viết.');
         return;
       }
-      if (!c1 || !c2 || !c3 || !c4) {
-        alert('Vui lòng tích chọn đầy đủ 4 cam kết xác thực trước khi gửi duyệt.');
+      if (status === 'pending' && (!c1 || !c2 || !c3 || !c4)) {
+        showToast('⚠️ Vui lòng tích chọn đủ 4 cam kết xác thực ở cột bên phải.');
         return;
       }
     }
@@ -343,12 +346,13 @@ export default function StorySubmitForm() {
       await saveStoryToSupabase(savedStory);
 
       setIsSubmitting(false);
+      setCreatedStory(savedStory);
+      setShowSuccessModal(true);
 
-      if (status === 'pending') {
+      if (status === 'approved') {
+        showToast('🎉 Bài viết đã được Xuất bản trực tiếp lên Thư viện!');
+      } else if (status === 'pending') {
         showToast('✓ Bài viết đã được gửi vào Hàng đợi kiểm duyệt thành công!');
-        setTimeout(() => {
-          window.location.href = withBase('/quan-tri/duyet-bai');
-        }, 1200);
       } else {
         showToast('✓ Đã lưu bản nháp thành công!');
       }
@@ -410,6 +414,19 @@ export default function StorySubmitForm() {
             <Save className="w-4 h-4 text-amber-800" />
             <span>Lưu nháp</span>
           </button>
+
+          {currentUser.role === 'admin' && (
+            <button
+              type="button"
+              disabled={isSubmitting}
+              onClick={() => handleSaveOrSubmit('approved')}
+              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-700 to-emerald-800 hover:from-emerald-800 hover:to-emerald-900 text-white font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all shadow-md hover:shadow-lg"
+              title="Xuất bản trực tiếp lên trang chủ và thư viện"
+            >
+              <CheckCircle2 className="w-4 h-4 text-emerald-300" />
+              <span>Duyệt & Xuất bản ngay</span>
+            </button>
+          )}
 
           <button
             type="button"
@@ -821,6 +838,44 @@ export default function StorySubmitForm() {
                 placeholder="Soạn thảo nội dung câu chuyện hào hùng, hồi ức của nhân chứng, những trang sử vẻ vang hoặc câu chuyện làm theo lời Bác... Bạn có thể copy và dán ảnh trực tiếp vào đây (Ctrl+V)!"
                 className="w-full px-4 py-3 rounded-b-2xl bg-white border-x border-b border-amber-300 text-xs sm:text-sm text-slate-900 leading-relaxed font-sans focus:outline-none focus:ring-2 focus:ring-red-700/30"
               />
+            </div>
+
+            {/* Thanh nút bấm Tạo bài viết tiện lợi ở cuối khối soạn thảo */}
+            <div className="pt-4 border-t border-amber-200/80 flex flex-wrap items-center justify-between gap-3">
+              <span className="text-xs text-slate-500 italic">
+                💡 Dữ liệu được lưu trữ tự động trên hệ thống & Cloudinary.
+              </span>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  disabled={isSubmitting}
+                  onClick={() => handleSaveOrSubmit('draft')}
+                  className="px-4 py-2.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-xs border border-amber-300/80"
+                >
+                  Lưu nháp
+                </button>
+                {currentUser.role === 'admin' && (
+                  <button
+                    type="button"
+                    disabled={isSubmitting}
+                    onClick={() => handleSaveOrSubmit('approved')}
+                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-700 to-emerald-800 hover:from-emerald-800 hover:to-emerald-900 text-white font-bold text-xs flex items-center gap-1.5 shadow-md"
+                    title="Xuất bản trực tiếp lên trang chủ và thư viện"
+                  >
+                    <CheckCircle2 className="w-4 h-4 text-emerald-300" />
+                    <span>Duyệt & Xuất bản ngay</span>
+                  </button>
+                )}
+                <button
+                  type="button"
+                  disabled={isSubmitting}
+                  onClick={() => handleSaveOrSubmit('pending')}
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-amber-100 font-bold text-xs sm:text-sm flex items-center gap-2 shadow-md transition-all hover:scale-105"
+                >
+                  <Send className="w-4 h-4 text-amber-300" />
+                  <span>Tạo bài & Gửi duyệt</span>
+                </button>
+              </div>
             </div>
 
           </div>
@@ -1259,6 +1314,91 @@ export default function StorySubmitForm() {
                 className="px-5 py-2.5 rounded-xl bg-red-700 text-white font-bold text-xs"
               >
                 Đóng xem trước
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ================= MODAL THÀNH CÔNG (SUCCESS MODAL) ================= */}
+      {showSuccessModal && createdStory && (
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-[#FAF6F0] rounded-3xl border-2 border-amber-300 max-w-lg w-full p-6 sm:p-8 shadow-2xl space-y-6 text-center animate-scale-up">
+            <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-emerald-500 to-emerald-700 text-white flex items-center justify-center text-3xl mx-auto shadow-lg ring-8 ring-emerald-100">
+              {createdStory.status === 'approved' ? '✓' : '★'}
+            </div>
+
+            <div>
+              <span className={`text-[11px] font-black uppercase tracking-wider px-3 py-1 rounded-full border ${
+                createdStory.status === 'approved'
+                  ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
+                  : 'bg-amber-100 text-amber-900 border-amber-300'
+              }`}>
+                {createdStory.status === 'approved' ? 'ĐÃ XUẤT BẢN THÀNH CÔNG' : 'ĐÃ GỬI VÀO HÀNG ĐỢI KIỂM DUYỆT'}
+              </span>
+              <h3 className="font-serif font-black text-xl sm:text-2xl text-slate-900 mt-3 leading-snug">
+                {createdStory.title}
+              </h3>
+              <p className="text-xs text-slate-600 mt-2">
+                Đơn vị đóng góp: <strong className="text-red-800">{createdStory.to_dan_pho}</strong>
+              </p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-white border border-amber-200/90 text-xs text-slate-600 text-left space-y-1.5 shadow-2xs">
+              <div className="flex justify-between">
+                <span>Trạng thái:</span>
+                <span className="font-bold text-slate-900">
+                  {createdStory.status === 'approved' ? '🟢 Công khai trên Thư viện & Trang chủ' : '🟡 Chờ Ban Biên tập phê duyệt'}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span>Số phút đọc ước tính:</span>
+                <span className="font-bold text-slate-900">{createdStory.read_minutes} phút</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Mã bài viết:</span>
+                <span className="font-mono text-slate-700 font-bold">{createdStory.id}</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 pt-2">
+              <a
+                href={withBase(`/truyen/chi-tiet?slug=${createdStory.slug}`)}
+                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-amber-100 font-bold text-xs flex items-center justify-center gap-1.5 shadow-md transition-all hover:scale-105"
+              >
+                <BookOpen className="w-4 h-4 text-amber-300" />
+                <span>Đọc bài viết ngay</span>
+              </a>
+
+              <a
+                href={withBase('/tai-khoan/truyen-cua-toi')}
+                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-white hover:bg-amber-100 text-slate-800 border border-amber-300 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-2xs"
+              >
+                <span>Bài viết của tôi</span>
+              </a>
+
+              {currentUser.role === 'admin' && (
+                <a
+                  href={withBase('/quan-tri/duyet-bai')}
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm"
+                >
+                  <ShieldCheck className="w-4 h-4" />
+                  <span>Duyệt bài</span>
+                </a>
+              )}
+
+              <button
+                type="button"
+                onClick={() => {
+                  setShowSuccessModal(false);
+                  setTitle('');
+                  setSummary('');
+                  setBody('');
+                  setImages(['/images/thoi-hoa-lua-hero.jpg']);
+                }}
+                className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs"
+              >
+                + Viết tiếp
               </button>
             </div>
           </div>

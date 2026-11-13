@@ -564,7 +564,7 @@ export function getStoryBySlug(slug: string): Story | undefined {
 // 3. THÊM BÀI VIẾT MỚI (CREATE - Người dùng đóng góp - lưu ngay vào localStorage)
 export function submitNewStory(
   data: Omit<Story, 'id' | 'slug' | 'created_at' | 'status' | 'read_minutes'>,
-  initialStatus: 'draft' | 'pending' = 'pending'
+  initialStatus: 'draft' | 'pending' | 'approved' = 'pending'
 ): Story {
   const current = getAllStories();
   const session = getCurrentSession();
@@ -575,7 +575,8 @@ export function submitNewStory(
   const lockedContributor = (session.role === 'tdp') ? session.name : (data.contributor_name || 'Đoàn TNCS Hồ Chí Minh Phường Xuân Hương');
 
   // Tạo slug sạch từ tiêu đề
-  const slug = data.title
+  const cleanTitle = (data.title || 'bai-viet-moi').trim();
+  const slug = cleanTitle
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
@@ -595,6 +596,7 @@ export function submitNewStory(
     id: 'user-story-' + Date.now(),
     slug,
     status: initialStatus,
+    published_at: initialStatus === 'approved' ? new Date().toISOString() : undefined,
     read_minutes: readMinutes,
     created_at: new Date().toISOString(),
     likes_count: 0
