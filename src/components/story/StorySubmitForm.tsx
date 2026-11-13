@@ -9,6 +9,7 @@ import {
 import { getCurrentSession, type UserAccount } from '@/lib/auth';
 import { uploadToCloudinary, isCloudinaryConfigured } from '@/lib/cloudinary';
 import { saveStoryToSupabase } from '@/lib/supabase';
+import { renderStoryContent } from '@/lib/renderContent';
 import { withBase } from '@/lib/utils';
 import { 
   ArrowLeft, 
@@ -115,7 +116,8 @@ export default function StorySubmitForm() {
   const [toDanPho, setToDanPho] = useState(TO_DAN_PHO_LIST[2]); // Mặc định Tổ TDP Ánh Sáng
   const [category, setCategory] = useState('hoc-tap-bac');
   const [body, setBody] = useState('');
-  const editorRef = useRef<HTMLTextAreaElement>(null);
+  const editorDivRef = useRef<HTMLDivElement>(null);
+  const [isSourceMode, setIsSourceMode] = useState(false);
 
   // 3. Đa phương tiện
   const [images, setImages] = useState<string[]>([
@@ -188,20 +190,49 @@ export default function StorySubmitForm() {
     showToast(`Đã tạo và gắn nhân vật: ${added.name}`);
   };
 
-  // Thao tác thanh công cụ Rich Text
-  const insertFormatting = (prefix: string, suffix: string = '') => {
-    const el = editorRef.current;
-    if (!el) return;
-    const start = el.selectionStart;
-    const end = el.selectionEnd;
-    const selected = el.value.substring(start, end);
-    const replacement = prefix + (selected || 'Văn bản mẫu') + suffix;
-    const newBody = el.value.substring(0, start) + replacement + el.value.substring(end);
-    setBody(newBody);
-    setTimeout(() => {
-      el.focus();
-      el.setSelectionRange(start + prefix.length, start + prefix.length + (selected ? selected.length : 11));
-    }, 50);
+  // Thao tác thanh công cụ Soạn thảo Trực quan (WYSIWYG - Không hiện mã HTML/CSS rác)
+  const executeCommand = (command: string, value: string | undefined = undefined) => {
+    if (editorDivRef.current) {
+      editorDivRef.current.focus();
+    }
+    try {
+      document.execCommand(command, false, value);
+    } catch (e) {
+      console.warn('execCommand error:', e);
+    }
+    if (editorDivRef.current) {
+      setBody(editorDivRef.current.innerHTML);
+    }
+  };
+
+  const insertHtmlAtCursor = (html: string) => {
+    if (editorDivRef.current) {
+      editorDivRef.current.focus();
+      try {
+        document.execCommand('insertHTML', false, html);
+      } catch {
+        editorDivRef.current.innerHTML += html;
+      }
+      setBody(editorDivRef.current.innerHTML);
+    } else {
+      setBody((prev) => prev + html);
+    }
+  };
+
+  const toggleSourceMode = () => {
+    if (isSourceMode) {
+      setIsSourceMode(false);
+      setTimeout(() => {
+        if (editorDivRef.current) {
+          editorDivRef.current.innerHTML = body;
+        }
+      }, 50);
+    } else {
+      if (editorDivRef.current) {
+        setBody(editorDivRef.current.innerHTML);
+      }
+      setIsSourceMode(true);
+    }
   };
 
   // Xử lý upload ảnh (hỗ trợ kéo thả, chọn file và dán Clipboard trực tiếp)
@@ -227,8 +258,13 @@ export default function StorySubmitForm() {
     if (uploadedUrls.length > 0) {
       setImages((prev) => [...prev, ...uploadedUrls]);
       if (insertToEditor) {
-        const markdownTags = uploadedUrls.map((u) => `\n\n![Ảnh tư liệu lịch sử](${u})\n\n`).join('');
-        insertFormatting(markdownTags);
+        const imgHtml = uploadedUrls
+          .map(
+            (u) =>
+              `<figure class="my-4 text-center"><img src="${u}" alt="Ảnh tư liệu lịch sử" class="rounded-2xl max-h-[460px] mx-auto border border-amber-200/90 shadow-md object-contain" /><figcaption class="text-xs text-slate-500 mt-1.5 italic font-sans">Ảnh tư liệu lịch sử</figcaption></figure><p><br/></p>`
+          )
+          .join('');
+        insertHtmlAtCursor(imgHtml);
         showToast(`📸 Đã dán ${uploadedUrls.length} ảnh trực tiếp vào bài viết & đồng bộ Cloudinary!`);
       } else {
         showToast(`✨ Đã thêm thành công ${uploadedUrls.length} ảnh vào thư viện!`);
@@ -263,8 +299,10 @@ export default function StorySubmitForm() {
       ) {
         e.preventDefault();
         setImages((prev) => [...prev, text]);
-        insertFormatting(`\n\n![Ảnh tư liệu lịch sử](${text})\n\n`);
-        showToast('📋 Đã nhận và chèn link ảnh vào bài viết!');
+        insertHtmlAtCursor(
+          `<figure class="my-4 text-center"><img src="${text}" alt="Ảnh tư liệu lịch sử" class="rounded-2xl max-h-[460px] mx-auto border border-amber-200/90 shadow-md object-contain" /><figcaption class="text-xs text-slate-500 mt-1.5 italic font-sans">Ảnh tư liệu lịch sử</figcaption></figure><p><br/></p>`
+        );
+        showToast('📋 Đã nhận và chèn ảnh vào bài viết!');
         return;
       }
     }
@@ -675,58 +713,58 @@ export default function StorySubmitForm() {
                 <span className="text-[11px] text-slate-500 font-normal">Hỗ trợ Markdown & Rich Text</span>
               </label>
 
-              {/* Toolbar */}
-              <div className="bg-white border border-amber-300 rounded-t-2xl p-2 flex flex-wrap items-center gap-1 text-slate-700">
+              {/* Toolbar Soạn thảo Trực quan (WYSIWYG) */}
+              <div className="bg-white border border-amber-300 rounded-t-2xl p-2 flex flex-wrap items-center gap-1 text-slate-700 shadow-2xs">
                 <button
                   type="button"
                   title="In đậm (Bold)"
-                  onClick={() => insertFormatting('**', '**')}
-                  className="p-1.5 rounded-lg hover:bg-slate-100"
+                  onClick={() => executeCommand('bold')}
+                  className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
                 >
                   <Bold className="w-4 h-4" />
                 </button>
                 <button
                   type="button"
                   title="In nghiêng (Italic)"
-                  onClick={() => insertFormatting('*', '*')}
-                  className="p-1.5 rounded-lg hover:bg-slate-100"
+                  onClick={() => executeCommand('italic')}
+                  className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
                 >
                   <Italic className="w-4 h-4" />
                 </button>
                 <button
                   type="button"
                   title="Gạch chân (Underline)"
-                  onClick={() => insertFormatting('<u>', '</u>')}
-                  className="p-1.5 rounded-lg hover:bg-slate-100"
+                  onClick={() => executeCommand('underline')}
+                  className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
                 >
                   <Underline className="w-4 h-4" />
                 </button>
                 <button
                   type="button"
                   title="Gạch ngang (Strikethrough)"
-                  onClick={() => insertFormatting('~~', '~~')}
-                  className="p-1.5 rounded-lg hover:bg-slate-100"
+                  onClick={() => executeCommand('strikeThrough')}
+                  className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
                 >
                   <Strikethrough className="w-4 h-4" />
                 </button>
 
                 <div className="w-px h-5 bg-slate-200 mx-1"></div>
 
-                {/* Color Palette */}
+                {/* Color Palette (Đổi màu trực tiếp, không sinh mã code) */}
                 <div className="flex items-center gap-1 px-1">
                   {[
                     { color: '#b91c1c', name: 'Đỏ cờ' },
                     { color: '#d97706', name: 'Vàng sao' },
                     { color: '#15803d', name: 'Xanh lá' },
                     { color: '#1d4ed8', name: 'Xanh dương' },
-                    { color: '#1f2937', name: 'Than' }
+                    { color: '#1f2937', name: 'Đen than' }
                   ].map((c) => (
                     <button
                       key={c.color}
                       type="button"
-                      title={`Màu ${c.name}`}
-                      onClick={() => insertFormatting(`<span style="color:${c.color}">`, '</span>')}
-                      className="w-3.5 h-3.5 rounded-full border border-slate-300 hover:scale-125 transition-transform"
+                      title={`Màu chữ ${c.name}`}
+                      onClick={() => executeCommand('foreColor', c.color)}
+                      className="w-4 h-4 rounded-full border border-slate-300 hover:scale-125 transition-transform"
                       style={{ backgroundColor: c.color }}
                     />
                   ))}
@@ -734,29 +772,57 @@ export default function StorySubmitForm() {
 
                 <div className="w-px h-5 bg-slate-200 mx-1"></div>
 
+                {/* Căn lề Trực quan (Căn giữa, Căn trái, Căn phải, Căn đều) */}
+                <button
+                  type="button"
+                  title="Căn lề trái"
+                  onClick={() => executeCommand('justifyLeft')}
+                  className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
+                >
+                  <AlignLeft className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  title="Căn lề giữa"
+                  onClick={() => executeCommand('justifyCenter')}
+                  className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
+                >
+                  <AlignCenter className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  title="Căn lề phải"
+                  onClick={() => executeCommand('justifyRight')}
+                  className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
+                >
+                  <AlignRight className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  title="Căn đều hai bên"
+                  onClick={() => executeCommand('justifyFull')}
+                  className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
+                >
+                  <AlignJustify className="w-4 h-4" />
+                </button>
+
+                <div className="w-px h-5 bg-slate-200 mx-1"></div>
+
                 <button
                   type="button"
                   title="Tiêu đề H2"
-                  onClick={() => insertFormatting('\n## ', '\n')}
-                  className="p-1.5 rounded-lg hover:bg-slate-100 font-bold text-xs"
+                  onClick={() => executeCommand('formatBlock', '<h2>')}
+                  className="p-1.5 px-2 rounded-lg hover:bg-slate-100 font-bold text-xs"
                 >
                   H2
                 </button>
                 <button
                   type="button"
                   title="Tiêu đề H3"
-                  onClick={() => insertFormatting('\n### ', '\n')}
-                  className="p-1.5 rounded-lg hover:bg-slate-100 font-bold text-xs"
+                  onClick={() => executeCommand('formatBlock', '<h3>')}
+                  className="p-1.5 px-2 rounded-lg hover:bg-slate-100 font-bold text-xs"
                 >
                   H3
-                </button>
-                <button
-                  type="button"
-                  title="Tiêu đề H4"
-                  onClick={() => insertFormatting('\n#### ', '\n')}
-                  className="p-1.5 rounded-lg hover:bg-slate-100 font-bold text-xs"
-                >
-                  H4
                 </button>
 
                 <div className="w-px h-5 bg-slate-200 mx-1"></div>
@@ -764,7 +830,7 @@ export default function StorySubmitForm() {
                 <button
                   type="button"
                   title="Danh sách số"
-                  onClick={() => insertFormatting('\n1. ', '\n2. ')}
+                  onClick={() => executeCommand('insertOrderedList')}
                   className="p-1.5 rounded-lg hover:bg-slate-100"
                 >
                   <ListOrdered className="w-4 h-4" />
@@ -772,15 +838,15 @@ export default function StorySubmitForm() {
                 <button
                   type="button"
                   title="Danh sách chấm"
-                  onClick={() => insertFormatting('\n- ', '\n- ')}
+                  onClick={() => executeCommand('insertUnorderedList')}
                   className="p-1.5 rounded-lg hover:bg-slate-100"
                 >
                   <List className="w-4 h-4" />
                 </button>
                 <button
                   type="button"
-                  title="Trích dẫn"
-                  onClick={() => insertFormatting('\n> "', '"\n')}
+                  title="Đoạn trích dẫn"
+                  onClick={() => executeCommand('formatBlock', '<blockquote>')}
                   className="p-1.5 rounded-lg hover:bg-slate-100"
                 >
                   <Quote className="w-4 h-4" />
@@ -793,7 +859,7 @@ export default function StorySubmitForm() {
                   title="Chèn liên kết"
                   onClick={() => {
                     const url = prompt('Nhập địa chỉ link:', 'https://');
-                    if (url) insertFormatting('[', `](${url})`);
+                    if (url) executeCommand('createLink', url);
                   }}
                   className="p-1.5 rounded-lg hover:bg-slate-100"
                 >
@@ -804,7 +870,11 @@ export default function StorySubmitForm() {
                   title="Chèn ảnh"
                   onClick={() => {
                     const url = prompt('Nhập link ảnh:', 'https://');
-                    if (url) insertFormatting('![Ảnh tư liệu](', `${url})`);
+                    if (url) {
+                      insertHtmlAtCursor(
+                        `<figure class="my-4 text-center"><img src="${url}" alt="Ảnh tư liệu lịch sử" class="rounded-2xl max-h-[460px] mx-auto border border-amber-200/90 shadow-md object-contain" /><figcaption class="text-xs text-slate-500 mt-1.5 italic font-sans">Ảnh tư liệu</figcaption></figure><p><br/></p>`
+                      );
+                    }
                   }}
                   className="p-1.5 rounded-lg hover:bg-slate-100"
                 >
@@ -818,26 +888,53 @@ export default function StorySubmitForm() {
                   type="button"
                   title="Dán ảnh từ bộ nhớ tạm (Ctrl+V)"
                   onClick={() => {
-                    showToast('💡 Mẹo: Bạn có thể copy ảnh (PrtScn, Zalo, Web...) rồi nhấn Ctrl + V để chèn trực tiếp vào đây!');
-                    if (editorRef.current) editorRef.current.focus();
+                    showToast('💡 Mẹo: Bạn có thể copy ảnh (PrtScn, Zalo, Web...) rồi nhấn Ctrl + V để chèn trực tiếp vào vị trí con trỏ!');
+                    if (editorDivRef.current) editorDivRef.current.focus();
                   }}
                   className="p-1.5 px-2 rounded-lg bg-amber-50 hover:bg-amber-100 text-red-800 flex items-center gap-1.5 border border-amber-300 font-bold text-xs transition-colors"
                 >
                   <Clipboard className="w-3.5 h-3.5 text-red-700" />
                   <span>Dán ảnh (Ctrl+V)</span>
                 </button>
+
+                {/* Nút chuyển đổi chế độ Trực quan / Mã nguồn */}
+                <button
+                  type="button"
+                  onClick={toggleSourceMode}
+                  className={`ml-auto px-2.5 py-1 rounded-lg text-xs font-bold border transition-colors flex items-center gap-1 ${
+                    isSourceMode
+                      ? 'bg-stone-800 text-amber-300 border-stone-700'
+                      : 'bg-amber-100 hover:bg-amber-200 text-amber-900 border-amber-300'
+                  }`}
+                  title="Chuyển đổi giữa Chế độ Trực quan và Chế độ Mã nguồn"
+                >
+                  <span>{isSourceMode ? '👁️ Trực quan' : '💻 Mã HTML'}</span>
+                </button>
               </div>
 
-              {/* Textarea */}
-              <textarea
-                ref={editorRef}
-                rows={12}
-                value={body}
-                onChange={(e) => setBody(e.target.value)}
-                onPaste={handlePasteImage}
-                placeholder="Soạn thảo nội dung câu chuyện hào hùng, hồi ức của nhân chứng, những trang sử vẻ vang hoặc câu chuyện làm theo lời Bác... Bạn có thể copy và dán ảnh trực tiếp vào đây (Ctrl+V)!"
-                className="w-full px-4 py-3 rounded-b-2xl bg-white border-x border-b border-amber-300 text-xs sm:text-sm text-slate-900 leading-relaxed font-sans focus:outline-none focus:ring-2 focus:ring-red-700/30"
-              />
+              {/* KHUNG SOẠN THẢO TRỰC QUAN (WYSIWYG - Không hiện mã code HTML/CSS) */}
+              {!isSourceMode ? (
+                <div
+                  ref={editorDivRef}
+                  contentEditable
+                  suppressContentEditableWarning
+                  onInput={(e) => setBody(e.currentTarget.innerHTML)}
+                  onPaste={handlePasteImage}
+                  data-placeholder="Soạn thảo câu chuyện hào hùng, hồi ức nhân chứng... Bạn có thể bôi đen chữ để đổi màu, căn giữa, hoặc dán ảnh (Ctrl+V) trực tiếp tại đây!"
+                  className="w-full min-h-[320px] max-h-[600px] overflow-y-auto px-5 py-4 rounded-b-2xl bg-white border-x border-b border-amber-300 text-sm text-slate-900 leading-relaxed font-sans focus:outline-none focus:ring-2 focus:ring-red-700/30 prose max-w-none empty:before:content-[attr(data-placeholder)] empty:before:text-slate-400 empty:before:italic"
+                />
+              ) : (
+                <textarea
+                  rows={14}
+                  value={body}
+                  onChange={(e) => {
+                    setBody(e.target.value);
+                    if (editorDivRef.current) editorDivRef.current.innerHTML = e.target.value;
+                  }}
+                  onPaste={handlePasteImage}
+                  className="w-full px-4 py-3 rounded-b-2xl bg-stone-900 text-amber-200 border-x border-b border-amber-300 font-mono text-xs leading-relaxed focus:outline-none"
+                />
+              )}
             </div>
 
             {/* Thanh nút bấm Tạo bài viết tiện lợi ở cuối khối soạn thảo */}
@@ -982,8 +1079,10 @@ export default function StorySubmitForm() {
                       <button
                         type="button"
                         onClick={() => {
-                          insertFormatting(`\n\n![Ảnh tư liệu lịch sử](${images[idx]})\n\n`);
-                          showToast('Đã chèn ảnh vào vị trí soạn thảo!');
+                          insertHtmlAtCursor(
+                            `<figure class="my-4 text-center"><img src="${images[idx]}" alt="Ảnh tư liệu lịch sử" class="rounded-2xl max-h-[460px] mx-auto border border-amber-200/90 shadow-md object-contain" /><figcaption class="text-xs text-slate-500 mt-1.5 italic font-sans">Ảnh tư liệu lịch sử</figcaption></figure><p><br/></p>`
+                          );
+                          showToast('Đã chèn ảnh vào nội dung bài viết!');
                         }}
                         className="px-2 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10px] shadow-xs"
                         title="Chèn ảnh này vào nội dung bài viết"
@@ -1303,9 +1402,10 @@ export default function StorySubmitForm() {
               "{summary || 'Chưa có mô tả tóm tắt'}"
             </div>
 
-            <div className="prose prose-slate max-w-none text-xs sm:text-sm leading-relaxed whitespace-pre-wrap">
-              {body || 'Nội dung chi tiết chưa được soạn thảo.'}
-            </div>
+            <div
+              className="prose prose-slate max-w-none text-xs sm:text-sm leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: renderStoryContent(body) || '<p class="text-slate-400 italic">Nội dung chi tiết chưa được soạn thảo.</p>' }}
+            />
 
             <div className="flex justify-end pt-4 border-t border-amber-200">
               <button

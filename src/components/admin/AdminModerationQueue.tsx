@@ -8,6 +8,7 @@ import {
   type UserSession 
 } from '@/lib/storage';
 import { saveStoryToSupabase } from '@/lib/supabase';
+import { renderStoryContent } from '@/lib/renderContent';
 import { withBase, formatDate } from '@/lib/utils';
 import { 
   Check, 
@@ -412,10 +413,11 @@ export default function AdminModerationQueue() {
               "{reviewStory.summary}"
             </div>
 
-            {/* Nội dung chi tiết */}
-            <div className="prose prose-slate max-w-none text-xs sm:text-sm leading-relaxed whitespace-pre-wrap">
-              {reviewStory.body}
-            </div>
+            {/* Nội dung chi tiết (Được render định dạng màu sắc, căn lề và ảnh tư liệu Cloudinary chuẩn đẹp) */}
+            <div
+              className="prose prose-slate max-w-none text-xs sm:text-sm leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: renderStoryContent(reviewStory.body) }}
+            />
 
             {/* Nút Phê duyệt / Từ chối dưới chân Drawer */}
             <div className="pt-4 border-t border-amber-200/80 flex flex-wrap items-center justify-between gap-3">

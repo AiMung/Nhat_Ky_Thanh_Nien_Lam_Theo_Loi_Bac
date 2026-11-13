@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getAllStories, type Story } from '@/lib/storage';
 import { formatDate, withBase } from '@/lib/utils';
+import { renderStoryContent } from '@/lib/renderContent';
 import FacebookImageGrid from '@/components/story/FacebookImageGrid';
 import StoryReaderToolbar from '@/components/story/StoryReaderToolbar';
 import StoryActionToolbar from '@/components/story/StoryActionToolbar';
@@ -78,13 +79,6 @@ export default function ClientStoryViewer({ initialSlug }: Props) {
       </div>
     );
   }
-
-  // Format body
-  const formattedBody = story.body
-    .replace(/^### (.*$)/gim, '<h3 class="font-serif font-black text-xl sm:text-2xl text-slate-900 mt-8 mb-4 pb-2 border-b border-slate-200">$1</h3>')
-    .replace(/^> (.*$)/gim, '<blockquote class="border-l-4 border-red-700 pl-5 py-3 my-6 italic bg-red-50/60 text-slate-800 rounded-r-xl font-serif text-lg leading-relaxed">$1</blockquote>')
-    .replace(/\*\*(.*?)\*\*/g, '<strong class="text-slate-950 font-bold">$1</strong>')
-    .replace(/\n\n/g, '</p><p class="mb-5 text-slate-800 leading-relaxed">');
 
   return (
     <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -200,7 +194,7 @@ export default function ClientStoryViewer({ initialSlug }: Props) {
 
       {/* Nội dung bài viết */}
       <div className="prose max-w-none text-slate-800 leading-relaxed font-serif text-[18px] transition-all">
-        <div dangerouslySetInnerHTML={{ __html: `<p class="mb-5 text-slate-800 leading-relaxed">${formattedBody}</p>` }} />
+        <div dangerouslySetInnerHTML={{ __html: renderStoryContent(story.body) }} />
       </div>
 
       {/* Xác thực tư liệu */}

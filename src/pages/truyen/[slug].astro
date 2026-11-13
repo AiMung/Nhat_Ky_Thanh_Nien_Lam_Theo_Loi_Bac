@@ -5,6 +5,7 @@ import StoryActionToolbar from '@/components/story/StoryActionToolbar';
 import FacebookImageGrid from '@/components/story/FacebookImageGrid';
 import { getAllStories, type Story } from '@/lib/storage';
 import { formatDate, withBase } from '@/lib/utils';
+import { renderStoryContent } from '@/lib/renderContent';
 
 export async function getStaticPaths() {
   const stories = getAllStories();
@@ -19,13 +20,6 @@ interface Props {
 }
 
 const { story } = Astro.props;
-
-// Xử lý markdown cơ bản thành các khối bài viết trang trọng
-const formattedBody = story.body
-  .replace(/^### (.*$)/gim, '<h3 class="font-serif font-black text-xl sm:text-2xl text-slate-900 mt-8 mb-4 pb-2 border-b border-slate-200">$1</h3>')
-  .replace(/^> (.*$)/gim, '<blockquote class="border-l-4 border-doan-700 pl-5 py-3 my-6 italic bg-doan-50/70 text-slate-800 rounded-r-xl font-serif text-lg leading-relaxed">$1</blockquote>')
-  .replace(/\*\*(.*?)\*\*/g, '<strong class="text-slate-950 font-bold">$1</strong>')
-  .replace(/\n\n/g, '</p><p class="mb-5 text-slate-800 leading-relaxed">');
 ---
 
 <RootLayout 
@@ -119,7 +113,7 @@ const formattedBody = story.body
       id="story-body-content"
       class="prose max-w-none text-slate-800 leading-relaxed font-serif text-[18px] transition-all"
     >
-      <div set:html={`<p class="mb-5 text-slate-800 leading-relaxed">${formattedBody}</p>`} />
+      <div set:html={renderStoryContent(story.body)} />
     </div>
 
     <!-- Hộp xác nhận tư liệu của Đoàn TNCS Hồ Chí Minh -->
