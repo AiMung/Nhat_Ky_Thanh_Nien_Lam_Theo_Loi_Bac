@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getAllStories, type Story } from '@/lib/storage';
-import { formatDate, withBase } from '@/lib/utils';
+import { formatDate, withBase, resolveImageUrl } from '@/lib/utils';
 import { renderStoryContent } from '@/lib/renderContent';
 import FacebookImageGrid from '@/components/story/FacebookImageGrid';
 import StoryReaderToolbar from '@/components/story/StoryReaderToolbar';
@@ -181,7 +181,7 @@ export default function ClientStoryViewer({ initialSlug }: Props) {
       {!/<img|!\[/i.test(story.body) && story.cover_url && (
         <div className="mb-8 rounded-2xl overflow-hidden border border-amber-200/80 shadow-md max-h-[480px] bg-slate-900">
           <img
-            src={story.cover_url}
+            src={resolveImageUrl(story.cover_url)}
             alt={story.title}
             className="w-full h-full object-cover max-h-[480px]"
           />

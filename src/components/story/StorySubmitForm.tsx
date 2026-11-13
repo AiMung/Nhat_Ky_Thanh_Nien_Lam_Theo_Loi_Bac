@@ -10,7 +10,7 @@ import { getCurrentSession, type UserAccount } from '@/lib/auth';
 import { uploadToCloudinary, isCloudinaryConfigured } from '@/lib/cloudinary';
 import { saveStoryToSupabase } from '@/lib/supabase';
 import { renderStoryContent } from '@/lib/renderContent';
-import { withBase } from '@/lib/utils';
+import { withBase, resolveImageUrl } from '@/lib/utils';
 import { 
   ArrowLeft, 
   Eye, 
@@ -1470,7 +1470,7 @@ export default function StorySubmitForm() {
 
             {images[0] && (
               <div className="rounded-2xl overflow-hidden aspect-[16/9] bg-slate-900 max-h-72">
-                <img src={images[0]} alt="Ảnh bìa" className="w-full h-full object-cover" />
+                <img src={resolveImageUrl(images[0])} alt="Ảnh bìa" className="w-full h-full object-cover" />
               </div>
             )}
 

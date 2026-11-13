@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { getAllStories, getFavoriteStoryIds, type Story } from '@/lib/storage';
-import { withBase, formatDate } from '@/lib/utils';
+import { withBase, formatDate, resolveImageUrl } from '@/lib/utils';
 import { Search, Filter, BookOpen, ChevronDown, Check, Sparkles, BookMarked } from 'lucide-react';
 
 function removeTones(str: string): string {
@@ -305,7 +305,7 @@ export default function StoryLibraryView() {
               {/* Ảnh hình chữ nhật dựng đứng (aspect-[3/4] portrait) */}
               <div className="relative aspect-[3/4] overflow-hidden bg-slate-900">
                 <img
-                  src={story.cover_url}
+                  src={resolveImageUrl(story.cover_url)}
                   alt={story.title}
                   loading="lazy"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 filter brightness-95"

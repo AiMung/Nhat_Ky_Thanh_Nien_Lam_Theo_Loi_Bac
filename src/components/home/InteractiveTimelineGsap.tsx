@@ -140,7 +140,7 @@ export default function InteractiveTimelineGsap() {
           {/* Cột phải: Ảnh tư liệu lớn */}
           <div className="md:col-span-6 rounded-2xl overflow-hidden aspect-[16/10] bg-slate-900 border border-amber-200 shadow-xs relative">
             <img
-              src={activeItem.img}
+              src={withBase(activeItem.img)}
               alt={activeItem.title}
               className="w-full h-full object-cover filter brightness-95"
             />

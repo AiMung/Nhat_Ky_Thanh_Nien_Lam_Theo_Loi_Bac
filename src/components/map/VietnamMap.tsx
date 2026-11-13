@@ -467,7 +467,7 @@ export default function VietnamMap() {
           
           <div className="relative rounded-2xl overflow-hidden shadow-md group h-56 sm:h-64 bg-slate-900">
             <img
-              src={current.image}
+              src={withBase(current.image)}
               alt={current.name}
               className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700"
             />

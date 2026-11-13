@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { withBase } from '@/lib/utils';
+import { withBase, resolveImageUrl } from '@/lib/utils';
 import { ChevronLeft, ChevronRight, Clock, MapPin, Sparkles, ArrowRight } from 'lucide-react';
 import type { Story } from '@/lib/storage';
 
@@ -63,7 +63,7 @@ export default function FeaturedStoryCarousel({ stories }: Props) {
         {/* Cột trái: Ảnh tư liệu lớn */}
         <div className="md:col-span-6 rounded-2xl overflow-hidden aspect-[16/10] bg-slate-900 border border-amber-200/80 shadow-xs relative group">
           <img
-            src={currentStory.cover_url || '/images/thoi-hoa-lua-hero.jpg'}
+            src={resolveImageUrl(currentStory.cover_url)}
             alt={currentStory.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 filter brightness-95"
           />

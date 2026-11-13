@@ -9,7 +9,7 @@ import {
 } from '@/lib/storage';
 import { saveStoryToSupabase } from '@/lib/supabase';
 import { renderStoryContent } from '@/lib/renderContent';
-import { withBase, formatDate } from '@/lib/utils';
+import { withBase, formatDate, resolveImageUrl } from '@/lib/utils';
 import { 
   Check, 
   Eye, 
@@ -416,7 +416,7 @@ export default function AdminModerationQueue() {
 
                   <div className="w-24 sm:w-32 aspect-[4/3] rounded-2xl overflow-hidden bg-slate-900 shrink-0 border border-amber-200/60">
                     <img
-                      src={story.cover_url || '/images/thoi-hoa-lua-hero.jpg'}
+                      src={resolveImageUrl(story.cover_url)}
                       alt={story.title}
                       className="w-full h-full object-cover"
                     />

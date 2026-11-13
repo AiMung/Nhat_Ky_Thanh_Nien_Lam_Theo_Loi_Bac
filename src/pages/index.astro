@@ -6,7 +6,7 @@ import FeaturedStoryCarousel from '@/components/home/FeaturedStoryCarousel';
 import InteractiveTimelineGsap from '@/components/home/InteractiveTimelineGsap';
 import LeaderboardSection from '@/components/home/LeaderboardSection';
 import { getAllStories } from '@/lib/storage';
-import { withBase } from '@/lib/utils';
+import { withBase, resolveImageUrl } from '@/lib/utils';
 
 // Lấy danh sách câu chuyện đã duyệt
 const allStories = getAllStories();
@@ -166,7 +166,7 @@ const CATEGORIES = [
           class="group rounded-3xl overflow-hidden flex flex-col bg-slate-900 border border-amber-200/80 shadow-xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 relative aspect-[3/4]"
         >
           <img 
-            src={cat.img} 
+            src={withBase(cat.img)} 
             alt={cat.name} 
             loading="lazy" 
             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 filter sepia-[0.35] brightness-90 contrast-105" 
@@ -220,7 +220,7 @@ const CATEGORIES = [
           {/* Ảnh trên aspect-[16/10] */}
           <div class="aspect-[16/10] overflow-hidden bg-slate-900 relative">
             <img 
-              src={story.cover_url || '/images/thoi-hoa-lua-hero.jpg'} 
+              src={resolveImageUrl(story.cover_url)} 
               alt={story.title} 
               class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 filter brightness-95" 
             />

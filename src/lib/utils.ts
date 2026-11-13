@@ -2,7 +2,13 @@
  * Helper xử lý base path khi deploy trên GitHub Pages (sub-directory)
  * hoặc custom domain root path.
  */
-export function withBase(path: string): string {
+export function withBase(path: string | null | undefined): string {
+  if (!path) return '';
+  // Nếu là link ảnh Cloudinary hoặc URL ngoài thì giữ nguyên
+  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
+    return path;
+  }
+  
   const base = import.meta.env.BASE_URL || '/';
   const cleanPath = path.startsWith('/') ? path.slice(1) : path;
   
@@ -10,8 +16,20 @@ export function withBase(path: string): string {
     return `/${cleanPath}`;
   }
   
-  const cleanBase = base.endsWith('/') ? base : `${base}/`;
-  return `${cleanBase}${cleanPath}`;
+  const trimmedBase = base.replace(/^\/+|\/+$/g, '');
+  if (cleanPath.startsWith(trimmedBase)) {
+    return `/${cleanPath}`;
+  }
+  
+  return `/${trimmedBase}/${cleanPath}`;
+}
+
+/**
+ * Phục hồi URL ảnh chuẩn cho mọi trường hợp (Local, Cloudinary, fallback)
+ */
+export function resolveImageUrl(url: string | null | undefined): string {
+  if (!url) return withBase('/images/thoi-hoa-lua-hero.jpg');
+  return withBase(url);
 }
 
 /**

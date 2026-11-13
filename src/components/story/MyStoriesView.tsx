@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getAllStories, getCurrentUser, type Story, type UserSession } from '@/lib/storage';
-import { withBase, formatDate } from '@/lib/utils';
+import { withBase, formatDate, resolveImageUrl } from '@/lib/utils';
 import { PlusCircle, BookOpen, Clock, CheckCircle2, AlertCircle, Send, Trash2, Edit } from 'lucide-react';
 
 export default function MyStoriesView() {
@@ -54,7 +54,7 @@ export default function MyStoriesView() {
       <div className="bg-[#FAF6F0] p-6 sm:p-8 rounded-3xl border border-amber-200/90 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-4">
           <img
-            src={user.avatar || '/images/thoi-hoa-lua/logo-doan.webp'}
+            src={resolveImageUrl(user.avatar || '/images/thoi-hoa-lua/logo-doan.webp')}
             alt={user.name}
             className="w-14 h-14 rounded-2xl object-contain drop-shadow"
           />

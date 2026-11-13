@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import FacebookImageGrid from '@/components/story/FacebookImageGrid';
 import { Upload, Image as ImageIcon, Clipboard, FolderArchive, Plus } from 'lucide-react';
+import { resolveImageUrl } from '@/lib/utils';
 
 const ARCHIVE_PRESETS = [
   { label: 'Thời hoa lửa - Bác Hồ & Thanh niên', url: '/images/thoi-hoa-lua-hero.jpg' },
@@ -260,7 +261,7 @@ export default function ImageUploadBox({ images, onChange, maxImages = 10 }: Pro
                   disabled={isSelected}
                   title={p.label}
                 >
-                  <img src={p.url} alt={p.label} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                  <img src={resolveImageUrl(p.url)} alt={p.label} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
                   <div className="absolute inset-x-0 bottom-0 p-1 text-[10px] font-bold text-white truncate leading-tight">
                     {p.label}

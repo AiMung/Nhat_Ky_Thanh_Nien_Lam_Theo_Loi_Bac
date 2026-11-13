@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { X, ZoomIn } from 'lucide-react';
+import { resolveImageUrl } from '@/lib/utils';
 
 interface Props {
   images: string[];
@@ -21,7 +22,7 @@ export default function FacebookImageGrid({ images, title = '', onRemove, isEdit
       {count === 1 && (
         <div className="relative group overflow-hidden max-h-[580px] bg-slate-950/5 flex items-center justify-center rounded-2xl">
           <img
-            src={images[0]}
+            src={resolveImageUrl(images[0])}
             alt={title || 'Hình ảnh tư liệu'}
             className="w-full max-h-[580px] object-contain group-hover:scale-[1.01] transition-transform duration-500 cursor-pointer"
             onClick={() => setPreviewIdx(0)}
@@ -51,7 +52,7 @@ export default function FacebookImageGrid({ images, title = '', onRemove, isEdit
           {images.map((img, idx) => (
             <div key={idx} className="relative group overflow-hidden h-full bg-slate-900/10">
               <img
-                src={img}
+                src={resolveImageUrl(img)}
                 alt={`${title} - ảnh ${idx + 1}`}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 cursor-pointer"
                 onClick={() => setPreviewIdx(idx)}
@@ -75,7 +76,7 @@ export default function FacebookImageGrid({ images, title = '', onRemove, isEdit
         <div className="grid grid-cols-3 gap-1.5 h-72 sm:h-96">
           <div className="col-span-2 relative group overflow-hidden h-full">
             <img
-              src={images[0]}
+              src={resolveImageUrl(images[0])}
               alt={`${title} - ảnh 1`}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 cursor-pointer"
               onClick={() => setPreviewIdx(0)}
@@ -94,7 +95,7 @@ export default function FacebookImageGrid({ images, title = '', onRemove, isEdit
             {images.slice(1, 3).map((img, idx) => (
               <div key={idx + 1} className="relative group overflow-hidden h-full">
                 <img
-                  src={img}
+                  src={resolveImageUrl(img)}
                   alt={`${title} - ảnh ${idx + 2}`}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 cursor-pointer"
                   onClick={() => setPreviewIdx(idx + 1)}
@@ -123,7 +124,7 @@ export default function FacebookImageGrid({ images, title = '', onRemove, isEdit
             return (
               <div key={idx} className="relative group overflow-hidden h-full">
                 <img
-                  src={img}
+                  src={resolveImageUrl(img)}
                   alt={`${title} - ảnh ${idx + 1}`}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 cursor-pointer"
                   onClick={() => setPreviewIdx(idx)}
@@ -171,7 +172,7 @@ export default function FacebookImageGrid({ images, title = '', onRemove, isEdit
               <span>Đóng</span>
             </button>
             <img
-              src={images[previewIdx]}
+              src={resolveImageUrl(images[previewIdx])}
               alt="Ảnh chi tiết"
               className="max-h-[80vh] w-auto max-w-full object-contain rounded-xl shadow-2xl border border-white/20"
               onClick={(e) => e.stopPropagation()}
@@ -186,7 +187,7 @@ export default function FacebookImageGrid({ images, title = '', onRemove, isEdit
                       previewIdx === i ? 'border-gold-400 scale-105 ring-2 ring-gold-400' : 'border-white/30 opacity-60 hover:opacity-100'
                     }`}
                   >
-                    <img src={im} alt="" className="w-full h-full object-cover" />
+                    <img src={resolveImageUrl(im)} alt="" className="w-full h-full object-cover" />
                   </button>
                 ))}
               </div>

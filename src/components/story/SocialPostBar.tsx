@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getCurrentUser, type UserSession } from '@/lib/storage';
-import { withBase } from '@/lib/utils';
+import { withBase, resolveImageUrl } from '@/lib/utils';
 import { Image as ImageIcon, Edit3, MapPin, Sparkles, PlusCircle } from 'lucide-react';
 
 export default function SocialPostBar() {
@@ -19,7 +19,7 @@ export default function SocialPostBar() {
         {/* User avatar */}
         <div className="relative shrink-0">
           <img
-            src={user?.avatar || '/images/thoi-hoa-lua/logo-doan.webp'}
+            src={resolveImageUrl(user?.avatar || '/images/thoi-hoa-lua/logo-doan.webp')}
             alt={user?.name || 'Đoàn viên'}
             className="w-11 h-11 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-doan-700 shadow-sm"
           />
