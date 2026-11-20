@@ -5,8 +5,8 @@ import react from '@astrojs/react';
 // https://astro.build/config
 export default defineConfig({
   // Thay đổi base khi deploy lên GitHub Pages dạng https://<user>.github.io/<repo>/
-  // Nếu có custom domain (vd: kyucviet.vn), đặt BASE_PATH=/
-  site: 'https://aimung.github.io',
+  // Tự động tương thích với tài khoản Đoàn Phường Xuân Hương - Đà Lạt
+  site: process.env.SITE_URL || 'https://doanthanhnienxuanhuong-dalat.github.io',
   base: process.env.BASE_PATH || '/Nhat_Ky_Thanh_Nien_Lam_Theo_Loi_Bac',
   integrations: [
     tailwind({
