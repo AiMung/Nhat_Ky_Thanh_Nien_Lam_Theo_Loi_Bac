@@ -47,6 +47,13 @@ export async function hashPassword(plain: string): Promise<string> {
 // BẢNG MÃ HÓA SHA-256 CHO ADMIN
 const ADMIN_HASH = 'ae10d7ac64e503cfad66a55fa42c0be75b4e34e79097e068428beb12f3247188';
 
+// Danh sách các mật khẩu hợp lệ cho Admin (hỗ trợ cả Admin@XuanHuong2026, admin@XH2026 và admin)
+const VALID_ADMIN_HASHES = [
+  'ae10d7ac64e503cfad66a55fa42c0be75b4e34e79097e068428beb12f3247188', // Admin@XuanHuong2026
+  'a077751b8d7b2c4631d7deccde13a63c54c0e89229b8796a508ee6a085fe18c3', // admin@XH2026
+  'ca861aec9bf6c58aff117c937cc69c47462f7e9e8b09e205016d80c7e7ddab75'  // admin
+];
+
 // BẢNG MÃ HÓA SHA-256 ĐỘC LẬP CHO 37 TỔ DÂN PHỐ
 const TDP_HASHES: Record<string, string> = {
   "tdp01": "b1a7e5b9c7be6c956dcb1471cf3965b9ca5d4c9bc21fd524caf61592728ebbf3",
@@ -278,7 +285,7 @@ export async function login(
   // 1. Kiểm tra Admin Ban Biên tập (Chế độ dự phòng cục bộ an toàn)
   if (
     (cleanUser === 'admin' || cleanUser === 'bientap@xuanhuong.dalat.vn') &&
-    inputHash === ADMIN_HASH
+    (VALID_ADMIN_HASHES.includes(inputHash) || cleanPass === 'Admin@XuanHuong2026' || cleanPass === 'admin@XH2026')
   ) {
     if (typeof window !== 'undefined') {
       sessionStorage.removeItem('dtn_auth_failed_count');
