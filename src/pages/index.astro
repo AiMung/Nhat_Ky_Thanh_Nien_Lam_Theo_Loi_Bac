@@ -2,6 +2,7 @@
 import RootLayout from '@/layouts/RootLayout.astro';
 import SearchBar from '@/components/search/SearchBar';
 import EmberSparks from '@/components/common/EmberSparks';
+import BookOpeningIntro from '@/components/common/BookOpeningIntro';
 import FeaturedStoryCarousel from '@/components/home/FeaturedStoryCarousel';
 import InteractiveTimelineGsap from '@/components/home/InteractiveTimelineGsap';
 import LeaderboardSection from '@/components/home/LeaderboardSection';
@@ -56,87 +57,90 @@ const CATEGORIES = [
 
 <RootLayout title="Nhật Ký Thanh Niên Làm Theo Lời Bác — Phường Xuân Hương, Đà Lạt">
   
-  <!-- ================= 1. HERO BANNER THỜI HOA LỬA (CHUẨN SCREENSHOT 1) ================= -->
-  <section class="relative text-white py-16 sm:py-24 px-4 overflow-hidden border-b-4 border-amber-500 shadow-hero min-h-[580px] lg:min-h-[640px] flex items-center">
+  {/* Hiệu ứng 3D mở cuốn sách ký ức khi vừa vào trang */}
+  <BookOpeningIntro client:load />
+
+  <!-- ================= 1. HERO BANNER THỜI HOA LỬA (CHUẨN 100% THEO ẢNH ĐÍNH KÈM) ================= -->
+  <section class="relative text-white overflow-hidden border-b-4 border-amber-500 shadow-hero min-h-[520px] sm:min-h-[580px] lg:min-h-[640px] flex items-center">
     
-    {/* Hình nền cờ Tổ quốc & Chân dung lịch sử hào hùng */}
+    {/* Hình nền Bức họa toàn cảnh Thời Hoa Lửa chuẩn ảnh đính kèm */}
     <div class="absolute inset-0 z-0">
       <img
-        src={withBase('/images/hero-official.jpg')}
-        alt="Nhật ký thanh niên làm theo lời Bác"
-        class="w-full h-full object-cover object-center filter brightness-90 contrast-105"
+        src={withBase('/images/thoi-hoa-lua/hero-banner-chinh-thuc.jpg')}
+        alt="Thời hoa lửa - Ký ức sống mãi"
+        class="w-full h-full object-cover object-left-center sm:object-center filter brightness-95 contrast-105"
       />
-      {/* Lớp phủ chuyển màu đỏ - than nghệ thuật */}
-      <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-black/30 lg:bg-gradient-to-r lg:from-slate-950/90 lg:via-slate-950/50 lg:to-black/20"></div>
+      {/* Lớp phủ chuyển màu gradient tinh tế để nổi bật tiêu đề bên phải */}
+      <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-black/40 lg:to-slate-950/90"></div>
     </div>
 
     {/* Hiệu ứng tàn lửa hoa lửa bập bùng (Ember Sparks) */}
     <EmberSparks client:load />
     
-    <div class="max-w-7xl mx-auto relative z-10 w-full py-4">
+    <div class="max-w-7xl mx-auto relative z-10 w-full px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
         
-        {/* Cột trái: Tiêu đề lớn & Khẩu hiệu hành động chuẩn Screenshot 1 */}
-        <div class="lg:col-span-7 text-center lg:text-left space-y-4">
-          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-amber-400/60 text-amber-300 text-xs font-bold shadow-xl">
-            <span class="text-amber-400">★</span>
-            <span class="tracking-wide">ĐOÀN TNCS HỒ CHÍ MINH PHƯỜNG XUÂN HƯƠNG — ĐÀ LẠT</span>
-            <span class="text-amber-400">★</span>
-          </div>
+        {/* Khoảng trống bên trái (cột 1-5 trên desktop) dành cho tác phẩm chân dung lịch sử */}
+        <div class="hidden lg:block lg:col-span-5 pointer-events-none"></div>
 
-          <h1 class="font-serif font-black text-3xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-tight drop-shadow-xl">
-            Mỗi nhân chứng <br />
-            là một <span class="text-amber-300 drop-shadow-[0_4px_20px_rgba(245,158,11,0.6)]">trang sử sống</span>
-          </h1>
-
-          <p class="text-sm sm:text-base text-amber-100/90 font-medium leading-relaxed max-w-xl mx-auto lg:mx-0 drop-shadow-md">
-            Lưu giữ ký ức của dân tộc Việt Nam qua những câu chuyện được chính nhân chứng, cựu chiến binh và cộng đồng 37 Tổ Dân Phố Phường Xuân Hương kể lại.
-          </p>
-
-          <div class="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-3.5">
-            <a 
-              href={withBase('/thu-vien')} 
-              class="inline-flex items-center gap-2 bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-amber-100 px-6 py-3.5 rounded-full text-xs sm:text-sm font-bold shadow-xl transition-transform hover:scale-105"
-            >
-              <span>Khám phá câu chuyện</span>
-              <span>→</span>
-            </a>
-            <a 
-              href={withBase('/gui-cau-chuyen')} 
-              class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border-2 border-white/40 text-white px-6 py-3.5 rounded-full text-xs sm:text-sm font-bold transition-all backdrop-blur shadow-md hover:border-amber-300"
-            >
-              <span>Gửi câu chuyện</span>
-              <span>→</span>
-            </a>
-          </div>
-        </div>
-
-        {/* Cột phải: Thanh tìm kiếm & Hộp trích dẫn lời Bác */}
-        <div class="lg:col-span-5 space-y-3.5">
-          <div class="p-4 sm:p-5 rounded-3xl bg-red-950/80 backdrop-blur-md border border-amber-400/40 text-amber-100 shadow-2xl">
-            <div class="flex items-start gap-3">
-              <span class="text-3xl text-amber-300 leading-none select-none">“</span>
-              <div class="flex-1">
-                <p class="font-serif italic text-sm sm:text-base text-amber-200 leading-relaxed font-semibold">
-                  Không có việc gì khó, chỉ sợ lòng không bền<br class="hidden sm:inline" />
-                  Đào núi và lấp biển, quyết chí ắt làm nên.
-                </p>
-                <div class="text-[11px] text-amber-300 font-bold uppercase tracking-wider mt-1.5 flex items-center gap-1.5">
-                  <span>★</span>
-                  <span>Lời Bác Hồ tặng Đội TNXP (1951)</span>
-                </div>
-              </div>
+        {/* Khối thông tin bên phải (cột 6-12) chuẩn 100% theo ảnh đính kèm */}
+        <div class="lg:col-span-7 text-center lg:text-left space-y-4 sm:space-y-5 lg:pl-6">
+          
+          {/* Logo / Huy hiệu Đề án Thời Hoa Lửa */}
+          <div class="flex items-center justify-center lg:justify-start gap-2.5">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-950/80 backdrop-blur-md border border-amber-400/60 text-amber-300 text-xs font-bold shadow-xl">
+              <span class="text-amber-400">★</span>
+              <span class="tracking-wide uppercase">CÂU CHUYỆN THỜI HOA LỬA</span>
+              <span class="text-amber-400">★</span>
             </div>
           </div>
 
-          <div class="bg-white/95 backdrop-blur-md p-1.5 rounded-2xl shadow-xl border border-white/40">
-            <SearchBar client:load />
+          {/* Tiêu đề hào hùng chuẩn ảnh: "Mỗi nhân chứng là một trang sử sống" */}
+          <h1 class="font-serif font-black text-3xl sm:text-5xl lg:text-[56px] text-white tracking-tight leading-[1.15] drop-shadow-[0_4px_24px_rgba(0,0,0,0.8)]">
+            Mỗi nhân chứng <br />
+            là một <span class="text-amber-400 font-serif italic drop-shadow-[0_4px_20px_rgba(245,158,11,0.6)]">trang sử sống</span>
+          </h1>
+
+          {/* Mô tả chuẩn ảnh */}
+          <p class="text-sm sm:text-base lg:text-lg text-amber-100/90 font-medium leading-relaxed max-w-xl mx-auto lg:mx-0 drop-shadow-md">
+            Lưu giữ ký ức của dân tộc Việt Nam qua những câu chuyện được chính nhân chứng và cộng đồng kể lại.
+          </p>
+
+          {/* 2 nút bấm bo tròn chuẩn ảnh: "Khám phá câu chuyện →" & "Gửi câu chuyện →" */}
+          <div class="pt-3 flex flex-wrap items-center justify-center lg:justify-start gap-3.5 sm:gap-4">
+            <a 
+              href={withBase('/thu-vien')} 
+              class="inline-flex items-center gap-2.5 bg-[#B31F24] hover:bg-[#8F161A] text-white px-7 py-3.5 rounded-full text-xs sm:text-sm font-bold shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95"
+            >
+              <span>Khám phá câu chuyện</span>
+              <span class="text-base leading-none">→</span>
+            </a>
+            <a 
+              href={withBase('/gui-cau-chuyen')} 
+              class="inline-flex items-center gap-2.5 bg-black/40 hover:bg-black/60 border border-white/40 hover:border-amber-400 text-white px-7 py-3.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 backdrop-blur-sm active:scale-95 shadow-lg"
+            >
+              <span>Gửi câu chuyện</span>
+              <span class="text-base leading-none">→</span>
+            </a>
           </div>
+
+          {/* Thông tin đơn vị tổ chức Phường Xuân Hương */}
+          <div class="pt-2 text-[11px] sm:text-xs text-amber-200/80 font-medium flex items-center justify-center lg:justify-start gap-2">
+            <span>🏛️ Đề án số hóa Đoàn TNCS Hồ Chí Minh Phường Xuân Hương — Đà Lạt</span>
+          </div>
+
         </div>
 
       </div>
     </div>
   </section>
+
+  {/* Thanh tìm kiếm nhanh 2.000+ câu chuyện đặt ngay dưới Hero Banner */}
+  <div class="max-w-4xl mx-auto -mt-6 sm:-mt-7 relative z-20 px-4">
+    <div class="bg-white/95 backdrop-blur-md p-2 rounded-2xl shadow-xl border border-amber-200/80">
+      <SearchBar client:load />
+    </div>
+  </div>
 
   {/* ================= 2. CAROUSEL CÂU CHUYỆN NỔI BẬT (CHUẨN SCREENSHOT 2) ================= */}
   <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">

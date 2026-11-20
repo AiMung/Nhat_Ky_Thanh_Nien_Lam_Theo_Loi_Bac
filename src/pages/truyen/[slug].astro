@@ -3,12 +3,12 @@ import RootLayout from '@/layouts/RootLayout.astro';
 import StoryReaderToolbar from '@/components/story/StoryReaderToolbar';
 import StoryActionToolbar from '@/components/story/StoryActionToolbar';
 import FacebookImageGrid from '@/components/story/FacebookImageGrid';
-import { getAllStories, type Story } from '@/lib/storage';
+import { SEED_STORIES, type Story } from '@/lib/storage';
 import { formatDate, withBase, resolveImageUrl } from '@/lib/utils';
 import { renderStoryContent } from '@/lib/renderContent';
 
 export async function getStaticPaths() {
-  const stories = getAllStories();
+  const stories = SEED_STORIES;
   return stories.map((story) => ({
     params: { slug: story.slug },
     props: { story },

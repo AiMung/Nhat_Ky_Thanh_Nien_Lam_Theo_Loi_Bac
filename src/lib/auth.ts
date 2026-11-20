@@ -144,7 +144,7 @@ export const TDP_NAMES: string[] = [
 export const TDP_ACCOUNTS: UserAccount[] = TDP_NAMES.map((tdpName, index) => {
   const codeNum = String(index + 1).padStart(2, '0');
   const username = `tdp${codeNum}`;
-  
+
   return {
     id: `user-tdp-${codeNum}`,
     username: username,
@@ -201,7 +201,7 @@ export function getCurrentSession(): UserAccount {
  * Tuyệt đối không cho phép bypass, bảo vệ chống Brute-Force
  */
 export async function login(
-  username: string, 
+  username: string,
   password: string
 ): Promise<{ success: boolean; user?: UserAccount; message: string }> {
   const cleanUser = username.trim().toLowerCase();
@@ -329,9 +329,9 @@ export async function login(
         message: 'CẢNH BÁO BẢO MẬT: Nhập sai mật khẩu 5 lần! Hệ thống tạm khóa 30 giây.'
       };
     }
-    return { 
-      success: false, 
-      message: `Mật khẩu hoặc thông tin xác thực không chính xác (còn ${5 - newFailed} lần thử)!` 
+    return {
+      success: false,
+      message: `Mật khẩu hoặc thông tin xác thực không chính xác (còn ${5 - newFailed} lần thử)!`
     };
   }
 

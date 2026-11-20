@@ -47,6 +47,7 @@ export interface Story {
 }
 
 import { getCurrentSession, type UserAccount } from './auth';
+import cauchuyenlichsuStories from '@/data/cauchuyenlichsu_stories.json';
 
 export type UserSession = UserAccount;
 
@@ -494,23 +495,38 @@ export const SEED_STORIES: Story[] = [
   }
 ];
 
+// TỔNG HỢP SEED DATA + 2.000 BÀI VIẾT THẬT TỪ CỔNG CAOCHUYENLICHSU.VN
+export const ALL_SEED_STORIES: Story[] = [
+  ...SEED_STORIES,
+  ...(cauchuyenlichsuStories as Story[])
+];
+
 const STORAGE_KEY_STORIES = 'dtn_hcm_stories_v5'; // Bump version to refresh all 20 rich stories
 const STORAGE_KEY_FAVS = 'dtn_hcm_favorites_v5';
 
-// 1. LẤY DANH SÁCH BÀI VIẾT (Tự động kết hợp Seed Data và bài do người dùng tạo)
+// 1. LẤY DANH SÁCH BÀI VIẾT (Tự động kết hợp Seed Data và 2.000 bài viết lịch sử)
 export function getAllStories(): Story[] {
-  if (typeof window === 'undefined') return SEED_STORIES;
+  if (typeof window === 'undefined') return ALL_SEED_STORIES;
 
   try {
     const raw = localStorage.getItem(STORAGE_KEY_STORIES);
     if (!raw) {
-      localStorage.setItem(STORAGE_KEY_STORIES, JSON.stringify(SEED_STORIES));
-      return SEED_STORIES;
+      localStorage.setItem(STORAGE_KEY_STORIES, JSON.stringify(ALL_SEED_STORIES));
+      return ALL_SEED_STORIES;
     }
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) && parsed.length > 0 ? parsed : SEED_STORIES;
+    if (Array.isArray(parsed)) {
+      if (parsed.length < 100) {
+        // Tự động làm giàu kho bài viết bằng 2000 bài cào được
+        const merged = [...parsed, ...(cauchuyenlichsuStories as Story[])];
+        localStorage.setItem(STORAGE_KEY_STORIES, JSON.stringify(merged));
+        return merged;
+      }
+      return parsed;
+    }
+    return ALL_SEED_STORIES;
   } catch {
-    return SEED_STORIES;
+    return ALL_SEED_STORIES;
   }
 }
 
