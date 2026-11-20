@@ -7,6 +7,8 @@ import {
   type Story, 
   type UserSession 
 } from '@/lib/storage';
+import { login, type UserAccount } from '@/lib/auth';
+import { getUnitBadge } from '@/lib/units';
 import { saveStoryToSupabase } from '@/lib/supabase';
 import { renderStoryContent } from '@/lib/renderContent';
 import { withBase, formatDate, resolveImageUrl } from '@/lib/utils';
@@ -16,7 +18,13 @@ import {
   Search, 
   Trash2, 
   ShieldCheck, 
-  Lock
+  Lock,
+  Phone,
+  User,
+  ArrowRight,
+  Sparkles,
+  X,
+  ExternalLink
 } from 'lucide-react';
 
 export default function AdminModerationQueue() {
@@ -28,6 +36,11 @@ export default function AdminModerationQueue() {
   const [toast, setToast] = useState('');
   const [reviewStory, setReviewStory] = useState<Story | null>(null);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+  // Đăng nhập Admin tại chỗ
+  const [adminPassInput, setAdminPassInput] = useState('');
+  const [authError, setAuthError] = useState('');
+  const [isVerifying, setIsVerifying] = useState(false);
 
   const loadData = () => {
     setStories(getAllStories());
@@ -49,47 +62,101 @@ export default function AdminModerationQueue() {
     setTimeout(() => setToast(''), 4000);
   };
 
-  // 1. KIỂM TRA BẢO MẬT: NẾU KHÔNG PHẢI ADMIN THÌ KHÓA CHẶT 100%
-  if (user && user.role !== 'admin') {
+  const handleAdminUnlock = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError('');
+    if (!adminPassInput.trim()) {
+      setAuthError('Vui lòng nhập mật khẩu quản trị.');
+      return;
+    }
+    setIsVerifying(true);
+    const res = await login('admin', adminPassInput);
+    setIsVerifying(false);
+    if (res.success) {
+      loadData();
+      showToast('✓ Đăng nhập Ban Quản Trị thành công!');
+    } else {
+      setAuthError(res.message || 'Mật khẩu quản trị không chính xác!');
+    }
+  };
+
+  // 1. MÀN HÌNH NHẬP MẬT KHẨU QUẢN TRỊ NẾU CHƯA XÁC THỰC ADMIN
+  if (!user || user.role !== 'admin') {
     return (
-      <div className="bg-[#FAF6F0] rounded-3xl border border-red-300 p-8 sm:p-12 text-center max-w-xl mx-auto shadow-xl space-y-4">
-        <div className="w-16 h-16 rounded-3xl bg-red-100 text-red-700 flex items-center justify-center mx-auto text-2xl font-black border border-red-300">
-          <Lock className="w-8 h-8" />
+      <div className="max-w-md mx-auto my-12 bg-white rounded-3xl border border-stone-200/90 p-6 sm:p-8 shadow-xl text-center space-y-6">
+        <div className="w-14 h-14 rounded-2xl bg-red-50 text-red-700 flex items-center justify-center mx-auto shadow-xs border border-red-200">
+          <ShieldCheck className="w-7 h-7" />
         </div>
+
         <div>
-          <span className="px-3.5 py-1 rounded-full bg-red-100 text-red-800 text-[11px] font-black uppercase tracking-wider border border-red-200">
-            TRUY CẬP BỊ TỪ CHỐI (403 FORBIDDEN)
+          <span className="text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-red-50 text-red-800 border border-red-200">
+            KHU VỰC QUẢN TRỊ VIÊN
           </span>
+          <h2 className="font-serif font-black text-2xl text-stone-900 mt-2.5">
+            Duyệt & Thẩm Định Bài Viết
+          </h2>
+          <p className="text-xs text-stone-500 mt-1.5 leading-relaxed">
+            Nhập mật khẩu quản trị để mở khóa quyền phê duyệt, từ chối và quản lý toàn bộ bài viết từ 37 Tổ dân phố, Trường học và Người dân.
+          </p>
         </div>
-        <h2 className="font-serif font-black text-2xl text-slate-900">
-          Khu Vực Dành Riêng Cho Ban Biên Tập
-        </h2>
-        <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-md mx-auto">
-          Bạn hiện đang truy cập với tư cách: <strong className="text-slate-800">{user.name}</strong> ({user.role === 'tdp' ? 'Tổ Dân Phố' : 'Khách vãng lai'}). Khu vực kiểm duyệt bài viết yêu cầu tài khoản Quản trị Ban Biên tập chính thức.
-        </p>
-        <div className="pt-2 flex flex-wrap justify-center gap-3">
-          <a
-            href={withBase('/tai-khoan/dang-nhap')}
-            className="px-6 py-2.5 rounded-2xl bg-red-700 hover:bg-red-800 text-white font-bold text-xs sm:text-sm shadow-md transition-colors"
+
+        <form onSubmit={handleAdminUnlock} className="space-y-4 text-left">
+          <div>
+            <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">
+              Mật khẩu Quản trị Ban Biên tập
+            </label>
+            <div className="relative">
+              <Lock className="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="password"
+                required
+                placeholder="Nhập mật khẩu quản trị..."
+                value={adminPassInput}
+                onChange={(e) => setAdminPassInput(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-stone-300 text-stone-900 text-sm focus:border-red-600 focus:ring-1 focus:ring-red-600 outline-none"
+              />
+            </div>
+            {authError && (
+              <p className="text-xs text-red-600 font-semibold mt-1.5">
+                {authError}
+              </p>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            disabled={isVerifying}
+            className="w-full py-3 rounded-xl bg-red-800 hover:bg-red-900 text-white font-bold text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2"
           >
-            Đăng nhập Ban Biên tập →
-          </a>
+            <span>{isVerifying ? 'Đang xác thực...' : 'Mở khóa bảng duyệt bài'}</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </form>
+
+        <div className="pt-2 border-t border-stone-100">
           <a
             href={withBase('/')}
-            className="px-5 py-2.5 rounded-2xl bg-white border border-slate-300 text-slate-700 font-bold text-xs sm:text-sm hover:bg-slate-50 transition-colors"
+            className="text-xs font-medium text-stone-500 hover:text-stone-800"
           >
-            Quay lại Trang chủ
+            ← Quay lại trang chủ
           </a>
         </div>
       </div>
     );
   }
 
-  // Hành động Duyệt bài
+  // 2. KHI ĐÃ LÀ ADMIN: GIAO DIỆN KIỂM DUYỆT BÀI VIẾT HIỆN ĐẠI
+  const counts = {
+    pending: stories.filter((s) => s.status === 'pending').length,
+    approved: stories.filter((s) => s.status === 'approved').length,
+    rejected: stories.filter((s) => s.status === 'rejected').length,
+    draft: stories.filter((s) => s.status === 'draft').length,
+  };
+
   const handleApprove = async (id: string, title: string) => {
     const success = updateStoryStatus(id, 'approved');
     if (!success) {
-      alert('Bảo mật: Bạn không có quyền thực hiện thao tác duyệt bài!');
+      alert('Lỗi: Thao tác duyệt bài không thành công.');
       return;
     }
     const updated = getAllStories().find((s) => s.id === id);
@@ -100,10 +167,9 @@ export default function AdminModerationQueue() {
     if (reviewStory && reviewStory.id === id) {
       setReviewStory(null);
     }
-    showToast(`✓ Đã duyệt và xuất bản thành công: "${title}"`);
+    showToast(`✓ Đã duyệt và xuất bản: "${title}"`);
   };
 
-  // Hành động Từ chối / Yêu cầu chỉnh sửa
   const handleReject = async (id: string, title: string) => {
     const reason = window.prompt(
       `Nhập lý do yêu cầu chỉnh sửa/từ chối bài "${title}":`,
@@ -119,11 +185,10 @@ export default function AdminModerationQueue() {
       if (reviewStory && reviewStory.id === id) {
         setReviewStory(null);
       }
-      showToast(`Đã chuyển trạng thái sang Yêu cầu chỉnh sửa.`);
+      showToast(`Đã chuyển bài viết sang trạng thái Từ chối/Yêu cầu sửa.`);
     }
   };
 
-  // Xóa bài viết đơn lẻ
   const handleDelete = (id: string, title: string) => {
     if (window.confirm(`Bạn có chắc chắn muốn xóa bài viết "${title}" khỏi hệ thống?`)) {
       deleteStory(id);
@@ -136,160 +201,130 @@ export default function AdminModerationQueue() {
     }
   };
 
-  // ================= THAO TÁC HÀNG LOẠT (BATCH MODERATION) =================
+  // Batch actions
   const handleBatchApprove = async () => {
     if (selectedIds.length === 0) return;
-    const count = selectedIds.length;
-    let approvedCount = 0;
     for (const id of selectedIds) {
-      const success = updateStoryStatus(id, 'approved');
-      if (success) {
-        approvedCount++;
-        const updated = getAllStories().find((s) => s.id === id);
-        if (updated) {
-          await saveStoryToSupabase(updated);
-        }
+      updateStoryStatus(id, 'approved');
+      const updated = getAllStories().find((s) => s.id === id);
+      if (updated) {
+        await saveStoryToSupabase(updated);
       }
     }
+    const count = selectedIds.length;
     setSelectedIds([]);
     loadData();
-    showToast(`✓ Đã duyệt và xuất bản hàng loạt thành công ${approvedCount} bài viết!`);
+    showToast(`✓ Đã xuất bản thành công ${count} bài viết!`);
   };
 
-  const handleBatchReject = async () => {
-    if (selectedIds.length === 0) return;
-    const count = selectedIds.length;
-    const reason = window.prompt(
-      `Nhập lý do yêu cầu chỉnh sửa cho ${count} bài viết đã chọn:`,
-      'Tư liệu cần bổ sung thêm căn cứ xác thực và hình ảnh rõ nét hơn.'
-    );
-    if (reason !== null) {
-      for (const id of selectedIds) {
-        updateStoryStatus(id, 'rejected', reason);
-        const updated = getAllStories().find((s) => s.id === id);
-        if (updated) {
-          await saveStoryToSupabase(updated);
-        }
-      }
-      setSelectedIds([]);
-      loadData();
-      showToast(`Đã chuyển ${count} bài viết sang trạng thái Yêu cầu chỉnh sửa.`);
-    }
-  };
-
-  const handleBatchDelete = () => {
-    if (selectedIds.length === 0) return;
-    const count = selectedIds.length;
-    if (window.confirm(`CẢNH BÁO: Bạn có chắc chắn muốn xóa vĩnh viễn ${count} bài viết đã chọn khỏi hệ thống?`)) {
-      for (const id of selectedIds) {
-        deleteStory(id);
-      }
-      setSelectedIds([]);
-      loadData();
-      showToast(`Đã xóa thành công ${count} bài viết khỏi hệ thống.`);
-    }
-  };
-
-  // Đếm số lượng theo trạng thái
-  const counts = {
-    pending: stories.filter((s) => s.status === 'pending').length,
-    approved: stories.filter((s) => s.status === 'approved').length,
-    rejected: stories.filter((s) => s.status === 'rejected').length,
-    draft: stories.filter((s) => s.status === 'draft').length
-  };
-
-  // Lọc dữ liệu
+  // Lọc theo tab, search và đơn vị
   const filteredStories = stories.filter((s) => {
     if (s.status !== activeTab) return false;
-    if (selectedTdp !== 'ALL' && s.to_dan_pho !== selectedTdp) return false;
+    if (selectedTdp !== 'ALL') {
+      const matchUnit = (s.contributor_unit || s.to_dan_pho || '').toLowerCase();
+      if (!matchUnit.includes(selectedTdp.toLowerCase())) return false;
+    }
     if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase().trim();
+      const q = searchQuery.toLowerCase();
       const matchTitle = s.title.toLowerCase().includes(q);
-      const matchNarrator = s.narrator_name.toLowerCase().includes(q);
-      const matchTdp = (s.to_dan_pho || '').toLowerCase().includes(q);
-      if (!matchTitle && !matchNarrator && !matchTdp) return false;
+      const matchAuthor = (s.contributor_name || '').toLowerCase().includes(q);
+      const matchPhone = (s.contributor_phone || '').includes(q);
+      const matchUnit = (s.contributor_unit || '').toLowerCase().includes(q);
+      if (!matchTitle && !matchAuthor && !matchPhone && !matchUnit) return false;
     }
     return true;
   });
 
-  const allFilteredIds = filteredStories.map((s) => s.id);
-  const isAllSelected = allFilteredIds.length > 0 && allFilteredIds.every((id) => selectedIds.includes(id));
-
-  const toggleSelectAll = () => {
-    if (isAllSelected) {
-      setSelectedIds((prev) => prev.filter((id) => !allFilteredIds.includes(id)));
-    } else {
-      setSelectedIds((prev) => Array.from(new Set([...prev, ...allFilteredIds])));
-    }
-  };
-
   const toggleSelectOne = (id: string) => {
-    setSelectedIds((prev) =>
+    setSelectedIds((prev) => 
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
   };
 
+  const toggleSelectAll = () => {
+    if (selectedIds.length === filteredStories.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(filteredStories.map((s) => s.id));
+    }
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-6xl mx-auto pb-16">
       
-      {/* Toast thông báo */}
+      {/* Toast */}
       {toast && (
-        <div className="fixed top-20 right-6 z-50 bg-emerald-900 text-emerald-100 px-6 py-3.5 rounded-2xl shadow-2xl border border-emerald-500/60 flex items-center gap-2.5 font-bold text-xs sm:text-sm animate-fade-in">
-          <span>✓</span>
+        <div className="fixed bottom-6 right-6 z-50 bg-stone-900 text-amber-100 px-5 py-3 rounded-2xl shadow-xl border border-amber-400/30 text-xs sm:text-sm font-bold flex items-center gap-2">
           <span>{toast}</span>
         </div>
       )}
 
-      {/* TABS & BỘ LỌC CHUẨN THỜI HOA LỬA */}
-      <div className="bg-[#FAF6F0] p-4 sm:p-5 rounded-3xl border border-amber-200/80 shadow-xs space-y-4">
-        
-        {/* Hàng Tabs trạng thái */}
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-amber-200/80 pb-4">
-          <div className="flex flex-wrap items-center gap-2">
-            {[
-              { id: 'pending', label: 'Chờ duyệt', count: counts.pending, color: 'text-amber-700 bg-amber-100' },
-              { id: 'approved', label: 'Đã xuất bản', count: counts.approved, color: 'text-emerald-700 bg-emerald-100' },
-              { id: 'rejected', label: 'Yêu cầu sửa', count: counts.rejected, color: 'text-red-700 bg-red-100' },
-              { id: 'draft', label: 'Bản nháp', count: counts.draft, color: 'text-slate-700 bg-slate-200' },
-            ].map((tab) => {
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
-                  className={`px-4 py-2 rounded-2xl font-bold text-xs sm:text-sm flex items-center gap-2 transition-all ${
-                    isActive
-                      ? 'bg-red-700 text-white shadow-md'
-                      : 'bg-white hover:bg-amber-100 text-slate-700 border border-amber-200/70'
-                  }`}
-                >
-                  <span>{tab.label}</span>
-                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${isActive ? 'bg-white/20 text-white' : tab.color}`}>
-                    {tab.count}
-                  </span>
-                </button>
-              );
-            })}
+      {/* Header Dashboard */}
+      <div className="bg-white p-6 sm:p-8 rounded-3xl border border-stone-200/90 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span className="text-[11px] font-bold text-red-800 uppercase tracking-wider">
+              Ban Quản Trị • Phê Duyệt Bài Viết
+            </span>
           </div>
-
-          <a
-            href={withBase('/gui-cau-chuyen')}
-            className="px-4 py-2 rounded-xl bg-red-700 hover:bg-red-800 text-white font-bold text-xs flex items-center gap-1.5 shadow-2xs"
-          >
-            <span>+ Tạo bài mới</span>
-          </a>
+          <h1 className="font-serif font-black text-2xl sm:text-3xl text-stone-900 mt-1">
+            Hàng Đợi Kiểm Duyệt Ký Ức Lịch Sử
+          </h1>
+          <p className="text-xs sm:text-sm text-stone-500 mt-1">
+            Đóng góp từ 37 Tổ dân phố, Khối trường học và Người dân Phường Xuân Hương — Đà Lạt
+          </p>
         </div>
 
-        {/* Thanh tìm kiếm & Lọc Tổ Dân Phố */}
+        <a
+          href={withBase('/gui-cau-chuyen')}
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-red-800 hover:bg-red-900 text-white font-bold text-xs shadow-xs transition-colors shrink-0"
+        >
+          <span>+ Đăng bài viết mới</span>
+        </a>
+      </div>
+
+      {/* TABS & BỘ LỌC */}
+      <div className="bg-white p-4 sm:p-6 rounded-3xl border border-stone-200/90 shadow-xs space-y-4">
+        
+        {/* Tabs Trạng thái */}
+        <div className="flex flex-wrap items-center gap-2 border-b border-stone-100 pb-4">
+          {[
+            { id: 'pending', label: 'Chờ duyệt', count: counts.pending, color: 'bg-amber-100 text-amber-900' },
+            { id: 'approved', label: 'Đã xuất bản', count: counts.approved, color: 'bg-emerald-100 text-emerald-900' },
+            { id: 'rejected', label: 'Yêu cầu sửa', count: counts.rejected, color: 'bg-red-100 text-red-900' },
+            { id: 'draft', label: 'Bản nháp', count: counts.draft, color: 'bg-stone-200 text-stone-700' },
+          ].map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`px-4 py-2 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-2 transition-all ${
+                  isActive
+                    ? 'bg-red-800 text-white shadow-xs'
+                    : 'bg-stone-50 hover:bg-stone-100 text-stone-700 border border-stone-200'
+                }`}
+              >
+                <span>{tab.label}</span>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${isActive ? 'bg-white/20 text-white' : tab.color}`}>
+                  {tab.count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Thanh tìm kiếm & Lọc Đơn vị */}
         <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
           <div className="sm:col-span-8 relative">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Tìm theo tiêu đề, nhân chứng hoặc tổ dân phố..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-white border border-amber-200/80 text-xs sm:text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-red-700/30"
+              placeholder="Tìm theo tiêu đề, tác giả, SĐT hoặc đơn vị..."
+              className="w-full pl-10 pr-4 py-2 rounded-xl bg-stone-50 border border-stone-200 text-xs sm:text-sm text-stone-800 focus:outline-none focus:ring-1 focus:ring-red-600 focus:bg-white"
             />
           </div>
 
@@ -297,124 +332,92 @@ export default function AdminModerationQueue() {
             <select
               value={selectedTdp}
               onChange={(e) => setSelectedTdp(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-2xl bg-white border border-amber-200/80 text-xs sm:text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-red-700/30"
+              className="w-full px-3 py-2 rounded-xl bg-stone-50 border border-stone-200 text-xs sm:text-sm font-medium text-stone-800 focus:outline-none focus:ring-1 focus:ring-red-600 focus:bg-white"
             >
-              <option value="ALL">Tất cả 37 Tổ Dân Phố</option>
-              {Array.from(new Set(stories.map((s) => s.to_dan_pho).filter(Boolean))).map((tdp) => (
-                <option key={tdp} value={tdp as string}>
-                  {tdp}
-                </option>
-              ))}
+              <option value="ALL">Tất cả các đơn vị đóng góp</option>
+              <optgroup label="Khối 37 Tổ Dân Phố">
+                <option value="Tổ dân phố">Toàn bộ 37 Tổ Dân Phố</option>
+              </optgroup>
+              <optgroup label="Khối Trường Học">
+                <option value="Trường">Toàn bộ Trường Học</option>
+              </optgroup>
+              <optgroup label="Khối Người Dân">
+                <option value="Người dân">Người Dân & Cựu Chiến Binh</option>
+              </optgroup>
             </select>
           </div>
         </div>
 
       </div>
 
-      {/* THANH THAO TÁC HÀNG LOẠT (BATCH ACTIONS TOOLBAR) */}
+      {/* THANH THAO TÁC HÀNG LOẠT */}
       {filteredStories.length > 0 && (
-        <div className="bg-[#FAF6F0] p-3.5 sm:p-4 rounded-2xl border border-amber-300 shadow-xs flex flex-wrap items-center justify-between gap-3">
+        <div className="bg-stone-50 p-3 sm:p-4 rounded-2xl border border-stone-200 flex flex-wrap items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-3">
-            <label className="flex items-center gap-2 cursor-pointer font-bold text-xs sm:text-sm text-slate-800 select-none">
+            <label className="flex items-center gap-2 cursor-pointer font-bold text-stone-700 select-none">
               <input
                 type="checkbox"
-                checked={isAllSelected}
+                checked={selectedIds.length === filteredStories.length && filteredStories.length > 0}
                 onChange={toggleSelectAll}
                 className="w-4 h-4 rounded text-red-700 accent-red-700 cursor-pointer"
               />
               <span>Chọn tất cả ({filteredStories.length} bài)</span>
             </label>
             {selectedIds.length > 0 && (
-              <span className="px-2.5 py-0.5 rounded-full bg-red-100 text-red-900 text-xs font-black border border-red-200">
+              <span className="px-2 py-0.5 rounded-full bg-red-100 text-red-900 font-bold">
                 Đã chọn: {selectedIds.length}
               </span>
             )}
           </div>
 
-          {selectedIds.length > 0 ? (
-            <div className="flex flex-wrap items-center gap-2">
-              {activeTab !== 'approved' && (
-                <button
-                  type="button"
-                  onClick={handleBatchApprove}
-                  className="px-3.5 py-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition-colors"
-                >
-                  <Check className="w-3.5 h-3.5" />
-                  <span>Duyệt đã chọn ({selectedIds.length})</span>
-                </button>
-              )}
-
-              {activeTab !== 'rejected' && (
-                <button
-                  type="button"
-                  onClick={handleBatchReject}
-                  className="px-3.5 py-1.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 font-bold text-xs flex items-center gap-1.5 transition-colors"
-                >
-                  <span>Yêu cầu sửa ({selectedIds.length})</span>
-                </button>
-              )}
-
-              <button
-                type="button"
-                onClick={handleBatchDelete}
-                className="px-3.5 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 font-bold text-xs flex items-center gap-1.5 transition-colors"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-                <span>Xóa ({selectedIds.length})</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setSelectedIds([])}
-                className="px-2.5 py-1.5 text-xs text-slate-500 hover:text-slate-800 underline"
-              >
-                Bỏ chọn
-              </button>
-            </div>
-          ) : (
-            <span className="text-xs text-slate-400 italic">
-              Tích chọn các ô bên dưới để duyệt hoặc xử lý hàng loạt nhanh chóng
-            </span>
+          {selectedIds.length > 0 && activeTab !== 'approved' && (
+            <button
+              type="button"
+              onClick={handleBatchApprove}
+              className="px-4 py-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center gap-1.5 shadow-xs transition-colors"
+            >
+              <Check className="w-3.5 h-3.5" />
+              <span>Duyệt & Xuất bản ({selectedIds.length}) bài đã chọn</span>
+            </button>
           )}
         </div>
       )}
 
-      {/* DANH SÁCH BÀI VIẾT CẦN DUYỆT */}
+      {/* DANH SÁCH BÀI VIẾT */}
       {filteredStories.length === 0 ? (
-        <div className="bg-[#FAF6F0] rounded-3xl border border-amber-200/80 p-12 text-center shadow-xs">
-          <ShieldCheck className="w-12 h-12 text-amber-600 mx-auto mb-3 opacity-60" />
-          <h3 className="font-serif font-bold text-lg text-slate-800">
-            Không có bài viết nào trong mục này
+        <div className="bg-white rounded-3xl border border-stone-200 p-12 text-center">
+          <ShieldCheck className="w-10 h-10 text-stone-300 mx-auto mb-2" />
+          <h3 className="font-serif font-bold text-base text-stone-800">
+            Không có bài viết nào trong danh sách
           </h3>
-          <p className="text-xs text-slate-500 mt-1">
-            Tất cả bài viết đã được xử lý hoặc không có dữ liệu khớp với bộ lọc tìm kiếm.
+          <p className="text-xs text-stone-400 mt-1">
+            Tất cả bài viết trong mục này đã được xử lý hoặc không có dữ liệu khớp.
           </p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {filteredStories.map((story) => {
             const isChecked = selectedIds.includes(story.id);
+            const badge = getUnitBadge(story.contributor_unit || story.to_dan_pho);
             return (
               <div
                 key={story.id}
-                className={`bg-[#FAF6F0] rounded-3xl border p-4 sm:p-5 shadow-xs hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 ${
-                  isChecked ? 'border-red-600 bg-red-50/20 ring-2 ring-red-600/20' : 'border-amber-200/80'
+                className={`bg-white rounded-2xl border p-4 sm:p-5 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 ${
+                  isChecked ? 'border-red-600 bg-red-50/20 ring-1 ring-red-600' : 'border-stone-200 hover:border-stone-300'
                 }`}
               >
-                {/* Bên trái: Checkbox + Thumbnail & Thông tin */}
+                {/* Thumbnail & Thông tin bài viết */}
                 <div className="flex items-start gap-3 sm:gap-4 flex-1">
-                  {/* Checkbox chọn bài */}
-                  <div className="pt-2 sm:pt-3 shrink-0">
+                  <div className="pt-2 shrink-0">
                     <input
                       type="checkbox"
                       checked={isChecked}
                       onChange={() => toggleSelectOne(story.id)}
                       className="w-4 h-4 rounded text-red-700 accent-red-700 cursor-pointer"
-                      title="Chọn bài viết này"
                     />
                   </div>
 
-                  <div className="w-24 sm:w-32 aspect-[4/3] rounded-2xl overflow-hidden bg-slate-900 shrink-0 border border-amber-200/60">
+                  <div className="w-20 sm:w-28 aspect-[4/3] rounded-xl overflow-hidden bg-stone-100 shrink-0 border border-stone-200">
                     <img
                       src={resolveImageUrl(story.cover_url)}
                       alt={story.title}
@@ -423,169 +426,174 @@ export default function AdminModerationQueue() {
                   </div>
 
                   <div className="space-y-1.5 flex-1 min-w-0">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="px-2.5 py-0.5 rounded-full bg-red-100 text-red-900 text-[10px] font-black uppercase tracking-wider border border-red-200">
-                      {story.category_name}
-                    </span>
-                    <span className="text-[11px] text-slate-500">
-                      {story.to_dan_pho || 'Phường Xuân Hương — Đà Lạt'}
-                    </span>
-                    <span className="text-[11px] text-slate-400">•</span>
-                    <span className="text-[11px] text-slate-500">{formatDate(story.created_at)}</span>
-                  </div>
-
-                  <h3 className="font-serif font-black text-base sm:text-lg text-slate-900 hover:text-red-700 transition-colors line-clamp-1">
-                    {story.title}
-                  </h3>
-
-                  <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
-                    {story.summary}
-                  </p>
-
-                  <div className="text-[11px] text-slate-500 flex flex-wrap items-center gap-3 pt-0.5">
-                    <span>Nhân chứng / Người kể: <strong className="text-slate-800">{story.narrator_name}</strong></span>
-                    <span>•</span>
-                    <span>Thời gian đọc: <strong>~{story.read_minutes} phút</strong></span>
-                  </div>
-
-                  {story.reject_reason && story.status === 'rejected' && (
-                    <div className="text-xs text-red-700 bg-red-50 p-2 rounded-xl border border-red-200 mt-1">
-                      <strong>Lý do yêu cầu sửa:</strong> {story.reject_reason}
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${badge.colorClass}`}>
+                        {badge.text}
+                      </span>
+                      <span className="text-[11px] font-semibold text-stone-800">
+                        {story.contributor_unit || story.to_dan_pho || 'Phường Xuân Hương'}
+                      </span>
+                      <span className="text-stone-300">•</span>
+                      <span className="text-[11px] text-stone-400">{formatDate(story.created_at)}</span>
                     </div>
-                  )}
+
+                    <h3 className="font-serif font-bold text-base text-stone-900 hover:text-red-700 transition-colors line-clamp-1">
+                      {story.title}
+                    </h3>
+
+                    <p className="text-xs text-stone-600 line-clamp-2 leading-relaxed">
+                      {story.summary}
+                    </p>
+
+                    {/* Thông tin người đóng góp & SĐT để thẩm định */}
+                    <div className="text-[11px] text-stone-500 flex flex-wrap items-center gap-3 pt-1">
+                      <span className="flex items-center gap-1 font-medium text-stone-700">
+                        <User className="w-3 h-3 text-stone-400" />
+                        <span>Người gửi: <strong>{story.contributor_name}</strong></span>
+                        {story.contributor_role && <span className="text-stone-400">({story.contributor_role})</span>}
+                      </span>
+                      {story.contributor_phone && (
+                        <a
+                          href={`tel:${story.contributor_phone}`}
+                          className="flex items-center gap-1 text-red-700 hover:underline font-bold bg-red-50 px-2 py-0.5 rounded"
+                        >
+                          <Phone className="w-3 h-3" />
+                          <span>{story.contributor_phone}</span>
+                        </a>
+                      )}
+                    </div>
+
+                    {story.reject_reason && story.status === 'rejected' && (
+                      <div className="text-xs text-red-700 bg-red-50 p-2 rounded-lg border border-red-200 mt-1">
+                        <strong>Lý do từ chối:</strong> {story.reject_reason}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
 
-              {/* Bên phải: Nút Thao tác */}
-              <div className="flex items-center gap-2 shrink-0 md:flex-col lg:flex-row border-t md:border-t-0 pt-3 md:pt-0 border-amber-200/60 justify-end">
-                <button
-                  type="button"
-                  onClick={() => setReviewStory(story)}
-                  className="px-3.5 py-2 rounded-xl bg-white hover:bg-amber-100 text-slate-700 font-bold text-xs border border-amber-300 flex items-center gap-1.5 transition-colors shadow-2xs"
-                  title="Xem toàn bộ nội dung & thẩm định"
-                >
-                  <Eye className="w-3.5 h-3.5 text-slate-500" />
-                  <span>Thẩm định</span>
-                </button>
-
-                {story.status !== 'approved' && (
+                {/* Nút hành động */}
+                <div className="flex items-center gap-2 shrink-0 justify-end pt-2 md:pt-0 border-t md:border-t-0 border-stone-100">
                   <button
                     type="button"
-                    onClick={() => handleApprove(story.id, story.title)}
-                    className="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center gap-1.5 shadow transition-colors"
+                    onClick={() => setReviewStory(story)}
+                    className="px-3 py-1.5 rounded-xl border border-stone-200 hover:bg-stone-50 text-stone-700 text-xs font-semibold flex items-center gap-1"
                   >
-                    <Check className="w-3.5 h-3.5" />
-                    <span>Duyệt ngay</span>
+                    <Eye className="w-3.5 h-3.5" />
+                    <span>Xem bài</span>
                   </button>
-                )}
 
-                {story.status !== 'rejected' && (
+                  {story.status !== 'approved' && (
+                    <button
+                      type="button"
+                      onClick={() => handleApprove(story.id, story.title)}
+                      className="px-3.5 py-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold flex items-center gap-1 shadow-xs"
+                    >
+                      <Check className="w-3.5 h-3.5" />
+                      <span>Duyệt</span>
+                    </button>
+                  )}
+
+                  {story.status !== 'rejected' && (
+                    <button
+                      type="button"
+                      onClick={() => handleReject(story.id, story.title)}
+                      className="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-semibold"
+                    >
+                      Từ chối
+                    </button>
+                  )}
+
                   <button
                     type="button"
-                    onClick={() => handleReject(story.id, story.title)}
-                    className="px-3 py-2 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-xs border border-amber-300"
+                    onClick={() => handleDelete(story.id, story.title)}
+                    className="p-1.5 rounded-xl text-stone-400 hover:text-red-700 hover:bg-red-50"
+                    title="Xóa bài viết"
                   >
-                    Yêu cầu sửa
+                    <Trash2 className="w-4 h-4" />
                   </button>
-                )}
+                </div>
 
-                <button
-                  type="button"
-                  onClick={() => handleDelete(story.id, story.title)}
-                  className="p-2 rounded-xl text-slate-400 hover:text-red-700 hover:bg-red-50 transition-colors"
-                  title="Xóa bài viết"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
         </div>
       )}
 
-      {/* ================= MODAL THẨM ĐỊNH CHI TIẾT (FULL REVIEW DRAWER) ================= */}
+      {/* MODAL XEM CHI TIẾT BÀI VIẾT ĐỂ DUYỆT */}
       {reviewStory && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-[#FAF6F0] rounded-3xl border border-amber-300 max-w-4xl w-full max-h-[92vh] overflow-y-auto p-6 sm:p-8 shadow-2xl space-y-6 animate-scale-up">
-            
-            <div className="flex items-center justify-between border-b border-amber-200/80 pb-3">
-              <div className="flex items-center gap-2">
-                <span className="px-3 py-1 rounded-full bg-red-100 text-red-900 text-xs font-black uppercase tracking-wider border border-red-300">
-                  {reviewStory.status === 'pending' ? 'HỒ SƠ CHỜ THẨM ĐỊNH' : `TRẠNG THÁI: ${reviewStory.status.toUpperCase()}`}
-                </span>
-                <span className="text-xs text-slate-500">{reviewStory.to_dan_pho}</span>
-              </div>
+        <div className="fixed inset-0 z-50 bg-stone-950/70 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl border border-stone-200 max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl space-y-6">
+            <div className="flex items-center justify-between pb-3 border-b border-stone-100">
+              <span className="text-xs font-bold uppercase tracking-wider text-red-800">
+                Thẩm định bài viết: {reviewStory.contributor_unit}
+              </span>
               <button
                 type="button"
                 onClick={() => setReviewStory(null)}
-                className="w-8 h-8 rounded-full bg-white hover:bg-slate-100 flex items-center justify-center text-slate-600 font-bold text-lg"
+                className="w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 flex items-center justify-center text-stone-600 font-bold"
               >
                 ×
               </button>
             </div>
 
-            {/* Ảnh bìa (Chỉ hiển thị nếu nội dung chưa có ảnh chèn trực tiếp, tránh nhân đôi) */}
-            {!/<img|!\[/i.test(reviewStory.body) && (reviewStory.cover_url || (reviewStory.images && reviewStory.images[0])) && (
-              <div className="rounded-2xl overflow-hidden aspect-[16/9] bg-slate-900 max-h-80">
+            {reviewStory.cover_url && (
+              <div className="rounded-2xl overflow-hidden aspect-[16/9] max-h-72 bg-stone-100">
                 <img
-                  src={reviewStory.cover_url || (reviewStory.images && reviewStory.images[0])}
+                  src={resolveImageUrl(reviewStory.cover_url)}
                   alt={reviewStory.title}
                   className="w-full h-full object-cover"
                 />
               </div>
             )}
 
-            {/* Chi tiết thông tin */}
             <div>
-              <h2 className="font-serif font-black text-2xl sm:text-3xl text-slate-900 leading-snug">
+              <div className="flex flex-wrap items-center gap-2 mb-2">
+                <span className="px-2.5 py-0.5 rounded-full bg-red-100 text-red-900 text-xs font-bold">
+                  {reviewStory.category_name}
+                </span>
+                <span className="text-xs text-stone-500">
+                  Tác giả: <strong>{reviewStory.contributor_name}</strong>
+                  {reviewStory.contributor_phone && ` • SĐT: ${reviewStory.contributor_phone}`}
+                </span>
+              </div>
+              <h2 className="font-serif font-black text-2xl text-stone-900">
                 {reviewStory.title}
               </h2>
-              <div className="text-xs text-slate-500 mt-2 flex flex-wrap items-center gap-3">
-                <span>Nhân chứng / Người kể: <strong className="text-slate-800">{reviewStory.narrator_name}</strong></span>
-                <span>•</span>
-                <span>Thời kỳ: <strong>{reviewStory.period}</strong></span>
-                <span>•</span>
-                <span>Đơn vị gửi: <strong>{reviewStory.contributor_unit || reviewStory.contributor_name}</strong></span>
-              </div>
             </div>
 
-            {/* Tóm tắt */}
-            <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs sm:text-sm text-slate-700 italic">
+            <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200 text-xs sm:text-sm text-stone-700 italic">
               "{reviewStory.summary}"
             </div>
 
-            {/* Nội dung chi tiết (Được render định dạng màu sắc, căn lề và ảnh tư liệu Cloudinary chuẩn đẹp) */}
             <div
-              className="prose prose-slate max-w-none text-xs sm:text-sm leading-relaxed"
+              className="prose prose-stone max-w-none text-xs sm:text-sm leading-relaxed"
               dangerouslySetInnerHTML={{ __html: renderStoryContent(reviewStory.body) }}
             />
 
-            {/* Nút Phê duyệt / Từ chối dưới chân Drawer */}
-            <div className="pt-4 border-t border-amber-200/80 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center justify-between pt-4 border-t border-stone-100">
               <button
                 type="button"
-                onClick={() => handleDelete(reviewStory.id, reviewStory.title)}
-                className="px-4 py-2 rounded-xl text-red-700 hover:bg-red-50 font-bold text-xs"
+                onClick={() => setReviewStory(null)}
+                className="px-4 py-2 rounded-xl border border-stone-200 text-stone-600 text-xs font-semibold"
               >
-                Xóa bài viết
+                Đóng xem trước
               </button>
 
-              <div className="flex items-center gap-2.5">
+              <div className="flex gap-2">
                 <button
                   type="button"
                   onClick={() => handleReject(reviewStory.id, reviewStory.title)}
-                  className="px-4 py-2.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-xs border border-amber-300"
+                  className="px-4 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold"
                 >
-                  Yêu cầu sửa
+                  Yêu cầu chỉnh sửa
                 </button>
                 <button
                   type="button"
                   onClick={() => handleApprove(reviewStory.id, reviewStory.title)}
-                  className="px-6 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center gap-1.5 shadow"
+                  className="px-5 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold flex items-center gap-1.5"
                 >
                   <Check className="w-4 h-4" />
-                  <span>Phê duyệt xuất bản</span>
+                  <span>Duyệt & Xuất bản ngay</span>
                 </button>
               </div>
             </div>

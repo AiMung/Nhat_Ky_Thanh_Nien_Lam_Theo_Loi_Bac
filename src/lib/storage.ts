@@ -19,6 +19,9 @@ export interface Story {
   title: string;
   narrator_name: string;
   contributor_name: string;
+  contributor_phone?: string;
+  contributor_role?: string;
+  unit_type?: 'tdp' | 'school' | 'citizen' | 'other';
   contributor_unit?: string;
   to_dan_pho?: string;
   summary: string;
@@ -561,7 +564,7 @@ export function getStoryBySlug(slug: string): Story | undefined {
   return list.find((s) => s.slug === slug);
 }
 
-// 3. THÊM BÀI VIẾT MỚI (CREATE - Người dùng đóng góp - lưu ngay vào localStorage)
+// 3. THÊM BÀI VIẾT MỚI (CREATE - Bất kỳ ai cũng có thể đóng góp - mặc định lưu pending chờ duyệt)
 export function submitNewStory(
   data: Omit<Story, 'id' | 'slug' | 'created_at' | 'status' | 'read_minutes'>,
   initialStatus: 'draft' | 'pending' | 'approved' = 'pending'
@@ -569,10 +572,8 @@ export function submitNewStory(
   const current = getAllStories();
   const session = getCurrentSession();
 
-  // BẢO MẬT: Nếu là Tổ Dân Phố, khóa cứng đơn vị vào TDP của tài khoản đăng nhập
-  const lockedToDanPho = (session.role === 'tdp' && session.to_dan_pho) ? session.to_dan_pho : (data.to_dan_pho || 'Phường Xuân Hương — Đà Lạt');
-  const lockedUnit = (session.role === 'tdp' && session.unit) ? session.unit : (data.contributor_unit || lockedToDanPho);
-  const lockedContributor = (session.role === 'tdp') ? session.name : (data.contributor_name || 'Đoàn TNCS Hồ Chí Minh Phường Xuân Hương');
+  const finalUnit = data.contributor_unit || data.to_dan_pho || 'Phường Xuân Hương — Đà Lạt';
+  const finalContributor = data.contributor_name || 'Đoàn viên / Người dân Phường Xuân Hương';
 
   // Tạo slug sạch từ tiêu đề
   const cleanTitle = (data.title || 'bai-viet-moi').trim();
@@ -590,9 +591,12 @@ export function submitNewStory(
 
   const newStory: Story = {
     ...data,
-    to_dan_pho: lockedToDanPho,
-    contributor_unit: lockedUnit,
-    contributor_name: lockedContributor,
+    to_dan_pho: data.to_dan_pho || finalUnit,
+    contributor_unit: finalUnit,
+    contributor_name: finalContributor,
+    contributor_phone: data.contributor_phone || '',
+    contributor_role: data.contributor_role || 'Đoàn viên / Người dân',
+    unit_type: data.unit_type || 'tdp',
     id: 'user-story-' + Date.now(),
     slug,
     status: initialStatus,
@@ -608,6 +612,16 @@ export function submitNewStory(
     window.dispatchEvent(new Event('stories-changed'));
   }
   return newStory;
+}
+
+// 3.1. HÀM TRÍCH XUẤT CÁC BÀI ĐÃ DUYỆT (CHỈ BÀI APPROVED MỚI HIỂN THỊ CÔNG KHAI)
+export function getApprovedStories(): Story[] {
+  return getAllStories().filter((s) => s.status === 'approved');
+}
+
+// 3.2. HÀM TRÍCH XUẤT CÁC BÀI ĐANG CHỜ BAN BIÊN TẬP DUYỆT
+export function getPendingStories(): Story[] {
+  return getAllStories().filter((s) => s.status === 'pending');
 }
 
 // 4. CẬP NHẬT / SỬA BÀI VIẾT (UPDATE - Chỉnh sửa thông tin bài viết)

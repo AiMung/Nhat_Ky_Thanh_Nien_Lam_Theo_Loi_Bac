@@ -1,366 +1,108 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  submitNewStory, 
-  getHistoricalCharacters, 
-  addHistoricalCharacter, 
-  type HistoricalCharacter, 
-  type Story 
-} from '@/lib/storage';
-import { getCurrentSession, type UserAccount } from '@/lib/auth';
-import { uploadToCloudinary, isCloudinaryConfigured } from '@/lib/cloudinary';
+import { submitNewStory, type Story } from '@/lib/storage';
+import { TDP_UNITS, SCHOOL_UNITS, CITIZEN_UNITS } from '@/lib/units';
 import { saveStoryToSupabase } from '@/lib/supabase';
-import { renderStoryContent } from '@/lib/renderContent';
 import { withBase, resolveImageUrl } from '@/lib/utils';
+import ImageUploadBox from '@/components/story/ImageUploadBox';
 import { 
-  ArrowLeft, 
-  Eye, 
-  Save, 
   Send, 
-  User, 
-  Plus, 
-  X, 
-  Search, 
-  FileText, 
-  Video, 
-  Mic, 
-  Image as ImageIcon, 
-  Check, 
-  Bold, 
-  Italic, 
-  Underline, 
-  Strikethrough, 
-  Heading2, 
-  Heading3, 
-  Heading4, 
-  AlignLeft, 
-  AlignCenter, 
-  AlignRight, 
-  AlignJustify, 
-  List, 
-  ListOrdered, 
-  Quote, 
-  Link as LinkIcon, 
-  Table, 
-  Undo, 
-  Redo, 
-  Upload, 
-  Play, 
   CheckCircle2, 
-  AlertCircle,
+  AlertCircle, 
+  User, 
+  Phone, 
+  Building2, 
+  GraduationCap, 
+  Users, 
   Sparkles,
-  ShieldCheck,
-  Clipboard,
+  ArrowRight,
   BookOpen,
-  Lock,
-  UserCheck
+  ShieldCheck,
+  Eye,
+  Info
 } from 'lucide-react';
 
-// Danh sách chuẩn 37 Tổ Dân Phố Phường Xuân Hương - Đà Lạt
-const TO_DAN_PHO_LIST = [
-  'Tổ dân phố Nguyễn Văn Trỗi',
-  'Tổ dân phố Hòa Bình',
-  'Tổ dân phố Ánh Sáng',
-  'Tổ dân phố Đa Hòa',
-  'Tổ dân phố Tô Ngọc Vân',
-  'Tổ dân phố Lý Tự Trọng',
-  'Tổ dân phố Bùi Thị Xuân',
-  'Tổ dân phố Mỹ Lộc',
-  'Tổ dân phố Phan Đình Phùng',
-  'Tổ dân phố Phạm Ngũ Lão',
-  'Tổ dân phố Trần Phú',
-  'Tổ dân phố Xuân An',
-  'Tổ dân phố Hà Huy Tập',
-  'Tổ dân phố Tân Bình',
-  'Tổ dân phố Ba Tháng Tư',
-  'Tổ dân phố Đặng Thái Thân',
-  'Tổ dân phố An Bình',
-  'Tổ dân phố Nguyễn Trung Trực',
-  'Tổ dân phố Tân Lạc',
-  'Tổ dân phố Prenn',
-  'Tổ dân phố Trường Chinh',
-  'Tổ dân phố Mạc Đĩnh Chi',
-  'Tổ dân phố Huỳnh Thúc Kháng',
-  'Tổ dân phố Đồng Tâm',
-  'Tổ dân phố Nam Thiên',
-  'Tổ dân phố Ngô Thì Sỹ',
-  'Tổ dân phố Lê Hồng Phong',
-  'Tổ dân phố Hoàng Hoa Thám',
-  'Tổ dân phố Trần Quang Diệu',
-  'Tổ dân phố Trần Quý Cáp',
-  'Tổ dân phố Khe Sanh',
-  'Tổ dân phố Yersin',
-  'Tổ dân phố Trần Hưng Đạo',
-  'Tổ dân phố Nguyễn Du',
-  'Tổ dân phố An Sơn 1',
-  'Tổ dân phố An Sơn 2',
-  'Tổ dân phố Phạm Hồng Thái'
-];
-
 export default function StorySubmitForm() {
-  const [currentUser, setCurrentUser] = useState<UserAccount>(getCurrentSession());
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  // 1. Thông tin người gửi & Đơn vị đóng góp
+  const [contributorName, setContributorName] = useState('');
+  const [contributorPhone, setContributorPhone] = useState('');
+  const [contributorRole, setContributorRole] = useState('Đoàn viên thanh niên');
+  
+  // Khối đơn vị: 'tdp' (37 Tổ DP) | 'school' (Trường học) | 'citizen' (Người dân & Khác)
+  const [unitGroup, setUnitGroup] = useState<'tdp' | 'school' | 'citizen'>('tdp');
+  const [selectedUnit, setSelectedUnit] = useState<string>(TDP_UNITS[0]);
+  const [customUnit, setCustomUnit] = useState('');
 
-  // 1. Quản lý Nhân vật lịch sử
-  const [characterList, setCharacterList] = useState<HistoricalCharacter[]>([]);
-  const [characterSearch, setCharacterSearch] = useState('');
-  const [selectedCharacters, setSelectedCharacters] = useState<HistoricalCharacter[]>([]);
-  const [showNewCharModal, setShowNewCharModal] = useState(false);
-  const [newCharName, setNewCharName] = useState('');
-  const [newCharBirth, setNewCharBirth] = useState('');
-  const [newCharHometown, setNewCharHometown] = useState('');
-  const [newCharBio, setNewCharBio] = useState('');
-
-  // 2. Nội dung bài viết
+  // 2. Nội dung câu chuyện
   const [title, setTitle] = useState('');
-  const [summary, setSummary] = useState('');
-  const [mediaType, setMediaType] = useState<'article' | 'video' | 'audio' | 'gallery'>('article');
-  const [period, setPeriod] = useState('1954-1975');
-  const [eventYear, setEventYear] = useState<number | ''>(1968);
-  const [toDanPho, setToDanPho] = useState(TO_DAN_PHO_LIST[2]); // Mặc định Tổ TDP Ánh Sáng
   const [category, setCategory] = useState('hoc-tap-bac');
+  const [narrator, setNarrator] = useState('');
+  const [summary, setSummary] = useState('');
   const [body, setBody] = useState('');
-  const editorDivRef = useRef<HTMLDivElement>(null);
-  const [isSourceMode, setIsSourceMode] = useState(false);
+  const [period, setPeriod] = useState('Kháng chiến chống Mỹ (1954 - 1975)');
 
-  // 3. Đa phương tiện
+  // 3. Hình ảnh tư liệu
   const [images, setImages] = useState<string[]>([
     '/images/thoi-hoa-lua-hero.jpg'
   ]);
-  const [isUploadingImg, setIsUploadingImg] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [videoUrl, setVideoUrl] = useState('');
-  const [audioUrl, setAudioUrl] = useState('');
 
-  // 4. Cam kết của người gửi
-  const [c1, setC1] = useState(true);
-  const [c2, setC2] = useState(true);
-  const [c3, setC3] = useState(true);
-  const [c4, setC4] = useState(true);
+  // 4. Cam kết
+  const [committed, setCommitted] = useState(true);
 
-  // 5. Trạng thái phản hồi & Preview Modal
-  const [showPreviewModal, setShowPreviewModal] = useState(false);
+  // 5. Trạng thái phản hồi
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [createdStory, setCreatedStory] = useState<Story | null>(null);
-  const [toastMessage, setToastMessage] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const isPastingRef = useRef(false);
 
+  // Cập nhật đơn vị mặc định khi đổi nhóm
   useEffect(() => {
-    setCharacterList(getHistoricalCharacters());
-    const session = getCurrentSession();
-    setCurrentUser(session);
-    if (session.role === 'tdp' && session.to_dan_pho) {
-      setToDanPho(session.to_dan_pho);
-    }
-    setIsCheckingAuth(false);
-  }, []);
-
-  // Lọc nhân vật lịch sử
-  const filteredCharacters = characterList.filter((c) => {
-    const q = characterSearch.toLowerCase().trim();
-    if (!q) return true;
-    return (
-      c.name.toLowerCase().includes(q) ||
-      (c.hometown && c.hometown.toLowerCase().includes(q)) ||
-      (c.birth_year && c.birth_year.toLowerCase().includes(q))
-    );
-  });
-
-  const handleAddCharacter = (char: HistoricalCharacter) => {
-    if (!selectedCharacters.some((c) => c.id === char.id)) {
-      setSelectedCharacters([...selectedCharacters, char]);
-    }
-  };
-
-  const handleRemoveCharacter = (id: string) => {
-    setSelectedCharacters(selectedCharacters.filter((c) => c.id !== id));
-  };
-
-  const handleCreateNewCharacter = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newCharName.trim()) return;
-    const added = addHistoricalCharacter({
-      name: newCharName.trim(),
-      birth_year: newCharBirth.trim(),
-      hometown: newCharHometown.trim(),
-      biography: newCharBio.trim()
-    });
-    setCharacterList(getHistoricalCharacters());
-    setSelectedCharacters([...selectedCharacters, added]);
-    setShowNewCharModal(false);
-    setNewCharName('');
-    setNewCharBirth('');
-    setNewCharHometown('');
-    setNewCharBio('');
-    showToast(`Đã tạo và gắn nhân vật: ${added.name}`);
-  };
-
-  // Thao tác thanh công cụ Soạn thảo Trực quan (WYSIWYG - Không hiện mã HTML/CSS rác)
-  const executeCommand = (command: string, value: string | undefined = undefined) => {
-    if (editorDivRef.current) {
-      editorDivRef.current.focus();
-    }
-    try {
-      document.execCommand(command, false, value);
-    } catch (e) {
-      console.warn('execCommand error:', e);
-    }
-    if (editorDivRef.current) {
-      setBody(editorDivRef.current.innerHTML);
-    }
-  };
-
-  const insertHtmlAtCursor = (html: string) => {
-    if (editorDivRef.current) {
-      editorDivRef.current.focus();
-      try {
-        document.execCommand('insertHTML', false, html);
-      } catch {
-        editorDivRef.current.innerHTML += html;
-      }
-      setBody(editorDivRef.current.innerHTML);
+    if (unitGroup === 'tdp') {
+      setSelectedUnit(TDP_UNITS[0]);
+    } else if (unitGroup === 'school') {
+      setSelectedUnit(SCHOOL_UNITS[0]);
     } else {
-      setBody((prev) => prev + html);
+      setSelectedUnit(CITIZEN_UNITS[0]);
     }
-  };
-
-  const toggleSourceMode = () => {
-    if (isSourceMode) {
-      setIsSourceMode(false);
-      setTimeout(() => {
-        if (editorDivRef.current) {
-          editorDivRef.current.innerHTML = body;
-        }
-      }, 50);
-    } else {
-      if (editorDivRef.current) {
-        setBody(editorDivRef.current.innerHTML);
-      }
-      setIsSourceMode(true);
-    }
-  };
-
-  // Xử lý upload ảnh (hỗ trợ kéo thả, chọn file và dán Clipboard trực tiếp)
-  const handleFileUpload = async (files: FileList | null, insertToEditor: boolean = false) => {
-    if (!files || files.length === 0) return;
-    setIsUploadingImg(true);
-    setUploadProgress(10);
-
-    const uploadedUrls: string[] = [];
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      try {
-        const res = await uploadToCloudinary(file, 'image', (pct) => {
-          setUploadProgress(Math.min(95, Math.round(((i + pct / 100) / files.length) * 100)));
-        });
-        uploadedUrls.push(res.secure_url || res.url);
-      } catch (err: any) {
-        console.error('Lỗi tải ảnh:', err);
-        showToast('Lỗi tải file: ' + (err.message || 'Thử lại sau'));
-      }
-    }
-
-    if (uploadedUrls.length > 0) {
-      setImages((prev) => [...prev, ...uploadedUrls]);
-      if (insertToEditor) {
-        const imgHtml = uploadedUrls
-          .map(
-            (u) =>
-              `<figure class="my-4 text-center"><img src="${u}" alt="Ảnh tư liệu" class="rounded-2xl max-h-[480px] mx-auto border border-amber-200/90 shadow-md object-contain" /></figure><p><br/></p>`
-          )
-          .join('');
-        insertHtmlAtCursor(imgHtml);
-        showToast(`📸 Đã dán ${uploadedUrls.length} ảnh trực tiếp vào bài viết & đồng bộ Cloudinary!`);
-      } else {
-        showToast(`✨ Đã thêm thành công ${uploadedUrls.length} ảnh vào thư viện!`);
-      }
-    }
-    setUploadProgress(100);
-    setTimeout(() => {
-      setIsUploadingImg(false);
-      setUploadProgress(0);
-    }, 400);
-  };
-
-  const handlePasteImage = async (e: React.ClipboardEvent) => {
-    const items = e.clipboardData?.items;
-    if (!items || items.length === 0) return;
-
-    const imageFiles: File[] = [];
-    for (let i = 0; i < items.length; i++) {
-      if (items[i].type.indexOf('image') !== -1) {
-        const file = items[i].getAsFile();
-        if (file) imageFiles.push(file);
-      }
-    }
-
-    // Nếu dán link ảnh dạng text (URL kết thúc bằng jpg, png, webp, data:image...)
-    if (imageFiles.length === 0) {
-      const text = e.clipboardData.getData('text')?.trim();
-      if (
-        text &&
-        (text.startsWith('http://') || text.startsWith('https://') || text.startsWith('data:image/')) &&
-        /\.(jpeg|jpg|gif|png|webp)($|\?)/i.test(text)
-      ) {
-        e.preventDefault();
-        e.stopPropagation();
-        if (isPastingRef.current) return;
-        isPastingRef.current = true;
-        setTimeout(() => { isPastingRef.current = false; }, 800);
-
-        setImages((prev) => Array.from(new Set([...prev, text])));
-        insertHtmlAtCursor(
-          `<figure class="my-4 text-center"><img src="${text}" alt="Ảnh tư liệu" class="rounded-2xl max-h-[480px] mx-auto border border-amber-200/90 shadow-md object-contain" /></figure><p><br/></p>`
-        );
-        showToast('📋 Đã nhận và chèn ảnh vào bài viết!');
-        return;
-      }
-    }
-
-    if (imageFiles.length > 0) {
-      e.preventDefault();
-      e.stopPropagation();
-      if (isPastingRef.current) return;
-      isPastingRef.current = true;
-      setTimeout(() => { isPastingRef.current = false; }, 1000);
-
-      const dt = new DataTransfer();
-      imageFiles.forEach((f) => dt.items.add(f));
-      // Tự động tải lên Cloudinary và chèn vào bài viết duy nhất 1 lần
-      await handleFileUpload(dt.files, true);
-    }
-  };
+  }, [unitGroup]);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
-    setTimeout(() => setToastMessage(''), 4000);
+    setTimeout(() => setToastMessage(''), 4500);
   };
 
-  // Lưu bài viết (Nháp, Gửi duyệt, hoặc Xuất bản trực tiếp)
-  const handleSaveOrSubmit = async (status: 'draft' | 'pending' | 'approved') => {
-    // 1. Kiểm tra quyền bắt buộc phải đăng nhập
-    if (currentUser.role === 'guest') {
-      showToast('⚠️ Bạn bắt buộc phải đăng nhập tài khoản Tổ Dân Phố hoặc Ban Biên tập để gửi bài!');
-      setTimeout(() => {
-        window.location.href = withBase('/tai-khoan/dang-nhap');
-      }, 1200);
+  const getFinalUnitName = () => {
+    if (unitGroup === 'citizen' && selectedUnit === 'Cá nhân / Đơn vị hảo tâm khác' && customUnit.trim()) {
+      return customUnit.trim();
+    }
+    if (unitGroup === 'school' && selectedUnit === 'Chi đoàn / Liên đội Trường học khác' && customUnit.trim()) {
+      return customUnit.trim();
+    }
+    return selectedUnit;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Ràng buộc tính hợp lệ
+    if (!contributorName.trim()) {
+      showToast('⚠️ Vui lòng nhập Họ và tên của bạn để Ban Biên tập ghi nhận tác giả.');
       return;
     }
-
+    if (!contributorPhone.trim()) {
+      showToast('⚠️ Vui lòng cung cấp Số điện thoại hoặc Zalo để xác thực thông tin khi cần.');
+      return;
+    }
     if (!title.trim()) {
-      showToast('⚠️ Vui lòng nhập Tiêu đề bài viết trước khi tiếp tục.');
+      showToast('⚠️ Vui lòng nhập Tiêu đề câu chuyện.');
       return;
     }
-
-    if (status !== 'draft') {
-      if (!body.trim() && !summary.trim()) {
-        showToast('⚠️ Vui lòng nhập Nội dung chi tiết hoặc tóm tắt bài viết.');
-        return;
-      }
-      if (status === 'pending' && (!c1 || !c2 || !c3 || !c4)) {
-        showToast('⚠️ Vui lòng tích chọn đủ 4 cam kết xác thực ở cột bên phải.');
-        return;
-      }
+    if (!summary.trim() && !body.trim()) {
+      showToast('⚠️ Vui lòng nhập Nội dung câu chuyện hoặc tóm tắt.');
+      return;
+    }
+    if (!committed) {
+      showToast('⚠️ Vui lòng tích chọn cam kết tính trung thực của tư liệu trước khi gửi.');
+      return;
     }
 
     setIsSubmitting(true);
@@ -374,1209 +116,474 @@ export default function StorySubmitForm() {
       'bien-dao': 'Bảo vệ chủ quyền Biển đảo',
     };
 
-    const narratorNames = selectedCharacters.length > 0 
-      ? selectedCharacters.map((c) => c.name).join(', ') 
-      : 'Cán bộ & Đoàn viên ' + toDanPho;
+    const finalUnit = getFinalUnitName();
 
     const newStoryData = {
       title: title.trim(),
-      narrator_name: narratorNames,
-      contributor_name: 'Đoàn TNCS Hồ Chí Minh Phường Xuân Hương — Đà Lạt',
-      contributor_unit: toDanPho,
-      to_dan_pho: toDanPho,
+      narrator_name: narrator.trim() || contributorName.trim(),
+      contributor_name: contributorName.trim(),
+      contributor_phone: contributorPhone.trim(),
+      contributor_role: contributorRole,
+      unit_type: unitGroup,
+      contributor_unit: finalUnit,
+      to_dan_pho: unitGroup === 'tdp' ? finalUnit : (finalUnit + ' — P. Xuân Hương'),
       summary: summary.trim() || title.trim(),
       body: body.trim() || summary.trim(),
       category_id: category,
       category_name: categoryMap[category] || 'Học tập & Làm theo lời Bác',
       province_code: 'LD',
       province_name: 'Phường Xuân Hương — Đà Lạt',
-      event_year: typeof eventYear === 'number' ? eventYear : 1975,
       period: period,
-      media_type: mediaType,
-      historical_characters: selectedCharacters,
-      video_url: videoUrl.trim() || undefined,
-      audio_url: audioUrl.trim() || undefined,
       cover_url: images[0] || '/images/thoi-hoa-lua-hero.jpg',
       images: images
     };
 
     try {
-      // 1. Lưu cục bộ (LocalStorage)
-      const savedStory = submitNewStory(newStoryData, status);
+      // Lưu với trạng thái pending - CHỜ DUYỆT (không hiển thị ngay)
+      const saved = submitNewStory(newStoryData, 'pending');
 
-      // 2. Đồng bộ Supabase nếu đã cấu hình
-      await saveStoryToSupabase(savedStory);
+      // Đồng bộ Supabase nếu có
+      await saveStoryToSupabase(saved);
 
       setIsSubmitting(false);
-      setCreatedStory(savedStory);
+      setCreatedStory(saved);
       setShowSuccessModal(true);
-
-      if (status === 'approved') {
-        showToast('🎉 Bài viết đã được Xuất bản trực tiếp lên Thư viện!');
-      } else if (status === 'pending') {
-        showToast('✓ Bài viết đã được gửi vào Hàng đợi kiểm duyệt thành công!');
-      } else {
-        showToast('✓ Đã lưu bản nháp thành công!');
-      }
-    } catch (err: any) {
+    } catch (err) {
+      console.error('Error submitting story:', err);
       setIsSubmitting(false);
-      showToast('Lỗi khi lưu bài: ' + (err.message || 'Thử lại sau'));
+      showToast('⚠️ Có lỗi xảy ra trong quá trình gửi. Vui lòng thử lại!');
     }
   };
 
-  // 1. Chờ kiểm tra trạng thái đăng nhập
-  if (isCheckingAuth) {
-    return (
-      <div className="py-24 text-center text-slate-500 font-medium text-sm flex flex-col items-center justify-center gap-3">
-        <div className="w-8 h-8 border-3 border-red-700 border-t-transparent rounded-full animate-spin"></div>
-        <span>Đang kiểm tra quyền xác thực hệ thống...</span>
-      </div>
-    );
-  }
-
-  // 2. KHÓA CHẶT: BẮT BUỘC ĐĂNG NHẬP MỚI ĐƯỢC GỬI BÀI VIẾT
-  if (currentUser.role === 'guest') {
-    return (
-      <div className="bg-[#FAF6F0] rounded-3xl border border-amber-300/90 p-8 sm:p-12 text-center max-w-xl mx-auto shadow-xl space-y-6 animate-fade-in my-8">
-        <div className="w-16 h-16 rounded-3xl bg-gradient-to-tr from-red-700 to-red-800 text-amber-300 font-serif font-black text-2xl flex items-center justify-center mx-auto shadow-md border border-amber-300/50">
-          ★
-        </div>
-        
-        <div className="space-y-1.5">
-          <div className="text-[11px] font-bold text-red-800 uppercase tracking-widest">
-            ĐOÀN TNCS HỒ CHÍ MINH PHƯỜNG XUÂN HƯƠNG — ĐÀ LẠT
-          </div>
-          <h2 className="font-serif font-black text-2xl sm:text-3xl text-slate-900 tracking-tight">
-            Yêu Cầu Đăng Nhập Để Gửi Bài
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
-            Hệ thống quản lý ký ức chính quy của 37 Tổ Dân Phố Phường Xuân Hương.
-          </p>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs sm:text-sm text-slate-700 leading-relaxed max-w-md mx-auto space-y-2 text-left">
-          <div className="flex items-start gap-2 text-slate-800 font-bold">
-            <Lock className="w-4 h-4 text-red-700 shrink-0 mt-0.5" />
-            <span>Quy định xác thực bắt buộc:</span>
-          </div>
-          <p className="text-slate-600 text-xs pl-6">
-            Nhằm đảm bảo tính chính danh của từng trang sử hào hùng và ghi nhận đóng góp chính xác cho <strong>37 Tổ Dân Phố</strong>, bạn cần đăng nhập tài khoản Tổ Dân Phố hoặc Ban Biên tập trước khi tạo và gửi bài viết.
-          </p>
-          <div className="text-[11px] text-amber-900 font-semibold pl-6 pt-1">
-            ✓ Bài gửi sẽ tự động gắn định danh Tổ Dân Phố chính chủ và chuyển vào danh sách chờ Ban Biên tập duyệt.
-          </div>
-        </div>
-
-        <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <a
-            href={withBase('/tai-khoan/dang-nhap')}
-            className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-amber-100 font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-transform hover:scale-[1.02] flex items-center justify-center gap-2"
-          >
-            <UserCheck className="w-4 h-4" />
-            <span>Đăng nhập để gửi bài viết →</span>
-          </a>
-          <a
-            href={withBase('/')}
-            className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-white border border-amber-200 text-slate-700 font-bold text-xs sm:text-sm hover:bg-amber-50 transition-colors shadow-2xs"
-          >
-            Quay lại Trang chủ
-          </a>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-6">
+    <div className="max-w-4xl mx-auto space-y-8 pb-16">
       
-      {/* Toast thông báo nổi bật */}
+      {/* Toast thông báo */}
       {toastMessage && (
-        <div className="fixed top-20 right-6 z-50 bg-amber-900 text-amber-100 border border-amber-500/80 px-6 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 animate-fade-in font-medium text-sm">
-          <Sparkles className="w-5 h-5 text-amber-300 shrink-0" />
+        <div className="fixed bottom-6 right-6 z-50 bg-stone-900 text-amber-100 px-5 py-3.5 rounded-2xl shadow-2xl border border-amber-400/40 text-xs sm:text-sm font-semibold flex items-center gap-2.5 animate-bounce">
+          <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
           <span>{toastMessage}</span>
         </div>
       )}
 
-      {/* HEADER BAR: Gửi câu chuyện mới */}
-      <div className="bg-[#FAF6F0] border border-amber-200/80 rounded-3xl p-4 sm:p-6 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <a
-            href={withBase('/')}
-            className="p-2.5 rounded-2xl bg-white hover:bg-amber-100 text-slate-700 hover:text-red-700 border border-amber-200/60 transition-colors shadow-2xs"
-            title="Quay lại Trang chủ"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </a>
-          <div>
-            <h1 className="font-serif font-black text-xl sm:text-2xl text-slate-900 tracking-tight flex items-center gap-2">
-              <span>Gửi câu chuyện mới</span>
-              <span className="text-amber-500 text-lg">★</span>
-            </h1>
-            <p className="text-xs text-amber-900/80 mt-0.5">
-              Đang gửi với tài khoản: <strong className="text-red-800">{currentUser.name}</strong> • Quyền: <span className="font-bold uppercase text-amber-900">{currentUser.role === 'admin' ? 'Ban Biên tập' : currentUser.role === 'tdp' ? 'Tổ Dân Phố' : 'Độc giả'}</span>
-            </p>
+      {/* Header Form: Tinh tế, trang trọng, mang tinh thần thanh niên */}
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200/80 shadow-xs relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-red-50 via-amber-50/40 to-transparent rounded-full -mr-16 -mt-16 pointer-events-none"></div>
+        <div className="relative z-10">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 border border-red-200/80 text-[11px] font-bold text-red-800 uppercase tracking-wider mb-3">
+            <span>★</span>
+            <span>Đóng góp Tư liệu & Ký ức Lịch sử</span>
           </div>
-        </div>
-
-        {/* Nút hành động trên Header */}
-        <div className="flex items-center gap-2.5 shrink-0">
-          <button
-            type="button"
-            onClick={() => setShowPreviewModal(true)}
-            className="px-4 py-2.5 rounded-xl bg-white hover:bg-amber-50 text-slate-800 hover:text-red-700 border border-amber-300 font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-colors shadow-2xs"
-          >
-            <Eye className="w-4 h-4 text-slate-500" />
-            <span>Xem trước</span>
-          </button>
-
-          <button
-            type="button"
-            disabled={isSubmitting}
-            onClick={() => handleSaveOrSubmit('draft')}
-            className="px-4 py-2.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-xs sm:text-sm border border-amber-300/80 flex items-center gap-1.5 transition-colors shadow-2xs"
-          >
-            <Save className="w-4 h-4 text-amber-800" />
-            <span>Lưu nháp</span>
-          </button>
-
-          {currentUser.role === 'admin' && (
-            <button
-              type="button"
-              disabled={isSubmitting}
-              onClick={() => handleSaveOrSubmit('approved')}
-              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-700 to-emerald-800 hover:from-emerald-800 hover:to-emerald-900 text-white font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all shadow-md hover:shadow-lg"
-              title="Xuất bản trực tiếp lên trang chủ và thư viện"
-            >
-              <CheckCircle2 className="w-4 h-4 text-emerald-300" />
-              <span>Duyệt & Xuất bản ngay</span>
-            </button>
-          )}
-
-          <button
-            type="button"
-            disabled={isSubmitting}
-            onClick={() => handleSaveOrSubmit('pending')}
-            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-amber-100 font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all shadow-md hover:shadow-lg"
-          >
-            <Send className="w-4 h-4 text-amber-300" />
-            <span>Tạo bài & Gửi duyệt</span>
-          </button>
+          <h1 className="font-serif font-black text-2xl sm:text-3xl text-stone-900 leading-tight">
+            Gửi Câu Chuyện Ký Ức & Bài Học Làm Theo Lời Bác
+          </h1>
+          <p className="text-xs sm:text-sm text-stone-600 mt-2 max-w-2xl leading-relaxed">
+            Mỗi kỷ vật, mẩu chuyện về Bác Hồ hay tấm gương đoàn viên, học sinh, cựu chiến binh đều là tư liệu vô giá. Bài viết của bạn sẽ được <strong>Ban Biên tập kiểm duyệt tính chân thực</strong> trước khi xuất bản công khai.
+          </p>
         </div>
       </div>
 
-      {/* FORM LAYOUT 2 CỘT CHUẨN THỜI HOA LỬA */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        
-        {/* ================= CỘT TRÁI (7 CỘT): NHÂN VẬT & NỘI DUNG ================= */}
-        <div className="lg:col-span-7 space-y-6">
-          
-          {/* 1. KHỐI NHÂN VẬT LỊCH SỬ */}
-          <div className="bg-[#FAF6F0] rounded-3xl border border-amber-200/80 p-5 sm:p-6 shadow-xs space-y-4">
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-amber-200/70 text-amber-900 flex items-center justify-center shrink-0">
-                <User className="w-5 h-5" />
-              </div>
-              <div className="flex-1">
-                <h2 className="font-serif font-black text-base sm:text-lg text-slate-900">
-                  Nhân vật lịch sử
-                </h2>
-                <p className="text-xs text-slate-600 mt-0.5">
-                  Câu chuyện gắn với một nhân vật lịch sử — chọn nhân vật có sẵn, hoặc tạo nhân vật mới (chờ duyệt).
-                </p>
-              </div>
+      <form onSubmit={handleSubmit} className="space-y-6">
+
+        {/* ================= KHỐI 1: THÔNG TIN TÁC GIẢ & ĐƠN VỊ ================= */}
+        <section className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200/80 shadow-xs space-y-6">
+          <div className="flex items-center gap-2.5 pb-4 border-b border-stone-100">
+            <div className="w-8 h-8 rounded-full bg-red-50 text-red-700 flex items-center justify-center font-bold text-sm">
+              1
             </div>
-
-            {/* Ô tìm kiếm nhân vật */}
-            <div className="relative">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                value={characterSearch}
-                onChange={(e) => setCharacterSearch(e.target.value)}
-                placeholder="Nhập tên nhân vật lịch sử, liệt sĩ, nhân chứng..."
-                className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-white border border-amber-200/80 text-xs sm:text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-red-700/30"
-              />
+            <div>
+              <h2 className="font-serif font-bold text-base sm:text-lg text-stone-900">
+                Thông tin Người gửi & Đơn vị Đóng góp
+              </h2>
+              <p className="text-[11px] sm:text-xs text-stone-500">
+                Hỗ trợ 37 Tổ dân phố, các Trường học trên địa bàn và Người dân đóng góp
+              </p>
             </div>
-
-            {/* Danh sách cuộn nhân vật */}
-            <div className="max-h-48 overflow-y-auto space-y-2 pr-1 scrollbar-thin">
-              {filteredCharacters.slice(0, 6).map((char) => {
-                const isSelected = selectedCharacters.some((c) => c.id === char.id);
-                return (
-                  <div
-                    key={char.id}
-                    className="p-2.5 rounded-2xl bg-white border border-amber-200/60 flex items-center justify-between gap-3 text-xs hover:border-amber-400 transition-colors"
-                  >
-                    <div className="truncate">
-                      <div className="font-bold text-slate-900 uppercase tracking-tight">{char.name}</div>
-                      <div className="text-[11px] text-slate-500 truncate mt-0.5">
-                        {char.birth_year ? `${char.birth_year} • ` : ''}{char.hometown || char.biography}
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      disabled={isSelected}
-                      onClick={() => handleAddCharacter(char)}
-                      className={`shrink-0 px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1 transition-colors ${
-                        isSelected
-                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 cursor-default'
-                          : 'bg-amber-100 hover:bg-red-700 hover:text-white text-amber-900 border border-amber-300'
-                      }`}
-                    >
-                      {isSelected ? '✓ Đã chọn' : '+ Thêm'}
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Hiển thị nhân vật đã chọn */}
-            <div className="pt-2 border-t border-amber-200/60 flex flex-wrap items-center justify-between gap-2 text-xs">
-              <div className="flex flex-wrap items-center gap-1.5">
-                <span className="font-bold text-slate-700">Đã chọn ({selectedCharacters.length}):</span>
-                {selectedCharacters.length === 0 && (
-                  <span className="text-slate-400 italic">Chưa gắn nhân vật nào.</span>
-                )}
-                {selectedCharacters.map((c) => (
-                  <span
-                    key={c.id}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-red-100 text-red-900 font-bold text-[11px] border border-red-300"
-                  >
-                    <span>{c.name}</span>
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveCharacter(c.id)}
-                      className="hover:text-red-600 ml-0.5"
-                    >
-                      ×
-                    </button>
-                  </span>
-                ))}
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setShowNewCharModal(true)}
-                className="text-red-700 hover:text-red-800 font-bold text-xs flex items-center gap-1 hover:underline"
-              >
-                <span>👤+ Không tìm thấy? Tạo nhân vật mới</span>
-              </button>
-            </div>
-
           </div>
 
-          {/* 2. KHỐI NỘI DUNG BÀI VIẾT */}
-          <div className="bg-[#FAF6F0] rounded-3xl border border-amber-200/80 p-5 sm:p-6 shadow-xs space-y-4">
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-amber-200/70 text-amber-900 flex items-center justify-center shrink-0">
-                <FileText className="w-5 h-5" />
-              </div>
-              <div className="flex-1">
-                <h2 className="font-serif font-black text-base sm:text-lg text-slate-900">
-                  Nội dung bài viết
-                </h2>
-                <p className="text-xs text-slate-600 mt-0.5">
-                  Mô tả ngắn hiển thị ở thẻ bài viết + nội dung chi tiết
-                </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+            {/* Họ và tên */}
+            <div>
+              <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">
+                Họ và tên người gửi <span className="text-red-600">*</span>
+              </label>
+              <div className="relative">
+                <User className="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  required
+                  placeholder="Ví dụ: Nguyễn Văn An, Trần Thị Mai..."
+                  value={contributorName}
+                  onChange={(e) => setContributorName(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-stone-300 text-stone-900 text-xs sm:text-sm focus:border-red-600 focus:ring-1 focus:ring-red-600 outline-none transition-colors"
+                />
               </div>
             </div>
 
-            {/* Tiêu đề bài viết */}
+            {/* Số điện thoại liên hệ */}
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
-                Tiêu đề bài viết <span className="text-red-600">*</span>
+              <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">
+                Số điện thoại / Zalo <span className="text-red-600">*</span>
+              </label>
+              <div className="relative">
+                <Phone className="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="tel"
+                  required
+                  placeholder="Để Ban Biên tập xác thực thông tin khi cần"
+                  value={contributorPhone}
+                  onChange={(e) => setContributorPhone(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-stone-300 text-stone-900 text-xs sm:text-sm focus:border-red-600 focus:ring-1 focus:ring-red-600 outline-none transition-colors"
+                />
+              </div>
+            </div>
+
+            {/* Vai trò */}
+            <div className="sm:col-span-2">
+              <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">
+                Vai trò của bạn
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  'Đoàn viên thanh niên',
+                  'Học sinh / Sinh viên',
+                  'Giáo viên / Tổng phụ trách',
+                  'Cựu chiến binh / Nhân chứng',
+                  'Người dân địa phương',
+                  'Khác'
+                ].map((role) => (
+                  <button
+                    key={role}
+                    type="button"
+                    onClick={() => setContributorRole(role)}
+                    className={`px-3.5 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+                      contributorRole === role
+                        ? 'bg-red-800 border-red-800 text-white shadow-xs'
+                        : 'bg-stone-50 border-stone-200 text-stone-700 hover:bg-stone-100'
+                    }`}
+                  >
+                    {role}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* CHỌN KHỐI ĐƠN VỊ ĐÓNG GÓP: 3 Tabs trực quan */}
+            <div className="sm:col-span-2 pt-2 border-t border-stone-100">
+              <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2.5">
+                Đơn vị đóng góp bài viết <span className="text-red-600">*</span>
+              </label>
+
+              {/* 3 Tabs phân loại */}
+              <div className="grid grid-cols-3 gap-2 p-1 bg-stone-100 rounded-2xl mb-3">
+                <button
+                  type="button"
+                  onClick={() => setUnitGroup('tdp')}
+                  className={`py-2 px-2 sm:px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                    unitGroup === 'tdp'
+                      ? 'bg-white text-red-900 shadow-xs'
+                      : 'text-stone-600 hover:text-stone-900'
+                  }`}
+                >
+                  <Building2 className="w-3.5 h-3.5 shrink-0" />
+                  <span className="truncate">37 Tổ Dân Phố</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setUnitGroup('school')}
+                  className={`py-2 px-2 sm:px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                    unitGroup === 'school'
+                      ? 'bg-white text-blue-900 shadow-xs'
+                      : 'text-stone-600 hover:text-stone-900'
+                  }`}
+                >
+                  <GraduationCap className="w-3.5 h-3.5 shrink-0" />
+                  <span className="truncate">Khối Trường Học</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setUnitGroup('citizen')}
+                  className={`py-2 px-2 sm:px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                    unitGroup === 'citizen'
+                      ? 'bg-white text-emerald-900 shadow-xs'
+                      : 'text-stone-600 hover:text-stone-900'
+                  }`}
+                >
+                  <Users className="w-3.5 h-3.5 shrink-0" />
+                  <span className="truncate">Người Dân & Khác</span>
+                </button>
+              </div>
+
+              {/* Danh sách Dropdown tương ứng */}
+              <select
+                value={selectedUnit}
+                onChange={(e) => setSelectedUnit(e.target.value)}
+                className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-stone-900 text-xs sm:text-sm font-medium focus:border-red-600 focus:ring-1 focus:ring-red-600 outline-none transition-colors bg-white"
+              >
+                {unitGroup === 'tdp' && (
+                  <>
+                    <optgroup label="Danh sách 37 Tổ Dân Phố Phường Xuân Hương">
+                      {TDP_UNITS.map((u, idx) => (
+                        <option key={u} value={u}>
+                          TDP {(idx + 1).toString().padStart(2, '0')}: {u}
+                        </option>
+                      ))}
+                    </optgroup>
+                  </>
+                )}
+
+                {unitGroup === 'school' && (
+                  <>
+                    <optgroup label="Khối Trường Học trên địa bàn Phường Xuân Hương">
+                      {SCHOOL_UNITS.map((u) => (
+                        <option key={u} value={u}>
+                          {u}
+                        </option>
+                      ))}
+                    </optgroup>
+                  </>
+                )}
+
+                {unitGroup === 'citizen' && (
+                  <>
+                    <optgroup label="Người Dân & Nhân chứng lịch sử">
+                      {CITIZEN_UNITS.map((u) => (
+                        <option key={u} value={u}>
+                          {u}
+                        </option>
+                      ))}
+                    </optgroup>
+                  </>
+                )}
+              </select>
+
+              {/* Trường nhập tự do nếu chọn mục "Khác" */}
+              {(selectedUnit.includes('Khác') || selectedUnit.includes('khác')) && (
+                <div className="mt-2.5">
+                  <input
+                    type="text"
+                    required
+                    placeholder="Vui lòng nhập tên cụ thể của trường hoặc đơn vị của bạn..."
+                    value={customUnit}
+                    onChange={(e) => setCustomUnit(e.target.value)}
+                    className="w-full px-4 py-2 rounded-xl border border-amber-300 bg-amber-50/50 text-stone-900 text-xs sm:text-sm focus:border-red-600 outline-none"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* ================= KHỐI 2: NỘI DUNG CÂU CHUYỆN ================= */}
+        <section className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200/80 shadow-xs space-y-6">
+          <div className="flex items-center gap-2.5 pb-4 border-b border-stone-100">
+            <div className="w-8 h-8 rounded-full bg-red-50 text-red-700 flex items-center justify-center font-bold text-sm">
+              2
+            </div>
+            <div>
+              <h2 className="font-serif font-bold text-base sm:text-lg text-stone-900">
+                Nội dung Câu chuyện & Ký ức Lịch sử
+              </h2>
+              <p className="text-[11px] sm:text-xs text-stone-500">
+                Kể về một mẩu chuyện làm theo lời Bác, hồi ức người chiến sĩ, hoặc tấm gương sáng
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            {/* Tiêu đề */}
+            <div>
+              <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">
+                Tiêu đề câu chuyện <span className="text-red-600">*</span>
               </label>
               <input
                 type="text"
+                required
+                placeholder="Ví dụ: Bác Hồ với thanh thiếu nhi, Khúc tráng ca Nhà lao Thiếu nhi Đà Lạt..."
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="Nhập tiêu đề câu chuyện, lời dặn của Bác hoặc hồi ức nhân chứng..."
-                className="w-full px-4 py-2.5 rounded-2xl bg-white border border-amber-200/80 text-sm text-slate-900 font-serif font-bold focus:outline-none focus:ring-2 focus:ring-red-700/30"
+                className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-stone-900 text-xs sm:text-base font-serif font-bold focus:border-red-600 focus:ring-1 focus:ring-red-600 outline-none transition-colors"
               />
             </div>
 
-            {/* Mô tả ngắn */}
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
-                Mô tả ngắn (Hiển thị xem trước ở thẻ bài)
-              </label>
-              <textarea
-                rows={2}
-                value={summary}
-                onChange={(e) => setSummary(e.target.value)}
-                placeholder="Tóm tắt ngắn gọn 2 - 3 câu về ý nghĩa lịch sử hoặc lời dạy của Bác..."
-                className="w-full px-4 py-2 rounded-2xl bg-white border border-amber-200/80 text-xs sm:text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-red-700/30"
-              />
-            </div>
-
-            {/* Loại hình câu chuyện (4 nút tabs như Thời Hoa Lửa) */}
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-2">
-                Loại hình <span className="text-red-600">*</span>
-              </label>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                {[
-                  { id: 'article', label: 'Bài viết', desc: 'Soạn thảo văn bản', icon: FileText },
-                  { id: 'video', label: 'Video / Phóng sự', desc: 'Dán link video', icon: Video },
-                  { id: 'audio', label: 'Audio / Podcast', desc: 'Link hoặc MP3', icon: Mic },
-                  { id: 'gallery', label: 'Chùm ảnh', desc: 'Nhiều ảnh + chú thích', icon: ImageIcon }
-                ].map((item) => {
-                  const Icon = item.icon;
-                  const isCur = mediaType === item.id;
-                  return (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => setMediaType(item.id as any)}
-                      className={`p-3 rounded-2xl border text-center transition-all ${
-                        isCur
-                          ? 'bg-red-50 border-red-700 text-red-900 shadow-xs'
-                          : 'bg-white border-amber-200/70 text-slate-700 hover:border-amber-400'
-                      }`}
-                    >
-                      <Icon className={`w-5 h-5 mx-auto mb-1 ${isCur ? 'text-red-700' : 'text-slate-500'}`} />
-                      <div className="font-bold text-xs">{item.label}</div>
-                      <div className="text-[10px] text-slate-500 mt-0.5">{item.desc}</div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Hàng chọn Thời kỳ lịch sử & 37 Tổ dân phố Phường Xuân Hương */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            {/* Chuyên mục & Thời kỳ */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Thời kỳ lịch sử
+                <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">
+                  Chuyên mục chủ đề
                 </label>
                 <select
-                  value={period}
-                  onChange={(e) => setPeriod(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-2xl bg-white border border-amber-200/80 text-xs sm:text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-red-700/30"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-stone-800 text-xs sm:text-sm focus:border-red-600 outline-none bg-white"
                 >
-                  <option value="1945-truoc">1945 trở về trước (Tiền khởi nghĩa)</option>
-                  <option value="1945-1954">1945 - 1954 (Kháng chiến chống Pháp)</option>
-                  <option value="1955-1975">1955 - 1975 (Kháng chiến chống Mỹ)</option>
-                  <option value="1975-1988">1975 - 1988 (Xây dựng & Bảo vệ biên giới)</option>
-                  <option value="1989-nay">1989 - Nay (Đổi mới & Hội nhập)</option>
+                  <option value="hoc-tap-bac">Học tập & Làm theo lời Bác</option>
+                  <option value="dia-chi-do">Địa chỉ Đỏ & Di tích Đà Lạt</option>
+                  <option value="phong-trao-doan">Tuổi trẻ Phường Xuân Hương</option>
+                  <option value="thanh-nien-xung-phong">Thanh niên xung phong & Tiên phong</option>
+                  <option value="tinh-nguyen">Những lá thư thời hoa lửa</option>
+                  <option value="bien-dao">Bảo vệ chủ quyền Biển đảo</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
-                  <span>Tổ Dân Phố đóng góp <span className="text-red-600">*</span></span>
-                  {currentUser.role === 'tdp' && (
-                    <span className="text-[10px] bg-red-100 text-red-800 font-bold px-2 py-0.5 rounded-full border border-red-300">
-                      🔒 Khóa định danh
-                    </span>
-                  )}
-                </label>
-                {currentUser.role === 'tdp' && currentUser.to_dan_pho ? (
-                  <div className="w-full px-3.5 py-2.5 rounded-2xl bg-amber-100/70 border border-amber-300 text-xs sm:text-sm font-bold text-red-900 flex items-center justify-between">
-                    <span>{currentUser.to_dan_pho}</span>
-                    <span className="text-[10px] text-amber-800">Tài khoản chính thức</span>
-                  </div>
-                ) : (
-                  <select
-                    value={toDanPho}
-                    onChange={(e) => setToDanPho(e.target.value)}
-                    className="w-full px-3 py-2.5 rounded-2xl bg-white border border-amber-200/80 text-xs sm:text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-red-700/30"
-                  >
-                    {TO_DAN_PHO_LIST.map((tdp, i) => (
-                      <option key={tdp} value={tdp}>
-                        {i + 1}. {tdp}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              </div>
-            </div>
-
-            {/* RICH TEXT EDITOR (THANH CÔNG CỤ SOẠN THẢO) */}
-            <div className="pt-2">
-              <label className="block text-xs font-bold text-slate-700 mb-1.5 flex items-center justify-between">
-                <span>Nội dung chi tiết <span className="text-red-600">*</span> (Bắt buộc khi gửi duyệt)</span>
-                <span className="text-[11px] text-slate-500 font-normal">Hỗ trợ Markdown & Rich Text</span>
-              </label>
-
-              {/* Toolbar Soạn thảo Trực quan (WYSIWYG) */}
-              <div className="bg-white border border-amber-300 rounded-t-2xl p-2 flex flex-wrap items-center gap-1 text-slate-700 shadow-2xs">
-                <button
-                  type="button"
-                  title="In đậm (Bold)"
-                  onClick={() => executeCommand('bold')}
-                  className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
-                >
-                  <Bold className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  title="In nghiêng (Italic)"
-                  onClick={() => executeCommand('italic')}
-                  className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
-                >
-                  <Italic className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  title="Gạch chân (Underline)"
-                  onClick={() => executeCommand('underline')}
-                  className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
-                >
-                  <Underline className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  title="Gạch ngang (Strikethrough)"
-                  onClick={() => executeCommand('strikeThrough')}
-                  className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
-                >
-                  <Strikethrough className="w-4 h-4" />
-                </button>
-
-                <div className="w-px h-5 bg-slate-200 mx-1"></div>
-
-                {/* Color Palette (Đổi màu trực tiếp, không sinh mã code) */}
-                <div className="flex items-center gap-1 px-1">
-                  {[
-                    { color: '#b91c1c', name: 'Đỏ cờ' },
-                    { color: '#d97706', name: 'Vàng sao' },
-                    { color: '#15803d', name: 'Xanh lá' },
-                    { color: '#1d4ed8', name: 'Xanh dương' },
-                    { color: '#1f2937', name: 'Đen than' }
-                  ].map((c) => (
-                    <button
-                      key={c.color}
-                      type="button"
-                      title={`Màu chữ ${c.name}`}
-                      onClick={() => executeCommand('foreColor', c.color)}
-                      className="w-4 h-4 rounded-full border border-slate-300 hover:scale-125 transition-transform"
-                      style={{ backgroundColor: c.color }}
-                    />
-                  ))}
-                </div>
-
-                <div className="w-px h-5 bg-slate-200 mx-1"></div>
-
-                {/* Căn lề Trực quan (Căn giữa, Căn trái, Căn phải, Căn đều) */}
-                <button
-                  type="button"
-                  title="Căn lề trái"
-                  onClick={() => executeCommand('justifyLeft')}
-                  className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
-                >
-                  <AlignLeft className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  title="Căn lề giữa"
-                  onClick={() => executeCommand('justifyCenter')}
-                  className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
-                >
-                  <AlignCenter className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  title="Căn lề phải"
-                  onClick={() => executeCommand('justifyRight')}
-                  className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
-                >
-                  <AlignRight className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  title="Căn đều hai bên"
-                  onClick={() => executeCommand('justifyFull')}
-                  className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
-                >
-                  <AlignJustify className="w-4 h-4" />
-                </button>
-
-                <div className="w-px h-5 bg-slate-200 mx-1"></div>
-
-                <button
-                  type="button"
-                  title="Tiêu đề H2"
-                  onClick={() => executeCommand('formatBlock', '<h2>')}
-                  className="p-1.5 px-2 rounded-lg hover:bg-slate-100 font-bold text-xs"
-                >
-                  H2
-                </button>
-                <button
-                  type="button"
-                  title="Tiêu đề H3"
-                  onClick={() => executeCommand('formatBlock', '<h3>')}
-                  className="p-1.5 px-2 rounded-lg hover:bg-slate-100 font-bold text-xs"
-                >
-                  H3
-                </button>
-
-                <div className="w-px h-5 bg-slate-200 mx-1"></div>
-
-                <button
-                  type="button"
-                  title="Danh sách số"
-                  onClick={() => executeCommand('insertOrderedList')}
-                  className="p-1.5 rounded-lg hover:bg-slate-100"
-                >
-                  <ListOrdered className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  title="Danh sách chấm"
-                  onClick={() => executeCommand('insertUnorderedList')}
-                  className="p-1.5 rounded-lg hover:bg-slate-100"
-                >
-                  <List className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  title="Đoạn trích dẫn"
-                  onClick={() => executeCommand('formatBlock', '<blockquote>')}
-                  className="p-1.5 rounded-lg hover:bg-slate-100"
-                >
-                  <Quote className="w-4 h-4" />
-                </button>
-
-                <div className="w-px h-5 bg-slate-200 mx-1"></div>
-
-                <button
-                  type="button"
-                  title="Chèn liên kết"
-                  onClick={() => {
-                    const url = prompt('Nhập địa chỉ link:', 'https://');
-                    if (url) executeCommand('createLink', url);
-                  }}
-                  className="p-1.5 rounded-lg hover:bg-slate-100"
-                >
-                  <LinkIcon className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  title="Chèn ảnh"
-                  onClick={() => {
-                    const url = prompt('Nhập link ảnh:', 'https://');
-                    if (url) {
-                      insertHtmlAtCursor(
-                        `<figure class="my-4 text-center"><img src="${url}" alt="Ảnh tư liệu lịch sử" class="rounded-2xl max-h-[460px] mx-auto border border-amber-200/90 shadow-md object-contain" /><figcaption class="text-xs text-slate-500 mt-1.5 italic font-sans">Ảnh tư liệu</figcaption></figure><p><br/></p>`
-                      );
-                    }
-                  }}
-                  className="p-1.5 rounded-lg hover:bg-slate-100"
-                >
-                  <ImageIcon className="w-4 h-4" />
-                </button>
-
-                <div className="w-px h-5 bg-slate-200 mx-1"></div>
-
-                {/* Nút dán ảnh tiện lợi */}
-                <button
-                  type="button"
-                  title="Dán ảnh từ bộ nhớ tạm (Ctrl+V)"
-                  onClick={() => {
-                    showToast('💡 Mẹo: Bạn có thể copy ảnh (PrtScn, Zalo, Web...) rồi nhấn Ctrl + V để chèn trực tiếp vào vị trí con trỏ!');
-                    if (editorDivRef.current) editorDivRef.current.focus();
-                  }}
-                  className="p-1.5 px-2 rounded-lg bg-amber-50 hover:bg-amber-100 text-red-800 flex items-center gap-1.5 border border-amber-300 font-bold text-xs transition-colors"
-                >
-                  <Clipboard className="w-3.5 h-3.5 text-red-700" />
-                  <span>Dán ảnh (Ctrl+V)</span>
-                </button>
-
-                {/* Nút chuyển đổi chế độ Trực quan / Mã nguồn */}
-                <button
-                  type="button"
-                  onClick={toggleSourceMode}
-                  className={`ml-auto px-2.5 py-1 rounded-lg text-xs font-bold border transition-colors flex items-center gap-1 ${
-                    isSourceMode
-                      ? 'bg-stone-800 text-amber-300 border-stone-700'
-                      : 'bg-amber-100 hover:bg-amber-200 text-amber-900 border-amber-300'
-                  }`}
-                  title="Chuyển đổi giữa Chế độ Trực quan và Chế độ Mã nguồn"
-                >
-                  <span>{isSourceMode ? '👁️ Trực quan' : '💻 Mã HTML'}</span>
-                </button>
-              </div>
-
-              {/* KHUNG SOẠN THẢO TRỰC QUAN (WYSIWYG - Không hiện mã code HTML/CSS) */}
-              {!isSourceMode ? (
-                <div
-                  ref={editorDivRef}
-                  contentEditable
-                  suppressContentEditableWarning
-                  onInput={(e) => setBody(e.currentTarget.innerHTML)}
-                  onPaste={handlePasteImage}
-                  data-placeholder="Soạn thảo câu chuyện hào hùng, hồi ức nhân chứng... Bạn có thể bôi đen chữ để đổi màu, căn giữa, hoặc dán ảnh (Ctrl+V) trực tiếp tại đây!"
-                  className="w-full min-h-[320px] max-h-[600px] overflow-y-auto px-5 py-4 rounded-b-2xl bg-white border-x border-b border-amber-300 text-sm text-slate-900 leading-relaxed font-sans focus:outline-none focus:ring-2 focus:ring-red-700/30 prose max-w-none empty:before:content-[attr(data-placeholder)] empty:before:text-slate-400 empty:before:italic"
-                />
-              ) : (
-                <textarea
-                  rows={14}
-                  value={body}
-                  onChange={(e) => {
-                    setBody(e.target.value);
-                    if (editorDivRef.current) editorDivRef.current.innerHTML = e.target.value;
-                  }}
-                  onPaste={handlePasteImage}
-                  className="w-full px-4 py-3 rounded-b-2xl bg-stone-900 text-amber-200 border-x border-b border-amber-300 font-mono text-xs leading-relaxed focus:outline-none"
-                />
-              )}
-            </div>
-
-            {/* Thanh nút bấm Tạo bài viết tiện lợi ở cuối khối soạn thảo */}
-            <div className="pt-4 border-t border-amber-200/80 flex flex-wrap items-center justify-between gap-3">
-              <span className="text-xs text-slate-500 italic">
-                💡 Dữ liệu được lưu trữ tự động trên hệ thống & Cloudinary.
-              </span>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  disabled={isSubmitting}
-                  onClick={() => handleSaveOrSubmit('draft')}
-                  className="px-4 py-2.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-xs border border-amber-300/80"
-                >
-                  Lưu nháp
-                </button>
-                {currentUser.role === 'admin' && (
-                  <button
-                    type="button"
-                    disabled={isSubmitting}
-                    onClick={() => handleSaveOrSubmit('approved')}
-                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-700 to-emerald-800 hover:from-emerald-800 hover:to-emerald-900 text-white font-bold text-xs flex items-center gap-1.5 shadow-md"
-                    title="Xuất bản trực tiếp lên trang chủ và thư viện"
-                  >
-                    <CheckCircle2 className="w-4 h-4 text-emerald-300" />
-                    <span>Duyệt & Xuất bản ngay</span>
-                  </button>
-                )}
-                <button
-                  type="button"
-                  disabled={isSubmitting}
-                  onClick={() => handleSaveOrSubmit('pending')}
-                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-amber-100 font-bold text-xs sm:text-sm flex items-center gap-2 shadow-md transition-all hover:scale-105"
-                >
-                  <Send className="w-4 h-4 text-amber-300" />
-                  <span>Tạo bài & Gửi duyệt</span>
-                </button>
-              </div>
-            </div>
-
-          </div>
-
-        </div>
-
-        {/* ================= CỘT PHẢI (5 CỘT): ĐA PHƯƠNG TIỆN & CAM KẾT ================= */}
-        <div className="lg:col-span-5 space-y-6">
-          
-          {/* 1. THƯ VIỆN ẢNH MINH HỌA */}
-          <div className="bg-[#FAF6F0] rounded-3xl border border-amber-200/80 p-5 sm:p-6 shadow-xs space-y-4">
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-amber-200/70 text-amber-900 flex items-center justify-center shrink-0">
-                  <ImageIcon className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-serif font-black text-base text-slate-900">
-                    Thư viện ảnh
-                  </h3>
-                  <p className="text-xs text-slate-600 mt-0.5">
-                    Chùm ảnh minh họa cho câu chuyện
-                  </p>
-                </div>
-              </div>
-
-              {/* Nút Upload ảnh */}
-              <label className="cursor-pointer px-3.5 py-1.5 rounded-xl bg-red-700 hover:bg-red-800 text-white font-bold text-xs flex items-center gap-1.5 transition-colors shadow-2xs">
-                <Upload className="w-3.5 h-3.5" />
-                <span>+ Thêm ảnh</span>
-                <input
-                  id="storyImageFileInput"
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  onChange={(e) => handleFileUpload(e.target.files)}
-                  className="hidden"
-                />
-              </label>
-            </div>
-
-            {/* Vùng Kéo thả & Dán ảnh (Ctrl+V) nổi bật */}
-            <div
-              onDragOver={(e) => { e.preventDefault(); }}
-              onDrop={(e) => {
-                e.preventDefault();
-                if (e.dataTransfer.files) handleFileUpload(e.dataTransfer.files, false);
-              }}
-              onClick={() => {
-                const input = document.getElementById('storyImageFileInput') as HTMLInputElement;
-                if (input) input.click();
-              }}
-              className="border-2 border-dashed border-amber-300 hover:border-red-600 bg-white/70 hover:bg-amber-50/60 rounded-2xl p-4 text-center transition-all cursor-pointer group shadow-2xs"
-            >
-              <div className="flex items-center justify-center gap-2 mb-1.5">
-                <div className="w-8 h-8 rounded-xl bg-red-100 text-red-700 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Clipboard className="w-4 h-4" />
-                </div>
-                <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Sparkles className="w-4 h-4" />
-                </div>
-              </div>
-              <div className="font-bold text-xs text-slate-800">
-                Dán ảnh (<span className="text-red-700 font-mono bg-red-50 px-1.5 py-0.5 rounded border border-red-200">Ctrl + V</span>) hoặc Kéo thả ảnh vào đây
-              </div>
-              <p className="text-[11px] text-slate-500 mt-1">
-                Chụp màn hình (PrtScn) hoặc copy ảnh từ Zalo, Web rồi dán trực tiếp. Hệ thống tự động upload lên Cloudinary!
-              </p>
-            </div>
-
-            {/* Thanh tiến trình upload nếu đang tải */}
-            {isUploadingImg && (
-              <div className="p-3 rounded-2xl bg-white border border-amber-200">
-                <div className="flex justify-between text-[11px] font-bold text-slate-600 mb-1">
-                  <span>Đang tải ảnh lên Cloudinary / Máy chủ...</span>
-                  <span>{uploadProgress}%</span>
-                </div>
-                <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-                  <div
-                    className="bg-red-700 h-full transition-all duration-200"
-                    style={{ width: `${uploadProgress}%` }}
-                  ></div>
-                </div>
-              </div>
-            )}
-
-            <div className="text-[11px] text-amber-900 bg-amber-50/80 p-2.5 rounded-xl border border-amber-200/70 leading-relaxed">
-              💡 <strong>Quy chuẩn Ảnh bài viết:</strong> Ảnh có nhãn đỏ <strong>Ảnh bìa</strong> sẽ là ảnh đại diện ngoài danh sách & Thư viện. Trong nội dung bài viết, ảnh hiển thị tự nhiên tại vị trí bạn chèn (bấm nút <strong>+ Chèn bài</strong>).
-            </div>
-
-            {/* Grid danh sách ảnh */}
-            {images.length === 0 ? (
-              <div className="p-6 rounded-2xl border-2 border-dashed border-amber-200 text-center bg-white/60">
-                <ImageIcon className="w-8 h-8 text-slate-400 mx-auto mb-1.5" />
-                <p className="text-xs text-slate-500">Chưa có ảnh nào trong thư viện.</p>
-                <p className="text-[11px] text-slate-400 mt-1">Bấm "+ Thêm ảnh" hoặc kéo thả ảnh vào đây</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 gap-2.5">
-                {images.map((img, idx) => (
-                  <div key={idx} className="relative rounded-2xl overflow-hidden border border-slate-200 group bg-slate-900 aspect-[4/3]">
-                    <img
-                      src={img}
-                      alt="Ảnh tư liệu"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                    />
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-wrap items-center justify-center gap-1.5 p-2">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          insertHtmlAtCursor(
-                            `<figure class="my-4 text-center"><img src="${images[idx]}" alt="Ảnh tư liệu" class="rounded-2xl max-h-[480px] mx-auto border border-amber-200/90 shadow-md object-contain" /></figure><p><br/></p>`
-                          );
-                          showToast('Đã chèn ảnh vào nội dung bài viết!');
-                        }}
-                        className="px-2 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10px] shadow-xs"
-                        title="Chèn ảnh này vào nội dung bài viết"
-                      >
-                        + Chèn bài
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const item = images[idx];
-                          setImages([item, ...images.filter((_, i) => i !== idx)]);
-                          showToast('Đã đặt làm ảnh đại diện chính!');
-                        }}
-                        className="px-2 py-1 rounded bg-amber-500 hover:bg-amber-600 text-white font-bold text-[10px] shadow-xs"
-                        title="Đặt làm ảnh bìa"
-                      >
-                        Bìa
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setImages(images.filter((_, i) => i !== idx))}
-                        className="px-2 py-1 rounded bg-red-600 hover:bg-red-700 text-white font-bold text-[10px] shadow-xs"
-                        title="Xóa ảnh"
-                      >
-                        Xóa
-                      </button>
-                    </div>
-                    {idx === 0 && (
-                      <span className="absolute top-1.5 left-1.5 px-2 py-0.5 rounded-md bg-red-700 text-white text-[9px] font-black uppercase tracking-wider">
-                        Ảnh bìa
-                      </span>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* 2. VIDEO / PHÓNG SỰ */}
-          <div className="bg-[#FAF6F0] rounded-3xl border border-amber-200/80 p-5 sm:p-6 shadow-xs space-y-3">
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-amber-200/70 text-amber-900 flex items-center justify-center shrink-0">
-                <Video className="w-5 h-5" />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-serif font-black text-base text-slate-900">
-                  Video / Phóng sự
-                </h3>
-                <p className="text-xs text-slate-600 mt-0.5">
-                  Link YouTube, Google Drive, Vimeo hoặc tệp MP4
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={videoUrl}
-                onChange={(e) => setVideoUrl(e.target.value)}
-                placeholder="Dán link video (vd: https://youtube.com/watch?v=...)"
-                className="flex-1 px-3 py-2 rounded-2xl bg-white border border-amber-200/80 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-red-700/30"
-              />
-              <button
-                type="button"
-                onClick={() => {
-                  if (videoUrl) showToast('Đã gắn link video!');
-                }}
-                className="px-3.5 py-2 rounded-xl bg-red-700 hover:bg-red-800 text-white font-bold text-xs"
-              >
-                Gắn
-              </button>
-            </div>
-
-            {videoUrl && (
-              <div className="p-2.5 rounded-2xl bg-white border border-amber-200 text-xs text-slate-700 flex items-center justify-between">
-                <span className="truncate max-w-[240px] font-mono text-[11px]">{videoUrl}</span>
-                <button
-                  type="button"
-                  onClick={() => setVideoUrl('')}
-                  className="text-red-600 font-bold hover:underline"
-                >
-                  Xóa
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* 3. AUDIO / PODCAST */}
-          <div className="bg-[#FAF6F0] rounded-3xl border border-amber-200/80 p-5 sm:p-6 shadow-xs space-y-3">
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-amber-200/70 text-amber-900 flex items-center justify-center shrink-0">
-                <Mic className="w-5 h-5" />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-serif font-black text-base text-slate-900">
-                  Audio / Podcast
-                </h3>
-                <p className="text-xs text-slate-600 mt-0.5">
-                  Link SoundCloud, Google Drive hoặc tải tệp MP3
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={audioUrl}
-                onChange={(e) => setAudioUrl(e.target.value)}
-                placeholder="Dán link MP3 hoặc SoundCloud..."
-                className="flex-1 px-3 py-2 rounded-2xl bg-white border border-amber-200/80 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-red-700/30"
-              />
-              <button
-                type="button"
-                onClick={() => {
-                  if (audioUrl) showToast('Đã gắn link audio giọng đọc!');
-                }}
-                className="px-3.5 py-2 rounded-xl bg-red-700 hover:bg-red-800 text-white font-bold text-xs"
-              >
-                Gắn
-              </button>
-            </div>
-
-            {audioUrl && (
-              <div className="p-2.5 rounded-2xl bg-white border border-amber-200 text-xs text-slate-700 flex items-center justify-between">
-                <span className="truncate max-w-[240px] font-mono text-[11px]">{audioUrl}</span>
-                <button
-                  type="button"
-                  onClick={() => setAudioUrl('')}
-                  className="text-red-600 font-bold hover:underline"
-                >
-                  Xóa
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* 4. CAM KẾT CỦA NGƯỜI GỬI */}
-          <div className="bg-[#FAF6F0] rounded-3xl border border-amber-200/80 p-5 sm:p-6 shadow-xs space-y-3">
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="w-5 h-5 text-red-700" />
-              <h3 className="font-serif font-black text-sm text-slate-900 uppercase tracking-wider">
-                Cam kết của người gửi
-              </h3>
-            </div>
-
-            <div className="space-y-2.5 text-xs text-slate-700">
-              <label className="flex items-start gap-2.5 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={c1}
-                  onChange={(e) => setC1(e.target.checked)}
-                  className="mt-0.5 rounded text-red-700 focus:ring-red-700"
-                />
-                <span>Đã được sự đồng ý của nhân chứng lịch sử hoặc thân nhân gia đình.</span>
-              </label>
-
-              <label className="flex items-start gap-2.5 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={c2}
-                  onChange={(e) => setC2(e.target.checked)}
-                  className="mt-0.5 rounded text-red-700 focus:ring-red-700"
-                />
-                <span>Cam kết tính xác thực, khách quan của thông tin và tư liệu gửi lên.</span>
-              </label>
-
-              <label className="flex items-start gap-2.5 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={c3}
-                  onChange={(e) => setC3(e.target.checked)}
-                  className="mt-0.5 rounded text-red-700 focus:ring-red-700"
-                />
-                <span>Cam kết bản quyền hình ảnh, âm thanh không vi phạm pháp luật.</span>
-              </label>
-
-              <label className="flex items-start gap-2.5 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={c4}
-                  onChange={(e) => setC4(e.target.checked)}
-                  className="mt-0.5 rounded text-red-700 focus:ring-red-700"
-                />
-                <span>Đồng ý để Đoàn TNCS Hồ Chí Minh Phường Xuân Hương lưu trữ phi lợi nhuận.</span>
-              </label>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-
-      {/* ================= MODAL TẠO NHÂN VẬT MỚI ================= */}
-      {showNewCharModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-[#FAF6F0] rounded-3xl border border-amber-300 max-w-md w-full p-6 shadow-2xl space-y-4 animate-scale-up">
-            <div className="flex items-center justify-between border-b border-amber-200/80 pb-3">
-              <h3 className="font-serif font-black text-lg text-slate-900">
-                Thêm Nhân vật Lịch sử mới
-              </h3>
-              <button
-                type="button"
-                onClick={() => setShowNewCharModal(false)}
-                className="w-8 h-8 rounded-full bg-white hover:bg-slate-100 flex items-center justify-center text-slate-600 font-bold"
-              >
-                ×
-              </button>
-            </div>
-
-            <form onSubmit={handleCreateNewCharacter} className="space-y-3 text-xs">
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">
-                  Họ và tên nhân vật *
+                <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">
+                  Nhân chứng / Người kể chuyện (nếu có)
                 </label>
                 <input
                   type="text"
-                  required
-                  value={newCharName}
-                  onChange={(e) => setNewCharName(e.target.value)}
-                  placeholder="Ví dụ: Bác Mai Hoài Điều, Mẹ Lê Thị Riêng..."
-                  className="w-full px-3 py-2 rounded-xl bg-white border border-amber-300 text-slate-900 font-bold focus:outline-none"
+                  placeholder="Ví dụ: Bác Lê Văn Triết (Cựu chiến binh TDP Ánh Sáng)"
+                  value={narrator}
+                  onChange={(e) => setNarrator(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-stone-800 text-xs sm:text-sm focus:border-red-600 outline-none"
                 />
               </div>
-
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="block font-bold text-slate-700 mb-1">Năm sinh / Năm mất</label>
-                  <input
-                    type="text"
-                    value={newCharBirth}
-                    onChange={(e) => setNewCharBirth(e.target.value)}
-                    placeholder="SN 1920 hoặc 1920 - 1985"
-                    className="w-full px-3 py-2 rounded-xl bg-white border border-amber-300 text-slate-900 focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block font-bold text-slate-700 mb-1">Quê quán / Địa phương</label>
-                  <input
-                    type="text"
-                    value={newCharHometown}
-                    onChange={(e) => setNewCharHometown(e.target.value)}
-                    placeholder="Đà Lạt, Lâm Đồng..."
-                    className="w-full px-3 py-2 rounded-xl bg-white border border-amber-300 text-slate-900 focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">Tiểu sử tóm tắt</label>
-                <textarea
-                  rows={3}
-                  value={newCharBio}
-                  onChange={(e) => setNewCharBio(e.target.value)}
-                  placeholder="Tóm tắt công lao, vai trò trong kháng chiến hoặc phong trào thi đua..."
-                  className="w-full px-3 py-2 rounded-xl bg-white border border-amber-300 text-slate-900 focus:outline-none"
-                />
-              </div>
-
-              <div className="flex justify-end gap-2 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setShowNewCharModal(false)}
-                  className="px-4 py-2 rounded-xl bg-white border border-slate-300 font-bold text-slate-700"
-                >
-                  Hủy
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2 rounded-xl bg-red-700 hover:bg-red-800 text-white font-bold"
-                >
-                  + Tạo & Gắn vào bài
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* ================= MODAL XEM TRƯỚC (PREVIEW MODAL) ================= */}
-      {showPreviewModal && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-[#FAF6F0] rounded-3xl border border-amber-300 max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl space-y-6 animate-scale-up">
-            <div className="flex items-center justify-between border-b border-amber-200/80 pb-3">
-              <span className="px-3 py-1 rounded-full bg-red-100 text-red-800 text-xs font-bold border border-red-300">
-                ★ BẢN XEM TRƯỚC CỦA ĐỘC GIẢ
-              </span>
-              <button
-                type="button"
-                onClick={() => setShowPreviewModal(false)}
-                className="w-8 h-8 rounded-full bg-white hover:bg-slate-100 flex items-center justify-center text-slate-600 font-bold text-lg"
-              >
-                ×
-              </button>
             </div>
 
-            {images[0] && (
-              <div className="rounded-2xl overflow-hidden aspect-[16/9] bg-slate-900 max-h-72">
-                <img src={resolveImageUrl(images[0])} alt="Ảnh bìa" className="w-full h-full object-cover" />
-              </div>
-            )}
-
+            {/* Tóm tắt ngắn gọn */}
             <div>
-              <span className="text-xs font-bold text-red-700 uppercase tracking-widest bg-red-50 px-3 py-1 rounded-full border border-red-200">
-                {toDanPho}
-              </span>
-              <h2 className="font-serif font-black text-2xl sm:text-3xl text-slate-900 mt-2.5">
-                {title || 'Tiêu đề câu chuyện chưa nhập'}
+              <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">
+                Tóm tắt ngắn gọn (2-3 câu)
+              </label>
+              <textarea
+                rows={2}
+                placeholder="Tóm tắt ngắn gọn bối cảnh, ý nghĩa và bài học rút ra từ câu chuyện..."
+                value={summary}
+                onChange={(e) => setSummary(e.target.value)}
+                className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-stone-800 text-xs sm:text-sm focus:border-red-600 outline-none transition-colors"
+              />
+            </div>
+
+            {/* Nội dung chi tiết */}
+            <div>
+              <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">
+                Nội dung chi tiết câu chuyện <span className="text-red-600">*</span>
+              </label>
+              <textarea
+                rows={7}
+                required
+                placeholder="Kể lại chi tiết diễn biến, ký ức, cảm nghĩ hoặc bài học sâu sắc từ câu chuyện... Bạn có thể sử dụng các tiêu đề nhỏ hoặc gạch đầu dòng để bài viết dễ đọc hơn."
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl border border-stone-300 text-stone-900 text-xs sm:text-sm leading-relaxed focus:border-red-600 focus:ring-1 focus:ring-red-600 outline-none font-sans"
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* ================= KHỐI 3: HÌNH ẢNH MINH HỌA ================= */}
+        <section className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200/80 shadow-xs space-y-4">
+          <div className="flex items-center gap-2.5 pb-3 border-b border-stone-100">
+            <div className="w-8 h-8 rounded-full bg-red-50 text-red-700 flex items-center justify-center font-bold text-sm">
+              3
+            </div>
+            <div>
+              <h2 className="font-serif font-bold text-base sm:text-lg text-stone-900">
+                Hình ảnh Kỷ vật & Tư liệu Minh họa
               </h2>
-              <div className="text-xs text-slate-500 mt-2 flex flex-wrap items-center gap-3">
-                <span>Nhân vật: <strong>{selectedCharacters.map((c) => c.name).join(', ') || 'Chưa gắn'}</strong></span>
-                <span>•</span>
-                <span>Thời kỳ: <strong>{period}</strong></span>
-              </div>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs sm:text-sm text-slate-700 italic">
-              "{summary || 'Chưa có mô tả tóm tắt'}"
-            </div>
-
-            <div
-              className="prose prose-slate max-w-none text-xs sm:text-sm leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: renderStoryContent(body) || '<p class="text-slate-400 italic">Nội dung chi tiết chưa được soạn thảo.</p>' }}
-            />
-
-            <div className="flex justify-end pt-4 border-t border-amber-200">
-              <button
-                type="button"
-                onClick={() => setShowPreviewModal(false)}
-                className="px-5 py-2.5 rounded-xl bg-red-700 text-white font-bold text-xs"
-              >
-                Đóng xem trước
-              </button>
+              <p className="text-[11px] sm:text-xs text-stone-500">
+                Tải ảnh từ máy, chọn từ kho tư liệu lịch sử hoặc sao chép và dán trực tiếp (Ctrl + V)
+              </p>
             </div>
           </div>
-        </div>
-      )}
 
-      {/* ================= MODAL THÀNH CÔNG (SUCCESS MODAL) ================= */}
+          <ImageUploadBox
+            images={images}
+            onChange={(imgs) => setImages(imgs)}
+            maxImages={8}
+          />
+        </section>
+
+        {/* ================= KHỐI 4: CAM KẾT & NỘP BÀI ================= */}
+        <section className="bg-stone-50 rounded-3xl p-6 sm:p-8 border border-stone-200 shadow-xs space-y-6">
+          <div className="space-y-3">
+            <label className="flex items-start gap-3 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={committed}
+                onChange={(e) => setCommitted(e.target.checked)}
+                className="w-4 h-4 mt-0.5 rounded text-red-700 border-stone-300 focus:ring-red-600 shrink-0"
+              />
+              <span className="text-xs sm:text-sm text-stone-700 leading-snug group-hover:text-stone-900">
+                Tôi cam đoan thông tin, tư liệu và hình ảnh chia sẻ là đúng sự thật, mang ý nghĩa giáo dục truyền thống và đồng ý để Ban Biên tập Đoàn Phường Xuân Hương thẩm định, xuất bản lên website.
+              </span>
+            </label>
+
+            <div className="p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200/70 text-[11px] sm:text-xs text-amber-900 flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-amber-700 shrink-0" />
+              <span>
+                Quy trình kiểm duyệt: Bài viết sẽ được lưu ở trạng thái <strong>Chờ duyệt</strong> và chỉ xuất bản lên Trang chủ & Thư viện sau khi được Ban Biên tập phê duyệt.
+              </span>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-stone-200">
+            <a
+              href={withBase('/')}
+              className="text-xs font-semibold text-stone-500 hover:text-stone-800 transition-colors order-2 sm:order-1"
+            >
+              ← Quay lại trang chủ
+            </a>
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className={`w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 order-1 sm:order-2 ${
+                isSubmitting
+                  ? 'bg-stone-400 text-white cursor-not-allowed'
+                  : 'bg-red-800 hover:bg-red-900 text-amber-50 hover:scale-[1.02] active:scale-[0.98]'
+              }`}
+            >
+              <Send className="w-4 h-4 text-amber-300" />
+              <span>{isSubmitting ? 'Đang gửi bài viết...' : 'Gửi bài viết đến Ban Biên tập'}</span>
+            </button>
+          </div>
+        </section>
+
+      </form>
+
+      {/* ================= MODAL THÔNG BÁO GỬI THÀNH CÔNG ================= */}
       {showSuccessModal && createdStory && (
-        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-          <div className="bg-[#FAF6F0] rounded-3xl border-2 border-amber-300 max-w-lg w-full p-6 sm:p-8 shadow-2xl space-y-6 text-center animate-scale-up">
-            <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-emerald-500 to-emerald-700 text-white flex items-center justify-center text-3xl mx-auto shadow-lg ring-8 ring-emerald-100">
-              {createdStory.status === 'approved' ? '✓' : '★'}
+        <div className="fixed inset-0 z-50 bg-stone-950/70 backdrop-blur-xs flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-white rounded-3xl border border-stone-200 max-w-lg w-full p-6 sm:p-8 shadow-2xl text-center space-y-5 animate-scale-up">
+            <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-2xl mx-auto shadow-xs">
+              ✓
             </div>
 
             <div>
-              <span className={`text-[11px] font-black uppercase tracking-wider px-3 py-1 rounded-full border ${
-                createdStory.status === 'approved'
-                  ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
-                  : 'bg-amber-100 text-amber-900 border-amber-300'
-              }`}>
-                {createdStory.status === 'approved' ? 'ĐÃ XUẤT BẢN THÀNH CÔNG' : 'ĐÃ GỬI VÀO HÀNG ĐỢI KIỂM DUYỆT'}
+              <span className="text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-amber-50 text-amber-900 border border-amber-200">
+                ĐÃ TIẾP NHẬN BÀI VIẾT — CHỜ BAN BIÊN TẬP DUYỆT
               </span>
-              <h3 className="font-serif font-black text-xl sm:text-2xl text-slate-900 mt-3 leading-snug">
+              <h3 className="font-serif font-black text-xl text-stone-900 mt-3 leading-snug">
                 {createdStory.title}
               </h3>
-              <p className="text-xs text-slate-600 mt-2">
-                Đơn vị đóng góp: <strong className="text-red-800">{createdStory.to_dan_pho}</strong>
+              <p className="text-xs text-stone-600 mt-2">
+                Đơn vị: <strong className="text-red-800">{createdStory.contributor_unit}</strong> • Người gửi: <strong>{createdStory.contributor_name}</strong>
               </p>
             </div>
 
-            <div className="p-4 rounded-2xl bg-white border border-amber-200/90 text-xs text-slate-600 text-left space-y-1.5 shadow-2xs">
+            <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200/80 text-xs text-stone-600 text-left space-y-1.5">
+              <div className="flex justify-between">
+                <span>Mã tiếp nhận:</span>
+                <span className="font-mono font-bold text-stone-900">{createdStory.id}</span>
+              </div>
               <div className="flex justify-between">
                 <span>Trạng thái:</span>
-                <span className="font-bold text-slate-900">
-                  {createdStory.status === 'approved' ? '🟢 Công khai trên Thư viện & Trang chủ' : '🟡 Chờ Ban Biên tập phê duyệt'}
-                </span>
+                <span className="font-bold text-amber-700">Đang chờ Ban Biên tập thẩm định</span>
               </div>
               <div className="flex justify-between">
-                <span>Số phút đọc ước tính:</span>
-                <span className="font-bold text-slate-900">{createdStory.read_minutes} phút</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Mã bài viết:</span>
-                <span className="font-mono text-slate-700 font-bold">{createdStory.id}</span>
+                <span>Hiển thị công khai:</span>
+                <span className="text-stone-500">Sau khi được phê duyệt</span>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 pt-2">
-              <a
-                href={withBase(`/truyen/chi-tiet?slug=${createdStory.slug}`)}
-                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-amber-100 font-bold text-xs flex items-center justify-center gap-1.5 shadow-md transition-all hover:scale-105"
-              >
-                <BookOpen className="w-4 h-4 text-amber-300" />
-                <span>Đọc bài viết ngay</span>
-              </a>
+            <p className="text-xs text-stone-500 italic">
+              Trân trọng cảm ơn đóng góp quý báu của bạn cho công trình số hóa lịch sử Phường Xuân Hương — Đà Lạt!
+            </p>
 
-              <a
-                href={withBase('/tai-khoan/truyen-cua-toi')}
-                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-white hover:bg-amber-100 text-slate-800 border border-amber-300 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-2xs"
-              >
-                <span>Bài viết của tôi</span>
-              </a>
-
-              {currentUser.role === 'admin' && (
-                <a
-                  href={withBase('/quan-tri/duyet-bai')}
-                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm"
-                >
-                  <ShieldCheck className="w-4 h-4" />
-                  <span>Duyệt bài</span>
-                </a>
-              )}
-
+            <div className="flex gap-3 pt-2">
               <button
                 type="button"
                 onClick={() => {
@@ -1584,12 +591,17 @@ export default function StorySubmitForm() {
                   setTitle('');
                   setSummary('');
                   setBody('');
-                  setImages(['/images/thoi-hoa-lua-hero.jpg']);
                 }}
-                className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs"
+                className="flex-1 py-2.5 rounded-xl border border-stone-300 text-stone-700 text-xs font-bold hover:bg-stone-50"
               >
-                + Viết tiếp
+                Gửi bài viết khác
               </button>
+              <a
+                href={withBase('/thu-vien')}
+                className="flex-1 py-2.5 rounded-xl bg-red-800 text-white text-xs font-bold hover:bg-red-900 text-center"
+              >
+                Về Thư viện bài viết
+              </a>
             </div>
           </div>
         </div>

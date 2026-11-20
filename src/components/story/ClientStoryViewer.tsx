@@ -70,10 +70,10 @@ export default function ClientStoryViewer({ initialSlug }: Props) {
             Quay lại Thư viện
           </a>
           <a
-            href={withBase('/tai-khoan/truyen-cua-toi')}
+            href={withBase('/gui-cau-chuyen')}
             className="px-5 py-2.5 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs hover:bg-slate-200 transition-colors"
           >
-            Bài viết của tôi
+            Gửi câu chuyện mới
           </a>
         </div>
       </div>
@@ -91,7 +91,7 @@ export default function ClientStoryViewer({ initialSlug }: Props) {
             <strong className="block text-amber-950 font-bold text-sm mb-0.5">
               Bài viết đang trong hàng đợi kiểm duyệt (Chế độ xem trước)
             </strong>
-            Bài viết của bạn đã được tiếp nhận và lưu an toàn. Ban Biên tập Thành Đoàn sẽ thẩm định tư liệu trước khi công bố rộng rãi trên Cổng thông tin toàn quốc.
+            Bài viết của bạn đã được tiếp nhận và lưu an toàn. Ban Biên tập Đoàn Phường Xuân Hương sẽ thẩm định tư liệu trước khi công bố rộng rãi trên website.
           </div>
         </div>
       )}

@@ -1,253 +1,127 @@
 import React, { useState } from 'react';
-import { login, TDP_ACCOUNTS } from '@/lib/auth';
+import { login } from '@/lib/auth';
 import { withBase } from '@/lib/utils';
-import { ShieldCheck, UserCheck, Lock, AlertCircle, CheckCircle2, Eye, EyeOff } from 'lucide-react';
+import { ShieldCheck, Lock, AlertCircle, ArrowRight, Send, CheckCircle2 } from 'lucide-react';
 
 export default function LoginForm() {
-  const [tab, setTab] = useState<'tdp' | 'admin'>('tdp');
-  
-  // Form TDP
-  const [selectedTdpUser, setSelectedTdpUser] = useState(TDP_ACCOUNTS[0].username);
-  const [tdpPassword, setTdpPassword] = useState('');
-  const [showTdpPass, setShowTdpPass] = useState(false);
-
-  // Form Admin
-  const [adminUser, setAdminUser] = useState('');
+  const [adminUser, setAdminUser] = useState('admin');
   const [adminPassword, setAdminPassword] = useState('');
-  const [showAdminPass, setShowAdminPass] = useState(false);
-
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
-
-  const handleTdpLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrorMsg('');
-    if (!tdpPassword.trim()) {
-      setErrorMsg('Vui lòng nhập mật khẩu xác thực của Tổ Dân Phố.');
-      return;
-    }
-    const res = await login(selectedTdpUser, tdpPassword);
-    if (res.success) {
-      setSuccessMsg(res.message);
-      setTimeout(() => {
-        window.location.href = withBase('/gui-cau-chuyen');
-      }, 800);
-    } else {
-      setErrorMsg(res.message);
-    }
-  };
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
-    if (!adminUser.trim() || !adminPassword.trim()) {
-      setErrorMsg('Vui lòng nhập đầy đủ tài khoản và mật khẩu quản trị.');
+    if (!adminPassword.trim()) {
+      setErrorMsg('Vui lòng nhập mật khẩu quản trị.');
       return;
     }
+    setIsLoggingIn(true);
     const res = await login(adminUser.trim(), adminPassword);
+    setIsLoggingIn(false);
     if (res.success) {
       setSuccessMsg(res.message);
       setTimeout(() => {
         window.location.href = withBase('/quan-tri/duyet-bai');
-      }, 800);
+      }, 700);
     } else {
       setErrorMsg(res.message);
     }
   };
 
-  const handleSelectTdp = (username: string) => {
-    setSelectedTdpUser(username);
-    setTdpPassword('');
-    setErrorMsg('');
-  };
-
   return (
-    <div className="max-w-xl mx-auto bg-[#FAF6F0] rounded-3xl border border-amber-300/80 p-6 sm:p-10 shadow-xl space-y-6">
+    <div className="max-w-md mx-auto space-y-6">
       
-      {/* Huy hiệu Đoàn & Tiêu đề */}
-      <div className="text-center space-y-2">
-        <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-red-700 to-red-800 text-amber-300 font-serif font-black text-2xl flex items-center justify-center mx-auto shadow-md border border-amber-300/50">
-          ★
+      {/* Thông báo tính năng đóng góp mở */}
+      <div className="bg-amber-50 rounded-2xl p-4 border border-amber-200 text-xs text-amber-900 flex items-start gap-3">
+        <Send className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+        <div className="leading-relaxed">
+          <strong>Bạn muốn gửi bài viết?</strong> Website hiện hỗ trợ gửi bài trực tiếp mà không cần tài khoản! Bất kỳ ai cũng có thể{' '}
+          <a href={withBase('/gui-cau-chuyen')} className="text-red-700 font-bold underline">
+            bấm vào đây để gửi bài ngay
+          </a>.
         </div>
-        <div className="text-[11px] font-bold text-red-800 uppercase tracking-widest">
-          ĐOÀN TNCS HỒ CHÍ MINH PHƯỜNG XUÂN HƯƠNG — ĐÀ LẠT
-        </div>
-        <h1 className="font-serif font-black text-2xl sm:text-3xl text-slate-900 tracking-tight">
-          Cổng Đăng Nhập Xác Thực
-        </h1>
-        <p className="text-xs sm:text-sm text-slate-600 max-w-sm mx-auto leading-relaxed">
-          Hệ thống bảo mật xác thực nội bộ dành riêng cho 37 Tổ Dân Phố và Ban Biên tập Phường Xuân Hương.
-        </p>
       </div>
 
-      {/* Tabs chọn đối tượng */}
-      <div className="grid grid-cols-2 gap-2 p-1.5 rounded-2xl bg-amber-100/70 border border-amber-200">
-        <button
-          type="button"
-          onClick={() => { setTab('tdp'); setErrorMsg(''); setSuccessMsg(''); setTdpPassword(''); }}
-          className={`py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all ${
-            tab === 'tdp'
-              ? 'bg-red-700 text-white shadow-md'
-              : 'text-slate-700 hover:text-red-800'
-          }`}
-        >
-          <UserCheck className="w-4 h-4" />
-          <span>37 Tổ Dân Phố</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => { setTab('admin'); setErrorMsg(''); setSuccessMsg(''); setAdminPassword(''); }}
-          className={`py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all ${
-            tab === 'admin'
-              ? 'bg-red-700 text-white shadow-md'
-              : 'text-slate-700 hover:text-red-800'
-          }`}
-        >
-          <ShieldCheck className="w-4 h-4" />
-          <span>Ban Biên tập (Admin)</span>
-        </button>
-      </div>
-
-      {/* Thông báo Lỗi / Thành công */}
-      {errorMsg && (
-        <div className="p-3.5 rounded-2xl bg-red-100 border border-red-300 text-red-900 text-xs flex items-center gap-2 font-medium">
-          <AlertCircle className="w-4 h-4 text-red-700 shrink-0" />
-          <span>{errorMsg}</span>
+      {/* Form Quản trị */}
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200 shadow-sm space-y-6">
+        <div className="text-center space-y-2">
+          <div className="w-12 h-12 rounded-2xl bg-red-50 text-red-700 flex items-center justify-center mx-auto border border-red-200">
+            <ShieldCheck className="w-6 h-6" />
+          </div>
+          <h1 className="font-serif font-black text-2xl text-stone-900">
+            Ban Quản Trị Hệ Thống
+          </h1>
+          <p className="text-xs text-stone-500">
+            Dành cho Ban Biên tập Đoàn Phường Xuân Hương kiểm duyệt và xuất bản câu chuyện.
+          </p>
         </div>
-      )}
-      {successMsg && (
-        <div className="p-3.5 rounded-2xl bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs flex items-center gap-2 font-medium">
-          <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
-          <span>{successMsg} Đang chuyển hướng...</span>
-        </div>
-      )}
 
-      {/* FORM 1: DÀNH CHO 37 TỔ DÂN PHỐ */}
-      {tab === 'tdp' && (
-        <form onSubmit={handleTdpLogin} className="space-y-4">
-          <div>
-            <label className="block text-xs font-bold text-slate-800 mb-1.5">
-              Chọn Tổ Dân Phố của bạn <span className="text-red-600">*</span>
-            </label>
-            <select
-              value={selectedTdpUser}
-              onChange={(e) => handleSelectTdp(e.target.value)}
-              className="w-full px-4 py-3 rounded-2xl bg-white border border-amber-300 text-xs sm:text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-red-700/30"
-            >
-              {TDP_ACCOUNTS.map((acc, i) => (
-                <option key={acc.username} value={acc.username}>
-                  {i + 1}. {acc.to_dan_pho}
-                </option>
-              ))}
-            </select>
+        {errorMsg && (
+          <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span>{errorMsg}</span>
           </div>
+        )}
 
-          <div>
-            <label className="block text-xs font-bold text-slate-800 mb-1.5">
-              Mật khẩu xác thực Tổ Dân Phố <span className="text-red-600">*</span>
-            </label>
-            <div className="relative">
-              <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-              <input
-                type={showTdpPass ? 'text' : 'password'}
-                required
-                value={tdpPassword}
-                onChange={(e) => setTdpPassword(e.target.value)}
-                placeholder="Nhập mật khẩu an toàn..."
-                className="w-full pl-10 pr-11 py-3 rounded-2xl bg-white border border-amber-300 text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-red-700/30"
-              />
-              <button
-                type="button"
-                onClick={() => setShowTdpPass(!showTdpPass)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
-                title={showTdpPass ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
-              >
-                {showTdpPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
-            </div>
+        {successMsg && (
+          <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-700 flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 shrink-0" />
+            <span>{successMsg}</span>
           </div>
+        )}
 
-          <div className="p-3 rounded-2xl bg-amber-50 border border-amber-200 text-[11px] text-amber-900 leading-relaxed">
-            💡 <strong>Quyền hạn Tổ Dân Phố:</strong> Đăng bài viết, quản lý bài viết của riêng Tổ Dân Phố mình. Bài gửi sẽ được gắn định danh chính chủ và chuyển vào danh sách chờ duyệt của Ban Biên tập.
-          </div>
-
-          <button
-            type="submit"
-            className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-amber-100 font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-transform hover:scale-[1.01]"
-          >
-            Đăng nhập Tổ Dân Phố →
-          </button>
-        </form>
-      )}
-
-      {/* FORM 2: DÀNH CHO BAN BIÊN TẬP (ADMIN) */}
-      {tab === 'admin' && (
         <form onSubmit={handleAdminLogin} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-slate-800 mb-1.5">
-              Tài khoản Quản trị <span className="text-red-600">*</span>
+            <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">
+              Tài khoản quản trị
             </label>
             <input
               type="text"
-              required
               value={adminUser}
               onChange={(e) => setAdminUser(e.target.value)}
-              placeholder="Nhập tài khoản Quản trị..."
-              className="w-full px-4 py-3 rounded-2xl bg-white border border-amber-300 text-xs sm:text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-red-700/30"
+              className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-stone-900 text-sm focus:border-red-600 outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-800 mb-1.5">
-              Mật khẩu Admin <span className="text-red-600">*</span>
+            <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">
+              Mật khẩu quản trị
             </label>
             <div className="relative">
-              <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Lock className="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
-                type={showAdminPass ? 'text' : 'password'}
+                type="password"
                 required
+                placeholder="Nhập mật khẩu..."
                 value={adminPassword}
                 onChange={(e) => setAdminPassword(e.target.value)}
-                placeholder="Nhập mật khẩu Admin..."
-                className="w-full pl-10 pr-11 py-3 rounded-2xl bg-white border border-amber-300 text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-red-700/30"
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-stone-300 text-stone-900 text-sm focus:border-red-600 outline-none"
               />
-              <button
-                type="button"
-                onClick={() => setShowAdminPass(!showAdminPass)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
-                title={showAdminPass ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
-              >
-                {showAdminPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
             </div>
-          </div>
-
-          <div className="p-3 rounded-2xl bg-red-50 border border-red-200 text-[11px] text-red-900 leading-relaxed">
-            🛡️ <strong>Quyền hạn Ban Biên tập:</strong> Thẩm định, phê duyệt bài viết, duyệt hàng loạt, yêu cầu chỉnh sửa, xuất bản lên thư viện, xóa bài viết và quản lý toàn bộ hệ thống.
           </div>
 
           <button
             type="submit"
-            className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-red-800 to-red-900 hover:from-red-900 hover:to-black text-amber-200 font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-transform hover:scale-[1.01]"
+            disabled={isLoggingIn}
+            className="w-full py-3 rounded-xl bg-red-800 hover:bg-red-900 text-white font-bold text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2"
           >
-            Đăng nhập Quản trị Ban Biên tập →
+            <span>{isLoggingIn ? 'Đang xác thực...' : 'Đăng nhập Ban Quản trị'}</span>
+            <ArrowRight className="w-4 h-4" />
           </button>
         </form>
-      )}
 
-      {/* KHỐI THÔNG TIN BẢO MẬT DOANH NGHIỆP / CƠ SỞ */}
-      <div className="pt-4 border-t border-amber-200/80 text-center space-y-2">
-        <div className="flex items-center justify-center gap-1.5 text-xs text-slate-600 font-bold">
-          <ShieldCheck className="w-4 h-4 text-emerald-600" />
-          <span>Hệ thống Bảo mật Xác thực Cơ sở</span>
+        <div className="pt-2 border-t border-stone-100 text-center">
+          <a
+            href={withBase('/')}
+            className="text-xs font-medium text-stone-500 hover:text-stone-800"
+          >
+            ← Quay lại trang chủ
+          </a>
         </div>
-        <p className="text-[11px] text-slate-500 max-w-sm mx-auto leading-relaxed">
-          Tài khoản và thông tin xác thực được quản lý tập trung và mã hóa an toàn. Cán bộ Tổ Dân Phố và Ban Biên tập vui lòng liên hệ Thường trực Đoàn Phường Xuân Hương để được cấp quyền hoặc cấp lại mật khẩu.
-        </p>
       </div>
 
     </div>
   );
 }
-

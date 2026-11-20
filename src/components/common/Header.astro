@@ -26,22 +26,22 @@ import UserAuthNav from '@/components/common/UserAuthNav';
         </div>
       </a>
 
-      {/* 2. Menu Điều hướng tinh gọn (chỉ 5 mục cốt lõi, không bị vỡ dòng) */}
-      <nav class="hidden lg:flex items-center gap-0.5 xl:gap-1 text-xs xl:text-sm font-semibold text-slate-700">
-        <a href={withBase('/')} class="px-2.5 xl:px-3 py-1.5 rounded-xl hover:text-red-700 hover:bg-amber-100/60 transition-colors whitespace-nowrap">
+      {/* 2. Menu Điều hướng tinh gọn, thanh lịch */}
+      <nav class="hidden lg:flex items-center gap-1 xl:gap-2 text-xs xl:text-sm font-semibold text-stone-700">
+        <a href={withBase('/')} class="px-3 py-1.5 rounded-full hover:text-red-700 hover:bg-stone-100 transition-colors whitespace-nowrap">
           Trang chủ
         </a>
-        <a href={withBase('/thu-vien')} class="px-2.5 xl:px-3 py-1.5 rounded-xl hover:text-red-700 hover:bg-amber-100/60 transition-colors whitespace-nowrap">
+        <a href={withBase('/thu-vien')} class="px-3 py-1.5 rounded-full hover:text-red-700 hover:bg-stone-100 transition-colors whitespace-nowrap">
           Thư viện ký ức
         </a>
-        <a href={withBase('/dia-chi-do')} class="px-2.5 xl:px-3 py-1.5 rounded-xl hover:text-red-700 hover:bg-amber-100/60 transition-colors whitespace-nowrap">
+        <a href={withBase('/dia-chi-do')} class="px-3 py-1.5 rounded-full hover:text-red-700 hover:bg-stone-100 transition-colors whitespace-nowrap">
           Địa chỉ Đỏ
         </a>
-        <a href={withBase('/dong-thoi-gian')} class="px-2.5 xl:px-3 py-1.5 rounded-xl hover:text-red-700 hover:bg-amber-100/60 transition-colors whitespace-nowrap">
+        <a href={withBase('/dong-thoi-gian')} class="px-3 py-1.5 rounded-full hover:text-red-700 hover:bg-stone-100 transition-colors whitespace-nowrap">
           Dòng thời gian
         </a>
-        <a href={withBase('/#bang-xep-hang')} class="px-2.5 xl:px-3 py-1.5 rounded-xl hover:text-red-700 hover:bg-amber-100/60 transition-colors whitespace-nowrap">
-          37 Tổ Dân Phố
+        <a href={withBase('/#don-vi-dong-gop')} class="px-3 py-1.5 rounded-full hover:text-red-700 hover:bg-stone-100 transition-colors whitespace-nowrap">
+          Đơn vị đóng góp
         </a>
       </nav>
 

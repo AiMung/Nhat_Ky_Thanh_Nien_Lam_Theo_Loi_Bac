@@ -364,6 +364,5 @@ export function canModerate(): boolean {
 }
 
 export function canSubmit(): boolean {
-  const s = getCurrentSession();
-  return s.role === 'admin' || s.role === 'tdp';
+  return true; // Mọi người dân, đoàn viên, học sinh đều có thể gửi bài viết
 }
