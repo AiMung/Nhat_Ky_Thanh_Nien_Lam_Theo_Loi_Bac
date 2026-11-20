@@ -21,7 +21,8 @@ import {
   Edit3,
   Clock,
   FileText,
-  Calendar
+  Calendar,
+  ChevronDown
 } from 'lucide-react';
 
 export default function StorySubmitForm() {
@@ -518,48 +519,53 @@ export default function StorySubmitForm() {
                   </button>
                 </div>
 
-                {/* Danh sách Dropdown tương ứng */}
-                <select
-                  value={selectedUnit}
-                  onChange={(e) => setSelectedUnit(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-stone-900 text-xs sm:text-sm font-medium focus:border-red-600 focus:ring-1 focus:ring-red-600 outline-none transition-colors bg-white"
-                >
-                  {unitGroup === 'tdp' && (
-                    <>
-                      <optgroup label="Danh sách 37 Tổ Dân Phố Phường Xuân Hương">
-                        {TDP_UNITS.map((u, idx) => (
-                          <option key={u} value={u}>
-                            TDP {(idx + 1).toString().padStart(2, '0')}: {u}
-                          </option>
-                        ))}
-                      </optgroup>
-                    </>
-                  )}
+                {/* Danh sách Dropdown tùy biến có icon chevron */}
+                <div className="relative">
+                  <select
+                    value={selectedUnit}
+                    onChange={(e) => setSelectedUnit(e.target.value)}
+                    className="w-full appearance-none pl-4 pr-10 py-3 rounded-2xl border border-stone-200 bg-stone-50/80 hover:bg-stone-50 focus:bg-white text-stone-900 text-xs sm:text-sm font-semibold focus:border-red-600 focus:ring-2 focus:ring-red-100 outline-none transition-all cursor-pointer shadow-2xs"
+                  >
+                    {unitGroup === 'tdp' && (
+                      <>
+                        <optgroup label="Danh sách 37 Tổ Dân Phố Phường Xuân Hương">
+                          {TDP_UNITS.map((u, idx) => (
+                            <option key={u} value={u}>
+                              TDP {(idx + 1).toString().padStart(2, '0')}: {u}
+                            </option>
+                          ))}
+                        </optgroup>
+                      </>
+                    )}
 
-                  {unitGroup === 'school' && (
-                    <>
-                      <optgroup label="Khối Trường Học trên địa bàn Phường Xuân Hương">
-                        {SCHOOL_UNITS.map((u) => (
-                          <option key={u} value={u}>
-                            {u}
-                          </option>
-                        ))}
-                      </optgroup>
-                    </>
-                  )}
+                    {unitGroup === 'school' && (
+                      <>
+                        <optgroup label="Khối Trường Học trên địa bàn Phường Xuân Hương">
+                          {SCHOOL_UNITS.map((u) => (
+                            <option key={u} value={u}>
+                              {u}
+                            </option>
+                          ))}
+                        </optgroup>
+                      </>
+                    )}
 
-                  {unitGroup === 'citizen' && (
-                    <>
-                      <optgroup label="Người Dân & Nhân chứng lịch sử">
-                        {CITIZEN_UNITS.map((u) => (
-                          <option key={u} value={u}>
-                            {u}
-                          </option>
-                        ))}
-                      </optgroup>
-                    </>
-                  )}
-                </select>
+                    {unitGroup === 'citizen' && (
+                      <>
+                        <optgroup label="Người Dân & Nhân chứng lịch sử">
+                          {CITIZEN_UNITS.map((u) => (
+                            <option key={u} value={u}>
+                              {u}
+                            </option>
+                          ))}
+                        </optgroup>
+                      </>
+                    )}
+                  </select>
+                  <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-stone-400">
+                    <ChevronDown className="w-4 h-4" />
+                  </div>
+                </div>
 
                 {/* Trường nhập tự do nếu chọn mục "Khác" */}
                 {(selectedUnit.includes('Khác') || selectedUnit.includes('khác')) && (
@@ -616,18 +622,23 @@ export default function StorySubmitForm() {
                   <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">
                     Chuyên mục chủ đề
                   </label>
-                  <select
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-stone-800 text-xs sm:text-sm focus:border-red-600 outline-none bg-white"
-                  >
-                    <option value="hoc-tap-bac">Học tập & Làm theo lời Bác</option>
-                    <option value="dia-chi-do">Địa chỉ Đỏ & Di tích Đà Lạt</option>
-                    <option value="phong-trao-doan">Tuổi trẻ Phường Xuân Hương</option>
-                    <option value="thanh-nien-xung-phong">Thanh niên xung phong & Tiên phong</option>
-                    <option value="tinh-nguyen">Những lá thư thời hoa lửa</option>
-                    <option value="bien-dao">Bảo vệ chủ quyền Biển đảo</option>
-                  </select>
+                  <div className="relative">
+                    <select
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                      className="w-full appearance-none pl-4 pr-10 py-3 rounded-2xl border border-stone-200 bg-stone-50/80 hover:bg-stone-50 focus:bg-white text-stone-900 text-xs sm:text-sm font-semibold focus:border-red-600 focus:ring-2 focus:ring-red-100 outline-none transition-all cursor-pointer shadow-2xs"
+                    >
+                      <option value="hoc-tap-bac">Học tập & Làm theo lời Bác</option>
+                      <option value="dia-chi-do">Địa chỉ Đỏ & Di tích Đà Lạt</option>
+                      <option value="phong-trao-doan">Tuổi trẻ Phường Xuân Hương</option>
+                      <option value="thanh-nien-xung-phong">Thanh niên xung phong & Tiên phong</option>
+                      <option value="tinh-nguyen">Những lá thư thời hoa lửa</option>
+                      <option value="bien-dao">Bảo vệ chủ quyền Biển đảo</option>
+                    </select>
+                    <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-stone-400">
+                      <ChevronDown className="w-4 h-4" />
+                    </div>
+                  </div>
                 </div>
 
                 <div>

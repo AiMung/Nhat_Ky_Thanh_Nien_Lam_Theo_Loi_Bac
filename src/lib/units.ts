@@ -102,18 +102,49 @@ export const ALL_UNIT_GROUPS = [
   }
 ];
 
-export function getUnitBadge(unitName?: string): { text: string; colorClass: string } {
-  if (!unitName) {
-    return { text: 'Cộng đồng', colorClass: 'bg-stone-100 text-stone-700 border-stone-200' };
+export function getUnitBadge(unitName?: string): { text: string; colorClass: string; type: string } {
+  if (!unitName || unitName.trim() === '' || unitName === 'Đơn vị' || unitName.toLowerCase() === 'khác') {
+    return { 
+      text: 'Ký Ức Lịch Sử', 
+      colorClass: 'bg-gradient-to-r from-red-900/90 to-amber-900/90 text-amber-200 border-amber-500/40 shadow-xs',
+      type: 'history'
+    };
   }
-  if (unitName.includes('Tổ dân phố') || TDP_UNITS.includes(unitName)) {
-    return { text: 'Tổ Dân Phố', colorClass: 'bg-amber-50 text-amber-900 border-amber-200' };
+  
+  // 1. Khối 37 Tổ dân phố
+  if (unitName.includes('Tổ dân phố') || unitName.includes('TDP') || TDP_UNITS.includes(unitName)) {
+    // Trích xuất tên ngắn gọn nếu dài
+    const shortName = unitName.replace('Tổ dân phố ', 'TDP ').replace(' — Phường Xuân Hương', '');
+    return { 
+      text: shortName.length > 25 ? 'Tổ Dân Phố' : shortName, 
+      colorClass: 'bg-red-50 text-red-900 border-red-200/90 font-bold',
+      type: 'tdp'
+    };
   }
-  if (SCHOOL_UNITS.some(s => unitName.includes(s)) || unitName.includes('Trường') || unitName.includes('Liên đội')) {
-    return { text: 'Trường Học', colorClass: 'bg-blue-50 text-blue-900 border-blue-200' };
+
+  // 2. Khối Trường học
+  if (SCHOOL_UNITS.some(s => unitName.includes(s)) || unitName.includes('Trường') || unitName.includes('Liên đội') || unitName.includes('CĐ Sư phạm') || unitName.includes('THPT') || unitName.includes('THCS')) {
+    const shortName = unitName.replace('Trường ', '').replace(' — Đà Lạt', '');
+    return { 
+      text: shortName.length > 25 ? 'Khối Trường Học' : shortName, 
+      colorClass: 'bg-blue-50 text-blue-900 border-blue-200/90 font-bold',
+      type: 'school'
+    };
   }
-  if (unitName.includes('Cựu chiến binh') || unitName.includes('Nhân chứng') || unitName.includes('Người dân')) {
-    return { text: 'Người Dân', colorClass: 'bg-emerald-50 text-emerald-900 border-emerald-200' };
+
+  // 3. Khối Người dân & Cựu chiến binh
+  if (unitName.includes('Cựu chiến binh') || unitName.includes('Nhân chứng') || unitName.includes('Người dân') || unitName.includes('Cán bộ lão thành')) {
+    return { 
+      text: unitName.length > 25 ? 'Nhân Chứng Lịch Sử' : unitName, 
+      colorClass: 'bg-emerald-50 text-emerald-900 border-emerald-200/90 font-bold',
+      type: 'citizen'
+    };
   }
-  return { text: 'Đơn vị', colorClass: 'bg-stone-100 text-stone-700 border-stone-200' };
+
+  // 4. Các đơn vị khác
+  return { 
+    text: unitName.length > 24 ? unitName.substring(0, 22) + '...' : unitName, 
+    colorClass: 'bg-amber-50 text-amber-900 border-amber-300/80 font-bold',
+    type: 'custom'
+  };
 }
